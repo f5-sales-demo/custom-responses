@@ -259,14 +259,24 @@ class DocumentationTests(unittest.TestCase):
                 r"\.\./(?:deployment|verification|branding|teardown|ownership|scenarios)/",
             )
         self.assertEqual(
-            set(path.stem for path in (ROOT / "docs/en").glob("*.mdx")),
+            {path.stem for path in (ROOT / "docs/en").glob("*.mdx")},
             {slug for slug, _ in pages},
         )
         self.assertTrue(outputs.issubset(used_includes), outputs - used_includes)
         body_examples = {
-            "errors-class", "errors-exact", "errors-404", "maintenance",
-            "acknowledgement", "waf-html", "waf-json", "js", "captcha",
-            "policy-js", "policy-captcha", "ddos-js", "bot-block",
+            "errors-class",
+            "errors-exact",
+            "errors-404",
+            "maintenance",
+            "acknowledgement",
+            "waf-html",
+            "waf-json",
+            "js",
+            "captcha",
+            "policy-js",
+            "policy-captcha",
+            "ddos-js",
+            "bot-block",
         }
         self.assertEqual(
             {name for name in used_includes if name.endswith("-encoded.json")},

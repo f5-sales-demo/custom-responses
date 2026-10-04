@@ -56,3 +56,11 @@ terraform -chdir=terraform output
 ```
 
 Wait for cloud-init, origin health, LB acceptance, DNS and all automatic certificates before traffic acceptance. Use [verification](../verification/) to qualify the deployment.
+
+## Resume the partial deployment
+
+The initial approved apply created the owned origin resources, namespace, pools, WAFs and one LB. Public virtual-host
+usage updates rejected the remaining LBs, and Bot Standard requires an unavailable entitlement. These prerequisites are
+deferred by the user to the next iteration. The current saved recovery plan also replaces the origin VM because
+cloud-init content changed. Review that replacement and obtain explicit approval of the new plan before applying.
+Preserve private local state; never reapply the consumed initial plan.

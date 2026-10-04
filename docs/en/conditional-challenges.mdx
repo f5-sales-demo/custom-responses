@@ -1,52 +1,33 @@
 ---
-title: Select challenges conditionally
-description: Pair challenge wording with the policy or mitigation decision that selects it.
+title: Conditional challenges
+description: Conditional challenges select verification through a policy rule or DDoS mitigation.
 sidebar:
   order: 8
 ---
 
-Ask for verification only where it is needed. A policy rule can select JavaScript or human verification for a sensitive path. Application-layer distributed denial-of-service (DDoS) mitigation can select JavaScript verification during a mitigation event.
+A policy can select browser or human verification for a sensitive path. Application-layer distributed denial-of-service (DDoS) mitigation can select JavaScript verification during an active mitigation event. These are separate alternatives.
 
-## Prerequisites
-
-An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
-
-You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. You need supported challenge features and a browser for verification. For DDoS, you also need an authorized mitigation exercise. Allow about 15–20 minutes per variant for configuration, excluding provisioning and security-event testing.
-
-Completely Automated Public Turing test to tell Computers and Humans Apart (CAPTCHA) verification requires the visitor to complete an interaction.
-
-## Configure
-
-### Choose the selection mechanism
-
-| Variant | Selection | Comparison |
+| Alternative | Selector | Comparison |
 | --- | --- | --- |
 | Policy JavaScript | Exact `/challenge` rule | `/` bypasses verification. |
 | Policy CAPTCHA | Exact `/challenge` rule | `/` bypasses verification. |
 | DDoS JavaScript | Active application-layer mitigation | Normal traffic outside the event. |
 
-Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
+See [response-body encoding](../configuration-reference/#response-body-encoding) for the custom-page placeholder. Preserve platform-controlled challenge scripts and interactions.
 
-### Select JavaScript verification with a policy
+## Policy-selected JavaScript challenge
 
 > **Visitor message:** Please wait while your browser is verified.
 
-1. Save the previous settings for the fields you change.
-2. In the load balancer's `policy_based_challenge`, set `js_challenge_parameters` to your message and parameters.
-3. Add a `rule_list.rules` entry matching exactly `/challenge`.
-4. Select `enable_javascript_challenge` in that rule.
-5. Set `no_challenge` as the policy default.
-6. Save the load balancer.
+`policy_based_challenge.js_challenge_parameters` supplies the page and parameters. A rule matching exactly `/challenge` selects `enable_javascript_challenge`; `no_challenge` is the default. Cookie expiry affects repeat visits.
 
 [Policy JavaScript source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/policy-js.json wrap
 ```
 
 <details>
-<summary>Exact encoded configuration and decoded body</summary>
+<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/policy-js-encoded.json wrap
 ```
@@ -58,26 +39,21 @@ Decoded body (displayed as code):
 
 </details>
 
-### Select CAPTCHA verification with a policy
+**Expected result:** A fresh visit to `/challenge` shows the selected message and working browser check; completion reaches the application. `/` bypasses the challenge, and the policy rule matches the challenged request.
+
+## Policy-selected CAPTCHA
 
 > **Visitor message:** Please complete the verification to continue.
 
-1. Save the previous settings for the fields you change.
-2. In the load balancer's `policy_based_challenge`, set `captcha_challenge_parameters` to your message and cookie lifetime.
-3. Add a `rule_list.rules` entry matching exactly `/challenge`.
-4. Select `enable_captcha_challenge` in that rule.
-5. Set `no_challenge` as the policy default.
-6. Save the load balancer.
+`policy_based_challenge.captcha_challenge_parameters` supplies the page and cookie lifetime. An exact `/challenge` rule selects `enable_captcha_challenge`, with `no_challenge` as the default.
 
 [Policy CAPTCHA source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/policy-captcha.json wrap
 ```
 
 <details>
-<summary>Exact encoded configuration and decoded body</summary>
+<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/policy-captcha-encoded.json wrap
 ```
@@ -89,25 +65,21 @@ Decoded body (displayed as code):
 
 </details>
 
-### Select JavaScript verification during DDoS mitigation
+**Expected result:** A fresh visit to `/challenge` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Verify the selecting rule independently of the JavaScript alternative.
+
+## DDoS-selected JavaScript challenge
 
 > **Visitor message:** Please wait while your browser is verified.
 
-Requesting `/challenge` does not activate mitigation. Customize the challenge in the context of your application-layer DDoS protection settings.
-
-1. Save the previous settings for the fields you change.
-2. Set the load balancer's `l7_ddos_action_js_challenge` message and parameters.
-3. Save the load balancer.
+`l7_ddos_action_js_challenge` supplies the message and parameters used when application-layer DDoS mitigation selects this action. Requesting `/challenge` alone does not activate mitigation.
 
 [DDoS JavaScript source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/ddos-js.json wrap
 ```
 
 <details>
-<summary>Exact encoded configuration and decoded body</summary>
+<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/ddos-js-encoded.json wrap
 ```
@@ -119,29 +91,4 @@ Decoded body (displayed as code):
 
 </details>
 
-## Verify
-
-### Check a policy variant
-
-1. Open `/challenge` in a fresh browser session.
-2. Confirm the selected challenge message and interaction.
-3. Complete verification.
-4. Confirm navigation to the application.
-5. Request `/` without a verification cookie.
-6. Confirm it bypasses verification.
-7. Confirm the selecting policy rule matches the challenged request.
-
-Repeat independently for JavaScript and CAPTCHA. No fixed challenge status is assumed.
-
-### Check the DDoS variant
-
-1. Run your authorized mitigation exercise.
-2. Correlate the challenge with the actual mitigation event.
-3. Complete browser verification.
-4. Compare normal application traffic outside the event.
-
-The custom wording alone does not show that mitigation activated.
-
-## Clean up
-
-Restore the previous policy challenge or DDoS action settings for the variant you changed. Remove only the test rules you added. Preserve shared policies and existing DDoS protection. Confirm the restored selection and normal application traffic.
+**Expected result:** During an authorized mitigation exercise, the challenge correlates with the actual mitigation event and browser completion reaches the application. Compare normal traffic outside the event; custom wording alone does not prove mitigation activated.

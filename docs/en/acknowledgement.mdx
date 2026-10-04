@@ -1,43 +1,27 @@
 ---
-title: Return a static acknowledgement
-description: Answer a selected path with a fixed acknowledgement status and message.
+title: Static acknowledgement
+description: Static acknowledgement returns a fixed receipt message on a selected path.
 sidebar:
   order: 4
 ---
 
-Give callers a stable informational answer on a selected path. A direct response route returns “Request received” with status `200` without contacting the origin.
+<style>{`@media (max-width: 480px) { h1#_top { font-size: 2rem; } }`}</style>
 
-## Prerequisites
-
-An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
-
-You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Choose a dedicated informational path whose meaning is clear to callers. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
-
-## Configure
-
-### Return a fixed acknowledgement
+A direct response route answers `/acknowledgement` with status `200` without contacting the origin.
 
 > **Visitor message:** Request received
 
-A static acknowledgement does not validate a submission, persist data or prove that a backend accepted work. If callers need a unique receipt or processing status, obtain it from your application.
+The `direct_response_route` selects the path, and `route_direct_response` supplies the status and body. See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
 
-1. Save the previous settings for the fields you change.
-2. Add a `direct_response_route` for `/acknowledgement` to the load balancer's `routes` list.
-3. Set `route_direct_response.response_code` to `200`.
-4. In `route_direct_response`, set `response_body_encoded` to the acknowledgement message.
-5. Save the load balancer.
-
-Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
+A static acknowledgement does not validate a submission, persist data, or prove backend processing. Use an application response when callers need a unique receipt or processing status.
 
 [Acknowledgement route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/acknowledgement.json wrap
 ```
 
 <details>
-<summary>Exact encoded configuration and decoded body</summary>
+<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/acknowledgement-encoded.json wrap
 ```
@@ -49,15 +33,4 @@ Decoded body (displayed as code):
 
 </details>
 
-## Verify
-
-1. Request `/acknowledgement` on your configured host.
-2. Confirm status `200` and “Request received” in the body.
-3. Request `/` on the same host.
-4. Confirm the normal origin body.
-
-Both paths return `200`; compare their bodies to confirm route selection.
-
-## Clean up
-
-Restore the previous route settings or remove only the acknowledgement route you added. Preserve the load balancer, other routes and shared origin pools. Confirm the path resumes its intended application behavior.
+**Expected result:** `/acknowledgement` returns `200` and “Request received”; `/` returns the normal origin body. Compare bodies because both paths can return `200`.

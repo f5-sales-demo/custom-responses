@@ -1,58 +1,19 @@
 ---
-title: Adjust response headers and cookies
-description: Add or remove response metadata while preserving the application's response body.
+title: Headers and cookies
+description: Headers and cookies adjust response metadata while preserving the application body.
 sidebar:
   order: 11
 ---
 
-Give callers useful response metadata and remove values that should not leave the origin. A load balancer can adjust headers and cookies while preserving the application's response body.
+Response transformations can add useful metadata and remove origin values that callers should not receive.
 
-## Prerequisites
+> **Visitor response:** `x-showcase: custom-responses` and a `showcase=custom-responses` cookie, without `x-origin-remove` or `origin-remove`.
 
-An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
-
-You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Use a test origin that emits known metadata and a control host without the transformations. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
-
-## Configure
-
-### Adjust response metadata
-
-The caller should receive `x-showcase: custom-responses` and a `showcase=custom-responses` cookie. The response should omit the origin's `x-origin-remove` header and `origin-remove` cookie.
-
-1. Save the previous settings for the fields you change.
-2. Set the load balancer's `more_option.response_headers_to_add` with `append: false`.
-3. Set `response_headers_to_remove` to the unwanted header names.
-4. Set `response_cookies_to_add` with the cookie value and attributes.
-5. Set `response_cookies_to_remove` to the unwanted cookie names.
-6. Save the load balancer.
-
-The added cookie uses path `/`, Secure, HttpOnly and SameSite Lax with `overwrite: true`. Check collisions with origin values before replacing a name. A cookie transformation does not create an authenticated application session.
+The load balancer's `more_option` owns the add and remove lists. The added header uses `append: false`. The cookie has path `/`, Secure, HttpOnly, SameSite Lax, and `overwrite: true`. Check name collisions before overwriting origin values. A transformed cookie does not create an authenticated application session.
 
 [Response transformations source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/metadata.json wrap
 ```
 
-<details>
-<summary>Exact encoded configuration</summary>
-
-```json file=../_data/metadata-encoded.json wrap
-```
-
-</details>
-
-## Verify
-
-1. Request `/` on the transformed host.
-2. Inspect response headers and every `Set-Cookie` field.
-3. Confirm the additions, removals and cookie attributes.
-4. Confirm status `200` and the unchanged origin body.
-5. Compare `/` on the control host for the original metadata.
-
-These settings affect the load balancer, not a dedicated path. Two requests to the same transformed host do not provide an untransformed comparison.
-
-## Clean up
-
-Restore the previous response-header and response-cookie settings under `more_option`. Remove only the transformations you added. Preserve other advanced options and the load balancer. Confirm the original metadata and application behavior.
+**Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the origin body. Compare with an untransformed control host: these settings affect the load balancer rather than a dedicated path.

@@ -1,107 +1,44 @@
 ---
-title: Mask sensitive response data
-description: Hide selected JSON fields or recognized sensitive values before a response reaches callers.
+title: Data masking
+description: Data masking hides selected JSON fields or supported sensitive values in responses.
 sidebar:
   order: 12
 ---
 
-Reduce unintended disclosure when your application returns sensitive values. Use selected-field masking for a known response structure or Data Guard to recognize supported sensitive values. Both transform response content rather than replace it with a fixed page.
+Masking reduces unintended disclosure without replacing the whole response. Selected-field rules target known JSON fields; Data Guard recognizes supported sensitive values. Use synthetic test data when checking either mechanism.
 
-## Prerequisites
-
-An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
-
-You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Use synthetic test data. For
-Data Guard, enable an application firewall on the load balancer through its `app_firewall` reference; that firewall inspects requests for threats. Allow about
-15–20 minutes per variant for configuration, excluding provisioning and security-event testing.
-
-The selected-field example uses JavaScript Object Notation (JSON) with `card` and `ssn` (Social Security number) fields.
-
-## Configure
-
-### Choose a masking mechanism
-
-| Mechanism | Selection | What you verify |
+| Mechanism | Selection | Expected change |
 | --- | --- | --- |
-| Sensitive-data disclosure rules | GET `/sensitive` and named JSON fields | Selected field values disappear while other fields remain usable. |
-| Data Guard rules | `/sensitive` with an application firewall enabled | Supported sensitive values are masked in the selected response. |
+| Sensitive-data disclosure rule | GET `/sensitive` and named JSON fields | Selected values are hidden; other fields remain usable. |
+| Data Guard rule | `/sensitive` with an attached application firewall | Supported sensitive values are masked in the selected response. |
 
-### Mask selected response fields
+## Selected JSON fields
 
-The caller should receive the normal response with the selected sensitive values hidden. Measure the replacement text rather than assuming a particular string.
+> **Visitor response:** The usual JSON structure, with values in `card` and `ssn` hidden.
 
-1. Save the previous settings for the fields you change.
-2. In the load balancer's `sensitive_data_disclosure_rules`, set `sensitive_data_types_in_response.api_endpoint` to GET `/sensitive`.
-3. Set `body.fields` to `card` and `ssn`.
-4. Select `mask` in the rule.
-5. Save the load balancer.
+`sensitive_data_disclosure_rules` selects GET `/sensitive`, names the fields in `body.fields`, and chooses `mask`. Measure the replacement text rather than assuming a particular string.
 
 [Selected-field masking source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/disclosure.json wrap
 ```
 
-<details>
-<summary>Exact encoded configuration</summary>
+**Expected result:** `/sensitive` returns `200` with the selected synthetic values absent and unrelated fields intact. Compare `/sensitive-control` to attribute the change to this rule.
 
-```json file=../_data/disclosure-encoded.json wrap
-```
+## Data Guard
 
-</details>
+> **Visitor response:** Supported credit-card and Social Security numbers are masked.
 
-### Apply Data Guard to a response path
-
-Data Guard masks supported credit-card and Social Security numbers in responses. A path rule selects the response; it does not define additional recognition patterns.
-
-1. Save the previous settings for the fields you change.
-2. Add a load-balancer `data_guard_rules` entry for `/sensitive`.
-3. Select `apply_data_guard` in that rule.
-4. Reference the appropriate application firewall from `app_firewall`.
-5. Save the load balancer.
+A `data_guard_rules` path rule selects `/sensitive` and `apply_data_guard`. Recognition is supplied by Data Guard; the path rule does not define new patterns. This mechanism requires an application firewall attached through the load balancer's `app_firewall` reference.
 
 [Data Guard path selection source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/data-guard.json wrap
 ```
 
-<details>
-<summary>Exact encoded configuration</summary>
-
-```json file=../_data/data-guard-encoded.json wrap
-```
-
-</details>
-
-[Data Guard firewall attachment source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
+Firewall attachment:
 
 ```json file=../_data/data-guard-attach.json wrap
 ```
 
-<details>
-<summary>Exact encoded configuration</summary>
-
-```json file=../_data/data-guard-attach-encoded.json wrap
-```
-
-</details>
-
-Replace `<APP_FIREWALL_NAME>` and `<XC_NAMESPACE>` with the firewall reference for your application.
-
-## Verify
-
-1. Request `/sensitive` on the configured host.
-2. Confirm status `200` and the absence of the selected synthetic sensitive values.
-3. Check the remaining JSON structure and unrelated fields.
-4. Compare `/sensitive-control` for the unselected response.
-
-Repeat separately for each mechanism so you can attribute the masking to the correct rule. Successful masking by one does not verify the other.
-
-## Clean up
-
-Restore the previous masking rules for the mechanism you changed. If you changed the firewall reference, restore its previous value. Preserve shared firewall resources and unrelated rules. Confirm that your intended protection remains active on real application paths.
+**Expected result:** `/sensitive` returns `200` with supported synthetic values masked and remaining content usable. Compare `/sensitive-control`, and test this mechanism separately from selected-field masking so the result is attributable.

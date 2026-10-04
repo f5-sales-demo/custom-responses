@@ -5,52 +5,59 @@ sidebar:
   order: 3
 ---
 
-## Purpose
+Tell visitors that your application is temporarily unavailable. A direct response route returns a fixed maintenance page without waiting for the origin. The example selects `/maintenance` and returns status `503`.
 
-Tell visitors that an application is temporarily unavailable and give them a clear next step. A direct response route on an F5 Distributed Cloud Hypertext
-Transfer Protocol (HTTP) load balancer returns a fixed status and body for a matching path. The route can answer while the origin is unavailable, because it
-does not need an origin response to create the page.
+## Prerequisites
 
-This is useful when maintenance is planned and you want a predictable message. You control both the path that selects the message and the response content. Visitors outside that path continue through the load balancer's other routes.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Keep a normal comparison path available. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
 
-Use a maintenance response for a temporary service pause or a dedicated service-status path. The example selects `/maintenance` and returns `503`, the HTTP
-status for service unavailability. You need an existing load balancer and access to its route configuration. Confirm route matching and precedence before
-relying on the message for a larger application path.
+## Configure
 
-A dedicated `/maintenance` path does not automatically intercept every request to your site. If your intended maintenance window covers more paths, select those paths deliberately in your own configuration. Keep a normal comparison path available so you can distinguish a selected direct response from a broader connectivity problem.
+### Return the maintenance page
 
-## Configure it
+> **Visitor message:** Scheduled maintenance
 
-1. Select the path that should display maintenance information.
-2. Add a `direct_response_route` with that path to the load balancer's `routes` list.
-3. Set `route_direct_response.response_code` to the intended status.
-4. Set `response_body_encoded` to the message body using the `string:///` encoding shown in the source.
+A dedicated `/maintenance` path affects only matching requests. If maintenance covers more paths, select them deliberately and check precedence against existing routes. Keep recovery-time wording accurate.
 
-This fragment is Terraform JavaScript Object Notation (JSON). Its arrays represent provider blocks and belong inside a complete Terraform resource.
+1. Save the previous settings for the fields you change.
+2. Add a `direct_response_route` to the load balancer's `routes` list for `/maintenance`.
+3. Set `route_direct_response.response_code` to `503`.
+4. In `route_direct_response`, set `response_body_encoded` to the maintenance message.
+5. Save the load balancer.
 
-[Source: maintenance route](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/maintenance/routes`
+Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
 
-<details>
-<summary>Terraform JSON: route and literal encoded body</summary>
+[Maintenance route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/maintenance.json
+HTTP load balancer resource fragment:
+
+```json file=../_data/maintenance.json wrap
 ```
 
-</details>
+<details>
+<summary>Exact encoded configuration and decoded body</summary>
 
-The decoded body shows the visitor message as code:
+```json file=../_data/maintenance-encoded.json wrap
+```
+
+Decoded body (displayed as code):
 
 ```html file=../_data/maintenance.html wrap
 ```
 
-## Expected behavior
+</details>
 
-A request selected by this route receives `503` and the “Scheduled maintenance” page. The body comes from the load balancer rather than the origin. A request to the example's normal `/` path is expected to continue to the healthy origin and return `200`.
+## Verify
 
-The example contains a fixed message; it does not calculate recovery time or track maintenance progress. Keep any timing or support information accurate when you customize the body.
+1. Request `/maintenance` on your configured host.
+2. Confirm status `503` and “Scheduled maintenance” in the body.
+3. Request `/` on the same host.
+4. Confirm the normal origin response with status `200`.
 
-## Check the result
+Check every path intended for maintenance; the route does not intercept the whole site by default.
 
-Request `/maintenance` on your configured host and inspect the status and message. Compare `/` on the same host for the normal `200` origin response. Confirm that the maintenance message appears only on the paths you selected, including after any other route rules are considered.
+## Clean up
+
+Restore the previous route settings when maintenance ends. Remove only the temporary direct response route you added. Preserve other routes, the load balancer and any shared origin pools. Confirm the application path returns its normal response.

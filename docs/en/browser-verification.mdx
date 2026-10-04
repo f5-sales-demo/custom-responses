@@ -5,50 +5,61 @@ sidebar:
   order: 6
 ---
 
-## Purpose
+Help visitors understand why they see a verification page before your application. F5 Distributed Cloud supplies JavaScript browser verification; your custom wording explains the brief pause.
 
-Tell visitors why they briefly see a verification page before reaching your application. F5 Distributed Cloud's JavaScript challenge checks a browser through platform-controlled scripts. A custom page adds explanatory wording to that experience, helping visitors understand that the pause is expected.
+## Prerequisites
 
-The example message is “Please wait while your browser is verified.” Its purpose is to describe an ongoing browser check. Preserve the challenge engine's scripts and behavior when changing the message so a supported browser can complete verification and continue.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Your environment must support the chosen challenge. Use a browser that can execute JavaScript. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
 
-Use this when your load balancer selects JavaScript verification and visitors need a clear explanation. You need an existing load balancer with challenge support and a browser that can execute the required JavaScript. Use a fresh browser session when checking first-visit behavior; a valid challenge cookie can change what returning visitors see.
+## Configure
 
-This page covers the challenge wording and parameters. If only selected paths should trigger verification, use [conditional challenge
-selection](../conditional-challenges/). Setting a custom message does not independently create a path rule, and `/challenge` in the test inventory is a test
-request rather than a path selector in this unconditional fragment.
+### Customize the verification message
 
-## Configure it
+> **Visitor message:** Please wait while your browser is verified.
 
-1. Select the load balancer's `js_challenge` choice.
-2. Set its `custom_page` to the encoded explanatory body.
-3. Set `cookie_expiry` for the verification cookie's lifetime.
-4. Set `js_script_delay` for the script delay supported by the challenge configuration.
+Keep the platform-controlled scripts working when you change the message. This load-balancer choice is unconditional: `/challenge` is a test path, not a path selector. For selected paths, use [conditional challenges](../conditional-challenges/).
 
-The example uses a cookie expiry of `300` seconds and a script delay of `1000` milliseconds. It is Terraform JavaScript Object Notation (JSON); the array represents a provider block inside a complete load-balancer resource.
+1. Save the previous settings for the fields you change.
+2. Set the load balancer's `js_challenge.custom_page` to the encoded message.
+3. Set `cookie_expiry` to `300` seconds.
+4. Set `js_script_delay` to `1000` milliseconds.
+5. Save the load balancer.
 
-[Source: JavaScript challenge](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/js/js_challenge`
+Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
+
+[JavaScript challenge source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+HTTP load balancer resource fragment:
+
+```json file=../_data/js.json wrap
+```
+
+<details>
+<summary>Exact encoded configuration and decoded body</summary>
+
+```json file=../_data/js-encoded.json wrap
+```
+
+Decoded body (displayed as code):
 
 ```html file=../_data/js.html wrap
 ```
 
-<details>
-<summary>Terraform JSON: parameters and literal encoded page</summary>
-
-```json file=../_data/js.json
-```
-
 </details>
 
-## Expected behavior
+## Verify
 
-When the challenge is selected, the visitor sees the explanatory message while the platform performs browser verification. Successful completion should allow the request to continue. The inventory intentionally does not specify a fixed challenge status code; rendering and completion matter more than assuming one response status.
+1. Open `/challenge` in a fresh browser session on your configured host.
+2. Confirm the custom wording appears alongside working browser-verification scripts.
+3. Complete verification.
+4. Confirm navigation to the application.
+5. Request the application with the accepted verification cookie.
+6. Confirm the normal application response.
 
-The decoded preview shows only the configured message, not the platform's complete challenge page. A readable message alone does not establish that scripts ran or that a visitor reached the application.
+Clear the verification cookie to repeat the first-visit check. Inspect the interaction and completion rather than assuming a fixed challenge status.
 
-## Check the result
+## Clean up
 
-Open `/challenge` in a fresh browser session on your configured host. Confirm the custom wording, successful script execution and navigation to the application.
-Compare a normal request with the accepted cookie, then repeat after clearing that cookie if you need to check the initial challenge again. For a path-selected
-bypass comparison, use the conditional example.
+Restore the previous load-balancer challenge choice and its message and parameters. Preserve shared security policies and the load balancer. Clear the test browser's challenge cookie before checking the restored experience.

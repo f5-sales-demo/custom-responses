@@ -5,40 +5,54 @@ sidebar:
   order: 11
 ---
 
-## Purpose
+Give callers useful response metadata and remove values that should not leave the origin. A load balancer can adjust headers and cookies while preserving the application's response body.
 
-Give callers useful response metadata and remove values that should not leave the origin. F5 Distributed Cloud can transform Hypertext Transfer Protocol (HTTP)
-response headers and cookies on a load balancer. This lets you identify an application response, control cookie attributes, or remove obsolete origin metadata
-without replacing the application's page.
+## Prerequisites
 
-Headers and cookies affect client behavior as well as diagnostics. Select values deliberately and check that the transformation preserves the response status and content your application needs.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Use a test origin that emits known metadata and a control host without the transformations. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
 
-Use this when the origin emits a header or cookie that needs consistent handling at the edge. You need an existing load balancer and a test origin returning known metadata. The example adds `x-showcase`, removes `x-origin-remove`, adds a `showcase` cookie and removes `origin-remove`.
+## Configure
 
-The added cookie uses path `/`, Secure, HttpOnly and SameSite Lax. These attributes govern where browsers send or expose the cookie; check them in the actual response. An edge transformation does not itself establish a login session or application authorization.
+### Adjust response metadata
 
-## Configure it
+The caller should receive `x-showcase: custom-responses` and a `showcase=custom-responses` cookie. The response should omit the origin's `x-origin-remove` header and `origin-remove` cookie.
 
-1. Set `response_headers_to_add` for headers callers should receive.
-2. Set `response_headers_to_remove` for unwanted origin headers.
-3. Set `response_cookies_to_add` with the cookie value and intended attributes.
-4. Set `response_cookies_to_remove` for cookies that should be removed.
+1. Save the previous settings for the fields you change.
+2. Set the load balancer's `more_option.response_headers_to_add` with `append: false`.
+3. Set `response_headers_to_remove` to the unwanted header names.
+4. Set `response_cookies_to_add` with the cookie value and attributes.
+5. Set `response_cookies_to_remove` to the unwanted cookie names.
+6. Save the load balancer.
 
-The example sets `append: false` for the added header and `overwrite: true` for the added cookie. Review those choices when an origin already sends the same names. The fragment is Terraform JavaScript Object Notation (JSON); its outer array represents the `more_option` provider block.
+The added cookie uses path `/`, Secure, HttpOnly and SameSite Lax with `overwrite: true`. Check collisions with origin values before replacing a name. A cookie transformation does not create an authenticated application session.
 
-[Source: response transformations](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/metadata/more_option`
+[Response transformations source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/metadata.json
+HTTP load balancer resource fragment:
+
+```json file=../_data/metadata.json wrap
 ```
 
-## Expected behavior
+<details>
+<summary>Exact encoded configuration</summary>
 
-The example expects the origin's `200` status and normal body to remain intact. The response should include `x-showcase: custom-responses` and omit `x-origin-remove`. Its `Set-Cookie` values should include `showcase=custom-responses` with the configured attributes, while omitting `origin-remove`.
+```json file=../_data/metadata-encoded.json wrap
+```
 
-This transformation is configured for the load balancer rather than a dedicated path. Requesting `/` twice on that same host does not provide an untransformed comparison. Use the separate control host or your authorized origin path to inspect the original metadata.
+</details>
 
-## Check the result
+## Verify
 
-Request `/` on the transformed host and inspect response headers and every `Set-Cookie` field. Confirm additions, removals and cookie attributes while checking status `200` and the unchanged body. Compare `/` on a control host that uses the same origin without these transformations; the original removable values should be visible there.
+1. Request `/` on the transformed host.
+2. Inspect response headers and every `Set-Cookie` field.
+3. Confirm the additions, removals and cookie attributes.
+4. Confirm status `200` and the unchanged origin body.
+5. Compare `/` on the control host for the original metadata.
+
+These settings affect the load balancer, not a dedicated path. Two requests to the same transformed host do not provide an untransformed comparison.
+
+## Clean up
+
+Restore the previous response-header and response-cookie settings under `more_option`. Remove only the transformations you added. Preserve other advanced options and the load balancer. Confirm the original metadata and application behavior.

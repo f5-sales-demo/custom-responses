@@ -5,73 +5,142 @@ sidebar:
   order: 2
 ---
 
-## Purpose
+Give visitors a recognizable explanation when a request fails. The load balancer's error map selects a body by status class or exact status while preserving the response status.
 
-Give visitors a recognizable explanation when a request fails. An error map on an F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer selects a body by status class or exact status. The status still tells browsers and application clients what happened; your message explains what the visitor can do next.
+## Prerequisites
 
-Use an exact mapping when one failure needs specific wording. A general server-error message can cover class `5`, while an exact `503` message explains temporary unavailability. The exact status takes precedence over its class mapping. Encoded error-body URIs have a 65,536-character limit; check the encoded value, including its prefix.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. You also need a test origin that can return the statuses you select. Allow about 15–20 minutes for configuration, excluding provisioning and failure testing.
 
-Use this for consistent failure pages across applications, or a distinct missing-page message for `404`. You need an existing load balancer and an authorized test origin that can return selected statuses. Class keys `3`, `4`, and `5` cover their respective status families; mapping class `3` does not create a redirect or change its destination.
+## Configure
 
-Distinguish a status returned by the origin from a failure generated at the edge. A reset connection, unavailable upstream, or timeout can exercise a different response path. Confirm body replacement on each path you depend on; an origin's own error page is not automatically evidence that an edge mapping ran.
+### Choose an error mapping
 
-## Configure it
+| Mapping | Example message | Selection |
+| --- | --- | --- |
+| Class `3`, `4` or `5` | “Class 3”, “Class 4” or “Class 5” | Covers the corresponding status family. |
+| Exact `503` | “Exact 503” | Takes precedence over class `5`. |
+| Exact `404` | “Exact 404” | Takes precedence over class `4`. |
 
-1. Choose the status classes and exact statuses that need distinct messages.
-2. Set `more_option.custom_errors` on the relevant load balancer. These are Terraform JavaScript Object Notation (JSON) map fragments, not complete application programming interface (API) requests.
-3. Supply the encoded body for each selected key. Retain the status-specific entry alongside its class fallback when both are needed.
+Class `3` replaces an eligible response body; it does not create a redirect or change its destination. Each encoded error-body value has a 65,536-character limit, including the prefix. Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
 
-[Source: class map](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/errors-3/more_option/0/custom_errors`
+### Set a class fallback
+
+> **Visitor message:** Class 3
+
+1. Save the previous settings for the fields you change.
+2. Add the status-class key to the load balancer's `more_option.custom_errors` map.
+3. Set its value to the encoded class message.
+4. Save the load balancer.
+
+[Class mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+HTTP load balancer resource fragment:
+
+```json file=../_data/errors-class.json wrap
+```
 
 <details>
-<summary>Terraform JSON: literal class mappings</summary>
+<summary>Exact encoded configuration</summary>
 
-```json file=../_data/errors-class.json
+```json file=../_data/errors-class-encoded.json wrap
 ```
 
 </details>
 
-[Source: exact-status precedence](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `exact-503/more_option/0/custom_errors`
+The class `5` source uses “Class 5” for server failures. Its exact body is available below.
 
 <details>
-<summary>Terraform JSON: exact 503 and class fallback</summary>
-
-```json file=../_data/errors-exact.json
-```
-
-</details>
-
-[Source: exact 404](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `exact-404/more_option/0/custom_errors`
-
-<details>
-<summary>Terraform JSON: exact 404 mapping</summary>
-
-```json file=../_data/errors-404.json
-```
-
-</details>
-
-The decoded exact-503 body is shown as escaped code. The `request_id` template remains part of the source body.
-
-```html file=../_data/errors-exact.html wrap
-```
-
-The class fallback uses this body:
+<summary>Decoded class 5 body</summary>
 
 ```html file=../_data/errors-class.html wrap
 ```
 
-## Expected behavior
+</details>
 
-The examples expect `302`, `418`, and `500` to retain their statuses with class-specific text. Exact `404` and `503` entries use “Exact 404” and “Exact 503”; `503` takes precedence over “Class 5.” Edge-failure examples expect `500`, `502`, `503`, or `504` with “Class 5,” subject to the failure actually produced by your environment.
+### Set an exact server-error message
 
-## Check the result
+> **Visitor message:** Exact 503
 
-Request `/status/503` from your configured test host and confirm status `503` plus “Exact 503.” Compare `/` for the healthy `200` origin response. Repeat with `/status/500` to distinguish the class fallback. For an edge-failure host, compare its failing `/` with `/healthy`, which routes to the healthy pool:
+1. Add key `503` to the load balancer's `more_option.custom_errors` map.
+2. Set its value to the encoded exact-status message.
+3. Retain key `5` as the server-error fallback.
+4. Save the load balancer.
 
-[Source: edge-failure comparison route](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `fault-502/routes`
+[Exact 503 mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/errors-fault.json
+HTTP load balancer resource fragment:
+
+```json file=../_data/errors-exact.json wrap
 ```
+
+<details>
+<summary>Exact encoded configuration and decoded body</summary>
+
+```json file=../_data/errors-exact-encoded.json wrap
+```
+
+Decoded body (displayed as code):
+
+```html file=../_data/errors-exact.html wrap
+```
+
+</details>
+
+### Set a missing-page message
+
+> **Visitor message:** Exact 404
+
+1. Add key `404` to the load balancer's `more_option.custom_errors` map.
+2. Set its value to the encoded missing-page message.
+3. Retain the class mappings you still need.
+4. Save the load balancer.
+
+[Exact 404 mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+HTTP load balancer resource fragment:
+
+```json file=../_data/errors-404.json wrap
+```
+
+<details>
+<summary>Exact encoded configuration</summary>
+
+```json file=../_data/errors-404-encoded.json wrap
+```
+
+</details>
+
+## Verify
+
+1. Request `/status/503` on the exact-status test host.
+2. Confirm status `503` and “Exact 503” rather than “Class 5.”
+3. Request `/status/500` on that host.
+4. Confirm status `500` and the class fallback.
+5. Compare `/` with the healthy `200` origin response.
+
+Repeat independently for `404` and for class `3`, `4` and `5` using `302`, `418` and `500`. A connection reset, unavailable upstream or timeout can follow a different response path from an origin error. Check each failure you depend on; the edge examples expect `500`, `502`, `503` or `504` with “Class 5,” according to the failure actually produced.
+
+For an edge-failure host, compare its failing `/` with `/healthy`, which selects a healthy origin pool.
+
+[Healthy comparison route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+HTTP load balancer resource fragment:
+
+```json file=../_data/errors-fault.json wrap
+```
+
+<details>
+<summary>Exact encoded configuration</summary>
+
+```json file=../_data/errors-fault-encoded.json wrap
+```
+
+</details>
+
+Replace `<ORIGIN_POOL_NAME>` and `<XC_NAMESPACE>` with your healthy pool reference.
+
+## Clean up
+
+Restore the previous `more_option.custom_errors` map. Remove only mappings and test routes you added. Preserve shared origin pools, existing routes and the load balancer. Confirm normal responses and your original error handling.

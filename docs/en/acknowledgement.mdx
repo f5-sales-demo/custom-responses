@@ -5,48 +5,59 @@ sidebar:
   order: 4
 ---
 
-## Purpose
+Give callers a stable informational answer on a selected path. A direct response route returns “Request received” with status `200` without contacting the origin.
 
-Give visitors a stable acknowledgement page when a selected request needs a fixed answer. An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer can return the response directly from a matching route, avoiding an origin round trip for that response.
+## Prerequisites
 
-The example returns `200` with “Request received.” This can provide a consistent informational page or a fixed response for a controlled demonstration. A static body does not inspect the request, persist submitted information, or prove that a backend accepted work. Use wording that matches the behavior your application actually provides.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Choose a dedicated informational path whose meaning is clear to callers. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
 
-Use this when every request selected by the route should receive the same status and content. You need an existing load balancer and a dedicated path whose meaning is clear to its callers. The example uses `/acknowledgement`; its other traffic continues to the configured origin.
+## Configure
 
-If a client needs a unique receipt, validation result, job identifier, or processing status, obtain that information from your application. A fixed acknowledgement can describe an informational outcome, but it cannot supply request-specific confirmation. Consider how callers interpret a successful HTTP status before selecting the response code.
+### Return a fixed acknowledgement
 
-## Configure it
+> **Visitor message:** Request received
 
-1. Choose a path for the fixed acknowledgement.
-2. Add a `direct_response_route` that selects that path.
-3. Set `route_direct_response.response_code` to the response status your callers should receive.
-4. Set `response_body_encoded` to the static message.
+A static acknowledgement does not validate a submission, persist data or prove that a backend accepted work. If callers need a unique receipt or processing status, obtain it from your application.
 
-The source-derived example below is Terraform JavaScript Object Notation (JSON). The arrays represent provider blocks; the fragment belongs in the resource's route list and is not a complete application programming interface (API) request.
+1. Save the previous settings for the fields you change.
+2. Add a `direct_response_route` for `/acknowledgement` to the load balancer's `routes` list.
+3. Set `route_direct_response.response_code` to `200`.
+4. In `route_direct_response`, set `response_body_encoded` to the acknowledgement message.
+5. Save the load balancer.
 
-[Source: acknowledgement route](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/acknowledgement/routes`
+Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
 
-<details>
-<summary>Terraform JSON: route and literal encoded body</summary>
+[Acknowledgement route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/acknowledgement.json
+HTTP load balancer resource fragment:
+
+```json file=../_data/acknowledgement.json wrap
 ```
 
-</details>
+<details>
+<summary>Exact encoded configuration and decoded body</summary>
 
-The decoded body is displayed as escaped code so you can read the configured message:
+```json file=../_data/acknowledgement-encoded.json wrap
+```
+
+Decoded body (displayed as code):
 
 ```html file=../_data/acknowledgement.html wrap
 ```
 
-## Expected behavior
+</details>
 
-The selected `/acknowledgement` request receives status `200` and the “Request received” body directly from the load balancer. Origin health does not create this body. The normal `/` path is expected to return the origin's `200` response rather than the acknowledgement page.
+## Verify
 
-The example supplies page content, not a guarantee about downstream processing. Preserve that distinction in your own wording and in any client integration.
+1. Request `/acknowledgement` on your configured host.
+2. Confirm status `200` and “Request received” in the body.
+3. Request `/` on the same host.
+4. Confirm the normal origin body.
 
-## Check the result
+Both paths return `200`; compare their bodies to confirm route selection.
 
-Request `/acknowledgement` on your configured host and confirm status `200` with the acknowledgement message. Compare `/` on the same host and check for the normal origin body. The different bodies help confirm that path selection works even though both responses have the same status.
+## Clean up
+
+Restore the previous route settings or remove only the acknowledgement route you added. Preserve the load balancer, other routes and shared origin pools. Confirm the path resumes its intended application behavior.

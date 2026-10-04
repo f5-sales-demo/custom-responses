@@ -38,7 +38,15 @@ class DocumentationTests(unittest.TestCase):
                         actual, base64.b64decode(value[10:], validate=True).decode()
                     )
                 else:
-                    self.assertEqual(json.loads(actual), value)
+                    self.assertEqual(
+                        json.loads(actual),
+                        self.prepare.resource_fragment(item, value, primary=True),
+                    )
+                    exact = output / item["output"].replace(".json", "-encoded.json")
+                    self.assertEqual(
+                        json.loads(exact.read_text()),
+                        self.prepare.resource_fragment(item, value, primary=False),
+                    )
 
     def test_source_change_updates_example(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -62,7 +70,15 @@ class DocumentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp)
             bad = dict(self.prepare.SELECTIONS[0], pointer="/missing")
-            for selections in [[bad], [self.prepare.SELECTIONS[0]] * 2]:
+            collision = dict(
+                self.prepare.SELECTIONS[0], output="errors-class-encoded.json"
+            )
+            for selections in [
+                [bad],
+                [self.prepare.SELECTIONS[0]] * 2,
+                [collision, self.prepare.SELECTIONS[0]],
+                [self.prepare.SELECTIONS[0], collision],
+            ]:
                 with self.assertRaises(ValueError):
                     self.prepare.prepare(ROOT, output, selections)
                 self.assertEqual(list(output.iterdir()), [])
@@ -96,6 +112,83 @@ class DocumentationTests(unittest.TestCase):
                 self.prepare.prepare(root, root / "out")
             self.assertFalse((root / "out").exists())
 
+    def test_projection_preserves_arrays_and_object_blocks(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp)
+            self.prepare.prepare(ROOT, output)
+            route = json.loads((output / "maintenance.json").read_text())["spec"][
+                "routes"
+            ]
+            self.assertIsInstance(route, list)
+            self.assertIsInstance(route[0]["direct_response_route"], dict)
+            self.assertEqual(
+                route[0]["direct_response_route"]["route_direct_response"][
+                    "response_body_encoded"
+                ],
+                "<ENCODED_RESPONSE_BODY>",
+            )
+            policy = json.loads((output / "policy-js.json").read_text())["spec"][
+                "policy_based_challenge"
+            ]
+            self.assertIsInstance(policy, dict)
+            self.assertIsInstance(policy["rule_list"]["rules"], list)
+            self.assertIsInstance(policy["rule_list"]["rules"][0]["spec"], dict)
+            ref = json.loads((output / "waf-attach.json").read_text())["spec"][
+                "app_firewall"
+            ]
+            self.assertEqual(
+                ref, {"name": "<APP_FIREWALL_NAME>", "namespace": "<XC_NAMESPACE>"}
+            )
+
+    def test_projection_rejects_unknown_types_and_cardinality(self):
+        schema = self.prepare.CONTRACT["resources"]["http_loadbalancer"]
+        for value in [
+            {"unknown": {}},
+            {"js_challenge": []},
+            {"js_challenge": [{}, {}]},
+            {"js_challenge": [{"cookie_expiry": True}]},
+            {"js_challenge": [{"cookie_expiry": "300"}]},
+            {"routes": {}},
+            {"js_challenge": [{"unknown": 1}]},
+            {"js_challenge": [{"custom_page": "https://example.com"}]},
+            {"more_option": [{"custom_errors": {"299": "string:///YQ=="}}]},
+        ]:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.prepare.project(value, schema)
+
+    def test_multiple_genuine_array_items_survive(self):
+        schema = self.prepare.CONTRACT["resources"]["http_loadbalancer"]
+        route = {
+            "redirect_route": [
+                {"path": [{"path": "/old"}], "route_redirect": [{"response_code": 302}]}
+            ]
+        }
+        result = self.prepare.project({"routes": [route, route]}, schema)
+        self.assertEqual(len(result["routes"]), 2)
+        self.assertIsInstance(result["routes"][0]["redirect_route"]["path"], dict)
+
+    def test_example_mutation_does_not_change_sources(self):
+        before = {
+            source: (ROOT / source).read_bytes()
+            for source in {i["source"] for i in self.prepare.SELECTIONS}
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            self.prepare.prepare(ROOT, Path(temp))
+        self.assertEqual(
+            before, {source: (ROOT / source).read_bytes() for source in before}
+        )
+
+    def test_contract_has_pinned_sources_and_bounded_resources(self):
+        contract = self.prepare.CONTRACT
+        self.assertEqual(
+            set(contract["resources"]), {"http_loadbalancer", "app_firewall"}
+        )
+        for source in contract["sources"]:
+            self.assertRegex(source["sha256"], r"^[a-f0-9]{64}$")
+            self.assertTrue(source["url"].startswith("https://docs.cloud.f5.com/"))
+        for schema in contract["definitions"].values():
+            self.assertIn("type", schema)
+
     def test_all_scenarios_have_one_disposition(self):
         coverage = json.loads((ROOT / "operator/scenario-coverage.json").read_text())
         inventory = json.loads((ROOT / "scenarios.json").read_text())
@@ -113,6 +206,11 @@ class DocumentationTests(unittest.TestCase):
     def test_editorial_and_includes(self):
         ordered = []
         outputs = {i["output"] for i in self.prepare.SELECTIONS}
+        outputs |= {
+            name.replace(".json", "-encoded.json")
+            for name in outputs
+            if name.endswith(".json")
+        }
         for page in (ROOT / "docs/en").glob("*.mdx"):
             text = page.read_text()
             order = re.search(r"order: (\d+)", text)
@@ -121,13 +219,17 @@ class DocumentationTests(unittest.TestCase):
             ordered.append((int(order[1]), page.stem))
             if page.stem not in {"index", "configuration-reference"}:
                 for heading in [
-                    "Purpose",
-                    "When to use it",
-                    "Configure it",
-                    "Expected behavior",
-                    "Check the result",
+                    "Prerequisites",
+                    "Configure",
+                    "Verify",
+                    "Clean up",
                 ]:
                     self.assertIn("## " + heading, text, page.name)
+            self.assertNotRegex(text, r"/resource/|/0/|Terraform JSON|## Purpose")
+            if page.stem not in {"index", "configuration-reference"}:
+                self.assertIn("receives application requests", text)
+                self.assertRegex(text, r"minutes")
+                self.assertIn("previous", text)
             self.assertNotRegex(
                 text,
                 r"terraform.*(?:apply|destroy)|sha256:|saved plan|private captures|live proof|zero drift",

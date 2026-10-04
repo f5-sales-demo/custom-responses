@@ -79,6 +79,23 @@ class DocumentationTests(unittest.TestCase):
             self.prepare.select({"a": [1]}, "/a/01")
         self.assertEqual(self.prepare.select({"a/b": {"~x": 2}}, "/a~1b/~0x"), 2)
 
+    def test_malformed_source_body_prevents_all_output(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for source in {i["source"] for i in self.prepare.SELECTIONS}:
+                (root / source).parent.mkdir(parents=True, exist_ok=True)
+                (root / source).write_bytes((ROOT / source).read_bytes())
+            tf_path = root / "terraform/scenarios.tf.json"
+            tf = json.loads(tf_path.read_text())
+            mapping = tf["resource"]["xcsh_http_loadbalancer"]["errors-3"][
+                "more_option"
+            ][0]["custom_errors"]
+            mapping["3"] = "string:///!"
+            tf_path.write_text(json.dumps(tf))
+            with self.assertRaises(ValueError):
+                self.prepare.prepare(root, root / "out")
+            self.assertFalse((root / "out").exists())
+
     def test_all_scenarios_have_one_disposition(self):
         coverage = json.loads((ROOT / "operator/scenario-coverage.json").read_text())
         inventory = json.loads((ROOT / "scenarios.json").read_text())

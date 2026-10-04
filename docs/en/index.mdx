@@ -10,9 +10,10 @@ import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
 Turn application failures, security decisions, redirects, and response metadata into clear customer experiences. Each scenario uses its own HTTPS hostname and a dedicated response owner.
 
 :::caution[Deployment status]
-The origin, namespace, pools, WAFs and one scenario load balancer were deployed from the approved plan. Public
-virtual-host usage errors prevented the remaining load balancers, and Bot Defense Standard is documented as configuration-only. The user deferred these prerequisites to the next iteration. Automatic certificate issuance and live scenario
-acceptance remain pending. This deployment has not passed the teardown/rebuild or zero-drift gates.
+The origin, namespace, pools, WAFs and one scenario load balancer were deployed from the approved plan. The WAF HTML
+scenario has a valid automatic certificate and measured benign `200` / custom blocked `403` responses. Public virtual-host
+usage errors prevented the remaining load balancers; capacity is deferred to the next iteration. Bot Defense Standard
+is configuration-only. Full live acceptance, teardown/rebuild and zero drift remain incomplete.
 :::
 
 <CardGrid>
@@ -39,3 +40,5 @@ acceptance remain pending. This deployment has not passed the teardown/rebuild o
 </CardGrid>
 
 The planned live index is [custom-responses.f5-sales-demo.com](https://custom-responses.f5-sales-demo.com/). Start with the [Terraform walkthrough](./deployment/) and review [teardown ownership](./teardown/) before provisioning.
+
+The [branding delivery](./branding/) records the accepted hero, shared navigation, release identities and publication checks.

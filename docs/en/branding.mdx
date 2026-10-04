@@ -1,0 +1,22 @@
+---
+title: Branding and documentation delivery
+description: Accepted visuals, released shared theme, pinned builder and published revision evidence.
+---
+
+The user accepted the desktop and mobile visual previews: the wide navy, white and F5-red hero, responsive scenario navigation, and clear deployment-status notice. The hero is an optimized WebP with descriptive alternative text and [artwork provenance](https://github.com/f5-sales-demo/custom-responses/blob/main/artwork/PROVENANCE.md).
+
+## Released shared branding
+
+The published `@f5-sales-demo/docs-theme` version is **4.7.0**. Its shared Security menu includes Custom Responses at the exact project Pages URL. The release also preserves organization navigation, search, and the shared F5 theme. The downloaded npm tarball was checked against its published SHA-512 integrity; the package reports version 4.7.0 and contains the project navigation entry.
+
+Builder **1.3.2** consumes `vendor/npm/docs-theme-4.7.0.tgz` through an exact package reference, committed lockfile and integrity manifest. [Builder PR #1462](https://github.com/f5-sales-demo/docs-builder/pull/1462) merged with passing checks. The cache, security and compact-publication tests were independently rerun successfully.
+
+## Verify the published revision
+
+The governed Pages workflow records the exact merged source commit and immutable builder image at [api/revision.json](https://f5-sales-demo.github.io/custom-responses/api/revision.json). Check that `content_ref` equals `commit`, and that the builder is a SHA-256 image reference. A successful source build alone does not prove the published revision.
+
+Publication acceptance checks the hero at desktop and mobile sizes, shared mega-menu navigation, documentation links, Pagefind search, and [llms.txt](https://f5-sales-demo.github.io/custom-responses/llms.txt) plus [llms-full.txt](https://f5-sales-demo.github.io/custom-responses/llms-full.txt). The [Bot configuration guide](../bot-configuration/) is configuration-only and does not imply Bot runtime evidence.
+
+## Infrastructure boundary
+
+Documentation and branding publication does not qualify full scenario acceptance. Public load-balancer capacity, independent security-event evidence, the remaining live controls, teardown/rebuild and zero drift remain separate infrastructure gates. Any changed recovery plan requires explicit approval before apply.

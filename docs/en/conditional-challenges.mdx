@@ -32,7 +32,7 @@ Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body 
 > **Visitor message:** Please wait while your browser is verified.
 
 1. Save the previous settings for the fields you change.
-2. Set the load balancer's `policy_based_challenge.js_challenge_parameters` to your message and parameters.
+2. In the load balancer's `policy_based_challenge`, set `js_challenge_parameters` to your message and parameters.
 3. Add a `rule_list.rules` entry matching exactly `/challenge`.
 4. Select `enable_javascript_challenge` in that rule.
 5. Set `no_challenge` as the policy default.
@@ -42,7 +42,7 @@ Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body 
 
 HTTP load balancer resource fragment:
 
-```json file=../_data/policy-js.json
+```json file=../_data/policy-js.json wrap
 ```
 
 <details>
@@ -63,7 +63,7 @@ Decoded body (displayed as code):
 > **Visitor message:** Please complete the verification to continue.
 
 1. Save the previous settings for the fields you change.
-2. Set the load balancer's `policy_based_challenge.captcha_challenge_parameters` to your message and cookie lifetime.
+2. In the load balancer's `policy_based_challenge`, set `captcha_challenge_parameters` to your message and cookie lifetime.
 3. Add a `rule_list.rules` entry matching exactly `/challenge`.
 4. Select `enable_captcha_challenge` in that rule.
 5. Set `no_challenge` as the policy default.
@@ -73,7 +73,7 @@ Decoded body (displayed as code):
 
 HTTP load balancer resource fragment:
 
-```json file=../_data/policy-captcha.json
+```json file=../_data/policy-captcha.json wrap
 ```
 
 <details>
@@ -103,7 +103,7 @@ Requesting `/challenge` does not activate mitigation. Customize the challenge in
 
 HTTP load balancer resource fragment:
 
-```json file=../_data/ddos-js.json
+```json file=../_data/ddos-js.json wrap
 ```
 
 <details>

@@ -24,7 +24,7 @@ A dedicated `/maintenance` path affects only matching requests. If maintenance c
 1. Save the previous settings for the fields you change.
 2. Add a `direct_response_route` to the load balancer's `routes` list for `/maintenance`.
 3. Set `route_direct_response.response_code` to `503`.
-4. Set `route_direct_response.response_body_encoded` to the maintenance message.
+4. In `route_direct_response`, set `response_body_encoded` to the maintenance message.
 5. Save the load balancer.
 
 Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
@@ -33,7 +33,7 @@ Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body 
 
 HTTP load balancer resource fragment:
 
-```json file=../_data/maintenance.json
+```json file=../_data/maintenance.json wrap
 ```
 
 <details>

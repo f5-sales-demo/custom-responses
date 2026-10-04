@@ -6,4 +6,7 @@ Run `python3 scripts/generate_docs.py`, `python3 -m unittest discover -s tests -
 
 Task status: infrastructure source and initial plan prepared; governance enrollment under CI; hero generated and visually inspected; deployment, live qualification, publication and teardown/rebuild pending.
 
-Current handoff: approved plan partially applied; one WAF LB is present and awaiting automatic certificate issuance. Public virtual-host capacity and Bot Standard entitlement are deferred by the user to the next iteration. Preserve private local state and captures. A changed recovery plan requires explicit approval before apply. Source delivery and documentation publication do not qualify full live acceptance.
+Current handoff: approved plan partially applied; one WAF LB is present and awaiting automatic certificate issuance.
+Public virtual-host capacity and Bot Standard entitlement are deferred by the user to the next iteration. Preserve
+private local state and captures. A changed recovery plan requires explicit approval before apply. Source delivery and
+documentation publication do not qualify full live acceptance.

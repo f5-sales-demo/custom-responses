@@ -1,40 +1,59 @@
 ---
-title: Bot Defense configuration
-description: Inactive Bot Standard block and redirect examples, excluded from live proof.
+title: Configure Bot responses
+description: Explore inactive Bot Defense Standard block and redirect examples.
+sidebar:
+  order: 9
 ---
 
-Bot Defense Standard is configuration-only in this showcase. Its entitlement, classified-bot evidence and browser controls are not required to qualify the other scenarios. The default Terraform configuration does not create Bot load balancers, and the live verifier reports both Bot entries as configuration-only without sending traffic or counting them as passes.
+## Purpose
 
-## Read the examples
+Choose how an application responds when Bot Defense Standard classifies traffic for mitigation. A block can explain that the request was not accepted; a redirect can send the caller to a help destination. The response is part of the Bot mitigation choice, which is separate from a route response or an application-firewall block.
 
-`examples/bot-defense.json` retains two inactive load-balancer configurations using Terraform reference syntax. This file lives outside `terraform/` and is not loaded by Terraform. It is a source example, not a directly executable API body. Resolve references and build a complete reviewed configuration before optional deployment.
+Bot is configuration-only in this guide. Both examples are inactive, live outside the Terraform configuration directory, and are excluded from default resources. The examples explain the choices without claiming that a bot was classified, blocked or redirected in the demo.
 
-| Example        | Endpoint                                                | Mitigation configuration                                                                                           |
-| -------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `bot-block`    | HTTPS POST `/bot-check`, web clients, good bots allowed | `mitigation.block.status = "Forbidden"`; `body` uses `string:///` padded Base64 for `<p>Request not accepted.</p>` |
-| `bot-redirect` | HTTPS POST `/bot-check`, web clients, good bots allowed | `mitigation.redirect.uri = "https://custom-responses.f5-sales-demo.com/bot-help"`                                  |
+## When to use it
 
-The endpoint mitigation fragments are:
+Use the examples to review a prospective protected endpoint's response configuration. Bot Defense Standard entitlement and genuine classification are prerequisites for runtime behavior. Legitimate-browser checks are also needed before enabling mitigation in your own authorized environment.
 
-```json
-{
-  "block": {
-    "status": "Forbidden",
-    "body": "string:///PHA+UmVxdWVzdCBub3QgYWNjZXB0ZWQuPC9wPg=="
-  }
-}
+Both examples protect secure HTTP POST requests to `/bot-check` for web clients, allow good bots, select the US regional endpoint, and configure asynchronous JavaScript insertion after the head element. Block and redirect are exclusive mitigation choices for a protected endpoint. The redirect destination must exist and offer the intended help.
+
+## Configure it
+
+1. Review the protected endpoint's method, path and client selection.
+2. Choose its `mitigation` block or redirect action.
+3. For a block, set the status enum and encoded body.
+4. For a redirect, set the destination URI.
+
+These are inactive Terraform JavaScript Object Notation (JSON) examples with block arrays and unresolved Terraform references. They are not complete executable API requests. The [configuration reference](../configuration-reference/) links to full source and optional operator activation requirements.
+
+[Source: Bot block and endpoint context](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) · `/bot-block/bot_defense`
+
+The decoded block message is:
+
+```html file=../_data/bot-block.html wrap
 ```
 
-```json
-{
-  "redirect": {
-    "uri": "https://custom-responses.f5-sales-demo.com/bot-help"
-  }
-}
+<details>
+<summary>Terraform JSON: endpoint selection and literal block configuration</summary>
+
+```json file=../_data/bot-block.json
 ```
 
-Both examples select the US regional endpoint and asynchronous JavaScript insertion after the head element. Block and redirect are exclusive endpoint mitigation choices. The Bot body must respect its separate 4,096-character URI limit. The provider schema exposes a status enum and no confirmed Content-Type leaf; no live block, redirect, classification or Content-Type outcome is claimed here.
+</details>
 
-## Optional activation
+[Source: Bot redirect choice](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) · `/bot-redirect/bot_defense/0/policy/0/protected_app_endpoints/0/mitigation`
 
-Future Bot deployment requires Bot Defense Standard entitlement, private API access, an approved saved Terraform plan, and review of genuine flag-mode inference and legitimate-browser controls before mitigation. Provision and verify the redirect destination as well. These requirements apply only if Bot runtime demonstration is later added to scope.
+```json file=../_data/bot-redirect.json
+```
+
+## Expected behavior
+
+The block example configures `Forbidden` and “Request not accepted.” The redirect example configures a help URI; it does not establish a specific redirect status. The block body has a separate 4,096-character encoded-URI limit. No confirmed Content-Type field is exposed by this example.
+
+These settings describe intended configuration. No runtime classification, status, media type, block or redirect is verified here, and configuration-only entries do not count as successful live tests.
+
+## Check the result
+
+For this scope, inspect the example: confirm the endpoint selects POST `/bot-check` and exactly one mitigation action. Compare the alternate example to
+understand how its action differs. If runtime demonstration is added later, compare genuinely classified traffic with legitimate-browser requests and verify the
+help destination before treating the mitigation as accepted.

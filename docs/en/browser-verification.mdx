@@ -1,0 +1,54 @@
+---
+title: Explain browser verification
+description: Add helpful wording to a JavaScript browser challenge while retaining its verification behavior.
+sidebar:
+  order: 6
+---
+
+## Purpose
+
+Tell visitors why they briefly see a verification page before reaching your application. F5 Distributed Cloud's JavaScript challenge checks a browser through platform-controlled scripts. A custom page adds explanatory wording to that experience, helping visitors understand that the pause is expected.
+
+The example message is “Please wait while your browser is verified.” Its purpose is to describe an ongoing browser check. Preserve the challenge engine's scripts and behavior when changing the message so a supported browser can complete verification and continue.
+
+## When to use it
+
+Use this when your load balancer selects JavaScript verification and visitors need a clear explanation. You need an existing load balancer with challenge support and a browser that can execute the required JavaScript. Use a fresh browser session when checking first-visit behavior; a valid challenge cookie can change what returning visitors see.
+
+This page covers the challenge wording and parameters. If only selected paths should trigger verification, use [conditional challenge
+selection](../conditional-challenges/). Setting a custom message does not independently create a path rule, and `/challenge` in the test inventory is a test
+request rather than a path selector in this unconditional fragment.
+
+## Configure it
+
+1. Select the load balancer's `js_challenge` choice.
+2. Set its `custom_page` to the encoded explanatory body.
+3. Set `cookie_expiry` for the verification cookie's lifetime.
+4. Set `js_script_delay` for the script delay supported by the challenge configuration.
+
+The example uses a cookie expiry of `300` seconds and a script delay of `1000` milliseconds. It is Terraform JavaScript Object Notation (JSON); the array represents a provider block inside a complete load-balancer resource.
+
+[Source: JavaScript challenge](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/js/js_challenge`
+
+```html file=../_data/js.html wrap
+```
+
+<details>
+<summary>Terraform JSON: parameters and literal encoded page</summary>
+
+```json file=../_data/js.json
+```
+
+</details>
+
+## Expected behavior
+
+When the challenge is selected, the visitor sees the explanatory message while the platform performs browser verification. Successful completion should allow the request to continue. The inventory intentionally does not specify a fixed challenge status code; rendering and completion matter more than assuming one response status.
+
+The decoded preview shows only the configured message, not the platform's complete challenge page. A readable message alone does not establish that scripts ran or that a visitor reached the application.
+
+## Check the result
+
+Open `/challenge` in a fresh browser session on your configured host. Confirm the custom wording, successful script execution and navigation to the application.
+Compare a normal request with the accepted cookie, then repeat after clearing that cookie if you need to check the initial challenge again. For a path-selected
+bypass comparison, use the conditional example.

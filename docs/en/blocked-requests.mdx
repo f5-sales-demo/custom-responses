@@ -1,0 +1,67 @@
+---
+title: Customize blocked-request responses
+description: Provide a readable HTML or JSON message when the application firewall blocks a request.
+sidebar:
+  order: 5
+---
+
+## Purpose
+
+Explain a security block in a format the caller can understand. F5 Distributed Cloud's web application firewall (WAF) can supply a custom body when its policy blocks a request. A browser can receive a Hypertext Markup Language (HTML) page, while an application client can read a JavaScript Object Notation (JSON) message.
+
+Keep the message useful without exposing detection details. The examples say “Request not accepted” and retain a forbidden response. Customizing the page changes the explanation shown after a blocking decision; it does not create the detection rule that makes that decision.
+
+## When to use it
+
+Use a branded page for browser traffic or structured text for an application interface. You need a firewall in blocking mode, a load balancer referencing that firewall, and an authorized test environment with a request that the policy actually blocks. A benign request is essential for comparison.
+
+The two examples use separate firewall configurations for HTML and JSON. A JSON body alone does not establish the response's media type. Inspect `Content-Type` and confirm that your clients parse the response as intended. Do not assume an unsupported provider field exists to set that header.
+
+## Configure it
+
+1. Choose the response format appropriate to the protected application's callers.
+2. Set the firewall's `blocking_page.response_code` and encoded `blocking_page` body.
+3. Reference the firewall from the load balancer's `app_firewall` block.
+
+These are Terraform JSON fragments with provider block arrays, not complete API requests.
+
+[Source: firewall attachment](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/waf-html/app_firewall`
+
+```json file=../_data/waf-attach.json
+```
+
+[Source: HTML blocking page](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_app_firewall/waf-html/blocking_page`
+
+```html file=../_data/waf-html.html wrap
+```
+
+<details>
+<summary>Terraform JSON: HTML blocking configuration</summary>
+
+```json file=../_data/waf-html.json
+```
+
+</details>
+
+[Source: JSON blocking page](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_app_firewall/waf-json/blocking_page`
+
+```json file=../_data/waf-json-body.json wrap
+```
+
+<details>
+<summary>Terraform JSON: JSON blocking configuration</summary>
+
+```json file=../_data/waf-json.json
+```
+
+</details>
+
+## Expected behavior
+
+A genuinely blocked request is expected to receive `403` and the configured “Request not accepted” content. A benign `/` request is expected to reach the origin
+with `200`. The repository reports a measured HTML blocked/benign pair; that limited result does not establish JSON behavior or complete firewall validation.
+See the [configuration reference](../configuration-reference/) for operator records.
+
+## Check the result
+
+Send your authorized blocking test request and inspect status, body and media type. Confirm the firewall recorded a blocking decision for that request. Compare a benign `/` request on the same host for the normal `200` origin response. A fixed `403` page from another response mechanism does not confirm WAF behavior.

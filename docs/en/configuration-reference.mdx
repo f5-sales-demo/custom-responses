@@ -1,0 +1,23 @@
+---
+title: Configuration reference
+description: Find authoritative Terraform configuration, inactive Bot examples and repository operator instructions.
+sidebar:
+  order: 13
+---
+
+The [Terraform source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) owns the active resource examples. The [inactive
+Bot source](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) owns the configuration-only Bot examples. The [scenario
+inventory](https://github.com/f5-sales-demo/custom-responses/blob/main/scenarios.json) records expected requests and comparisons; it does not establish that
+every endpoint is available.
+
+The guide includes small source-selected fragments. Terraform JavaScript Object Notation (JSON) uses arrays to represent provider blocks and includes Terraform
+references. Resolve those references within a complete resource; these fragments are not directly executable application programming interface (API) requests.
+The [provider requirements](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/versions.tf) belong to the complete configuration.
+
+Readable body previews decode the exact `string:///` Base64 content and display it as escaped code. Collapsed details retain the literal encoded configuration.
+The [preparation script](https://github.com/f5-sales-demo/custom-responses/blob/main/scripts/prepare_snippets.py) identifies each JSON pointer and regenerates
+the examples when the source changes.
+
+Use the [repository operator instructions](https://github.com/f5-sales-demo/custom-responses/blob/main/operator/README.md) for infrastructure lifecycle,
+detailed testing and historical publication records. Reader pages describe expected configuration behavior; follow those records to understand the limits of
+measured demo behavior. Bot remains configuration-only.

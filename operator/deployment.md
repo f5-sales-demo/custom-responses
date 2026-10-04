@@ -1,7 +1,4 @@
----
-title: Deploy with Terraform
-description: Prepare and approve a private saved plan before creating the showcase.
----
+# Deployment
 
 ## Prerequisites
 
@@ -56,7 +53,7 @@ terraform -chdir=terraform apply ../.artifacts/showcase.tfplan
 terraform -chdir=terraform output
 ```
 
-Wait for cloud-init, origin health, LB acceptance, DNS and all automatic certificates before traffic acceptance. Use [verification](../verification/) to qualify the deployment.
+Wait for cloud-init, origin health, LB acceptance, DNS and all automatic certificates before traffic acceptance. Use [verification](./verification.md) to qualify the deployment.
 
 ## Resume the partial deployment
 

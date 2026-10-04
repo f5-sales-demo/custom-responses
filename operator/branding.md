@@ -1,13 +1,12 @@
----
-title: Branding and documentation delivery
-description: Accepted visuals, released shared theme, pinned builder and published revision evidence.
----
+# Historical branding delivery
 
 The user accepted the desktop and mobile visual previews: the wide navy, white and F5-red hero, responsive scenario navigation, and clear deployment-status notice. The hero is an optimized WebP with descriptive alternative text and [artwork provenance](https://github.com/f5-sales-demo/custom-responses/blob/main/artwork/PROVENANCE.md).
 
 ## Released shared branding
 
-The published `@f5-sales-demo/docs-theme` version is **4.7.0**. Its shared Security menu includes Custom Responses at the exact project Pages URL. The release also preserves organization navigation, search, and the shared F5 theme. The downloaded npm tarball was checked against its published SHA-512 integrity; the package reports version 4.7.0 and contains the project navigation entry.
+The published `@f5-sales-demo/docs-theme` version is **4.7.0**. Its shared Security menu includes Custom Responses at the exact project Pages URL. The release
+also preserves organization navigation, search, and the shared F5 theme. The downloaded npm tarball was checked against its published SHA-512 integrity; the
+package reports version 4.7.0 and contains the project navigation entry.
 
 Builder **1.3.2** consumes `vendor/npm/docs-theme-4.7.0.tgz` through an exact package reference, committed lockfile and integrity manifest. [Builder PR #1462](https://github.com/f5-sales-demo/docs-builder/pull/1462) merged with passing checks. The cache, security and compact-publication tests were independently rerun successfully.
 

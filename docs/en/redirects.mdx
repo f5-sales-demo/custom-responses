@@ -1,0 +1,42 @@
+---
+title: Redirect visitors
+description: Send a selected request path to a new location with a route redirect.
+sidebar:
+  order: 10
+---
+
+## Purpose
+
+Help visitors reach a resource that has moved. An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer can return a redirect from a matching route. The browser receives the redirect status and `Location`, then requests the destination, whose application supplies the page the visitor sees.
+
+The example sends `/old` to `/new` over secure HTTP with status `302`. A route redirect is useful when the load balancer should direct traffic before contacting an origin for the original path. It changes navigation rather than creating a replacement destination page.
+
+## When to use it
+
+Use this for a temporary path relocation or a selected entry point that should lead elsewhere. You need an existing load balancer, a route selector for the original path, and a destination that resolves and serves the intended content.
+
+Confirm the status is appropriate for your callers. The example uses a temporary `302` redirect; it does not assert permanent movement or method-preservation behavior for every client. Check application clients as well as browsers if their handling matters. Avoid a destination that redirects back to the selected path, which could create a loop.
+
+## Configure it
+
+1. Choose the original path in `redirect_route.path`.
+2. Set `route_redirect.proto_redirect` for the intended protocol.
+3. Set `path_redirect` for the destination path.
+4. Set `response_code` for the redirect status.
+
+This fragment is Terraform JavaScript Object Notation (JSON), with arrays representing provider blocks inside the load balancer's route list. Integrate it into the complete resource; it is not a standalone API request.
+
+[Source: redirect route](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/redirect/routes`
+
+```json file=../_data/redirect.json
+```
+
+## Expected behavior
+
+A request selected by the example's `/old` route should receive `302` and a secure destination ending in `/new`. A browser following the redirect should then receive the destination's own response. The custom response configuration does not supply the page at `/new` or guarantee that it is healthy.
+
+The example's `/different` comparison path should continue to the normal origin and return `200`. That comparison helps distinguish route selection from a site-wide redirect or automatic secure-HTTP behavior.
+
+## Check the result
+
+Request `/old` on your configured host without automatically following redirects. Inspect `302` and `Location`, then open the destination and confirm its content. Compare `/different` on the same host for the normal `200` origin response. Follow the full redirect chain once to check that it terminates at the intended page.

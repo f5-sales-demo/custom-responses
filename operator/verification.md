@@ -1,7 +1,4 @@
----
-title: Verify every scenario
-description: Bind genuine live behavior and controls to source, provider, plan and documentation identity.
----
+# Detailed scenario verification
 
 ## Evidence contract
 
@@ -11,11 +8,13 @@ Full inventory acceptance is incomplete. A green source test or saved plan is in
 bodies, origin logs, security records, browser traces and request IDs in an owner-only directory. Public receipts
 contain sanitized results and SHA-256 identities only.
 
-Run `python3 scripts/verify_live.py --captures /absolute/private/captures` after deployment. The verifier checks certificate hostname and trust, measured HTTP status, body markers, redirects, metadata and masking controls. Manual evidence remains mandatory for challenge completion, WAF event ownership and conditional selection. Missing evidence leaves the receipt incomplete.
+Run `python3 scripts/verify_live.py --captures /absolute/private/captures` after deployment. The verifier checks certificate hostname and trust, measured HTTP
+status, body markers, redirects, metadata and masking controls. Manual evidence remains mandatory for challenge completion, WAF event ownership and conditional
+selection. Missing evidence leaves the receipt incomplete.
 
 ## HTTP and origin checks
 
-For each [inventory entry](../scenarios/), verify DNS, certificate chain and hostname, accepted exact configuration,
+For each [inventory entry](../scenarios.json), verify DNS, certificate chain and hostname, accepted exact configuration,
 Content-Type, body, status and negative control. Do not use insecure TLS. Correlate origin and XC records to establish
 the response owner. `500`, `502`, `503` and `504` expectations are independent assertions, not labels on a returned
 page. Keep error classes and exact-status precedence configuration separate from proof of applicable runtime

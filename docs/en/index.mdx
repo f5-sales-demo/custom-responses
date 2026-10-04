@@ -1,44 +1,32 @@
 ---
 title: Custom Responses
-description: Explore F5 Distributed Cloud response customization with isolated Terraform scenarios.
+description: Choose the response experience you want to give visitors and application clients.
+sidebar:
+  order: 1
 ---
 
-import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
 ![Cloud traffic passing through a gateway into clear application and security responses](../assets/custom-responses-hero.webp)
 
-Turn application failures, security decisions, redirects, and response metadata into clear customer experiences. Each scenario uses its own HTTPS hostname and a dedicated response owner.
+Give visitors a useful explanation when an application fails, a security rule intervenes, or a resource moves. F5 Distributed Cloud lets you customize the message, status, redirect, headers, cookies, or selected response data. Choose the outcome below, then use its configuration example and focused comparison check.
 
-:::caution[Deployment status]
-The origin, namespace, pools, WAFs and one scenario load balancer were deployed from the approved plan. The WAF HTML
-scenario has a valid automatic certificate and measured benign `200` / custom blocked `403` responses. Public virtual-host
-usage errors prevented the remaining load balancers; capacity is deferred to the next iteration. Bot Defense Standard
-is configuration-only. Full live acceptance, teardown/rebuild and zero drift remain incomplete.
-:::
+The response mechanism determines when your message appears. Error maps replace eligible error bodies; direct routes answer selected paths; security engines customize their own blocking or challenge responses. Response transformations adjust traffic returned by an origin. Each page explains the distinction where you need it.
 
 <CardGrid>
-  <LinkCard
-    title="Response ownership"
-    description="Choose the engine that controls the response."
-    href="./ownership/"
-  />
-  <LinkCard
-    title="Scenario inventory"
-    description="Hosts, triggers, expected results, and negative controls."
-    href="./scenarios/"
-  />
-  <LinkCard
-    title="Terraform deployment"
-    description="Review the saved plan and provision isolated infrastructure."
-    href="./deployment/"
-  />
-  <LinkCard
-    title="Live verification"
-    description="Measure response behavior and genuine security triggers."
-    href="./verification/"
-  />
+  <LinkCard title="Brand error responses" description="Explain error classes and specific failures with your own message." href="./error-responses/" />
+  <LinkCard title="Display a maintenance message" description="Answer a selected path while an application is unavailable." href="./maintenance/" />
+  <LinkCard title="Return a static acknowledgement" description="Show a fixed receipt message without contacting an origin." href="./acknowledgement/" />
+  <LinkCard title="Customize blocked-request responses" description="Give browser and API clients a clear security-block message." href="./blocked-requests/" />
+  <LinkCard title="Explain browser verification" description="Tell visitors why their browser is being checked." href="./browser-verification/" />
+  <LinkCard title="Explain CAPTCHA verification" description="Help people understand and complete a human-verification challenge." href="./captcha-verification/" />
+  <LinkCard title="Select challenges conditionally" description="Use policy or application-layer protection to select a challenge." href="./conditional-challenges/" />
+  <LinkCard title="Configure Bot responses" description="Explore inactive block and redirect configuration examples." href="./bot-configuration/" />
+  <LinkCard title="Redirect visitors" description="Send a selected path to its new location." href="./redirects/" />
+  <LinkCard title="Adjust response headers and cookies" description="Add useful metadata and remove unwanted origin values." href="./headers-cookies/" />
+  <LinkCard title="Mask sensitive response data" description="Hide selected fields or recognized sensitive values." href="./masking/" />
 </CardGrid>
 
-The planned live index is [custom-responses.f5-sales-demo.com](https://custom-responses.f5-sales-demo.com/). Start with the [Terraform walkthrough](./deployment/) and review [teardown ownership](./teardown/) before provisioning.
+Examples come from the repository's Terraform JavaScript Object Notation (JSON) configuration. Readable body previews show the configured content; they do not establish that every demo endpoint is available. Expected behavior still needs a check in your authorized environment. Bot examples are explicitly configuration-only.
 
-The [branding delivery](./branding/) records the accepted hero, shared navigation, release identities and publication checks.
+Use the [configuration reference](./configuration-reference/) to find complete source and repository operator instructions. No infrastructure changes are needed to read this guide.

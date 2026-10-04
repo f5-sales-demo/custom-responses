@@ -11,11 +11,18 @@ Run `python3 scripts/verify_live.py --captures /absolute/private/captures` after
 
 ## HTTP and origin checks
 
-For each [inventory entry](../scenarios/), verify DNS, certificate chain and hostname, accepted exact configuration, Content-Type, body, status and negative control. Do not use insecure TLS. Correlate origin and XC records to establish the response owner. `500`, `502`, `503` and `504` expectations are independent assertions, not labels on a returned page. Keep error classes and exact-status precedence configuration separate from proof of applicable runtime replacement.
+For each [inventory entry](../scenarios/), verify DNS, certificate chain and hostname, accepted exact configuration,
+Content-Type, body, status and negative control. Do not use insecure TLS. Correlate origin and XC records to establish
+the response owner. `500`, `502`, `503` and `504` expectations are independent assertions, not labels on a returned
+page. Keep error classes and exact-status precedence configuration separate from proof of applicable runtime
+replacement.
 
 ## Browser and security checks
 
-Use fresh browser contexts for JS and CAPTCHA. Capture the custom wording, actual platform completion and subsequent origin access. A CAPTCHA needs a human participant. Prove unsolved access does not reach the protected origin. For policy challenges, record the matching `challenge-selected-path` rule. For DDoS, use an approved bounded mitigation trigger and retain the actual event; ordinary traffic is the negative control.
+Use fresh browser contexts for JS and CAPTCHA. Capture the custom wording, actual platform completion and subsequent
+origin access. A CAPTCHA needs a human participant. Prove unsolved access does not reach the protected origin. For
+policy challenges, record the matching `challenge-selected-path` rule. For DDoS, use an approved bounded mitigation
+trigger and retain the actual event; ordinary traffic is the negative control.
 
 WAF acceptance requires a genuinely blocked synthetic request and its matching enforced event. Test HTML and JSON body variants independently, and record actual Content-Type.
 

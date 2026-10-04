@@ -1,0 +1,18 @@
+{
+  "approved_plan_sha256": "00f9b02a336ad291831ecf7f3ad4c3ca7eb8e33cec9dfac997267031731f6072",
+  "applied": true,
+  "apply_complete": false,
+  "namespace": "${xcsh_namespace.showcase.name}",
+  "origin_health": "fixture and pinned httpbin responding on VM",
+  "created_scenario_lbs": ["cr-waf-html"],
+  "live_acceptance_complete": false,
+  "deferred_prerequisites": ["public virtual-host capacity", "Bot Defense Standard entitlement"],
+  "certificate_state": "DomainChallengePending",
+  "teardown_rebuild_complete": false,
+  "zero_change_plan": false,
+  "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
+  "recovery_plan_sha256": "b6f72ba58b4e49f209b0af71901265668071d8e8b0d39a368b129be03ff93b8b",
+  "recovery_plan_applied": false,
+  "recovery_requires_review": "Origin VM replacement because custom_data changed; plus remaining LB creates",
+  "source_tests": "9 passed; Terraform validate; documentation lint; secret history scan"
+}

@@ -7,3 +7,5 @@ The source PNG is 2068 by 760 pixels. It was visually inspected for the requeste
 Alternative text: Cloud traffic passing through a gateway into clear application and security responses.
 
 Optimized asset SHA-256: `c9511336a22401125aff29149e733832277a2f84614bb988474229b67fc9b9db`.
+
+The user explicitly accepted the desktop/mobile visual previews and authorized final documentation and branding delivery.

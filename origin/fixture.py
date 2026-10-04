@@ -14,6 +14,7 @@ import urllib.request
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from typing import cast
 from urllib.parse import urlsplit
 
 SYNTHETIC = {
@@ -35,28 +36,31 @@ MAX_ERROR_STATUS = 599
 class Fixture(BaseHTTPRequestHandler):
     """Serve synthetic responses and dedicated bounded fault listeners."""
 
+    # pylint: disable-next=arguments-differ
     def log_message(self, message_format: str, *args: object) -> None:
         """Write identifying request records only to the private system journal."""
         # systemd journal is private; public receipts omit client and request IDs.
         LOGGER.info(
             json.dumps(
                 {
-                    "port": self.server.server_port,
+                    "port": cast("ThreadingHTTPServer", self.server).server_port,
                     "path": urlsplit(self.path).path,
                     "event": message_format % args,
                 }
             )
         )
 
+    # pylint: disable-next=invalid-name
     def do_POST(self) -> None:
         """Consume a bounded synthetic POST before serving the response."""
         length = min(int(self.headers.get("Content-Length", "0")), 65536)
         self.rfile.read(length)
         self.do_GET()
 
+    # pylint: disable-next=invalid-name
     def do_GET(self) -> None:
         """Return the fixture body or activate this dedicated fault listener."""
-        port = self.server.server_port
+        port = cast("ThreadingHTTPServer", self.server).server_port
         if port == RESET_PORT:
             self.connection.setsockopt(
                 socket.SOL_SOCKET, socket.SO_LINGER, struct.pack("ii", 1, 0)
@@ -67,7 +71,9 @@ class Fixture(BaseHTTPRequestHandler):
             time.sleep(8)
         path = urlsplit(self.path).path
         status, content_type = 200, "text/html; charset=utf-8"
-        body = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Custom responses origin</title></head><body><main><h1>Custom responses origin</h1><p>Healthy synthetic fixture.</p>'
+        body: str | bytes = (
+            '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Custom responses origin</title></head><body><main><h1>Custom responses origin</h1><p>Healthy synthetic fixture.</p>'
+        )
         if path in ["/sensitive", "/sensitive-control"]:
             content_type, body = "application/json", json.dumps(SYNTHETIC)
         elif path.startswith("/status/"):
@@ -98,10 +104,11 @@ class Fixture(BaseHTTPRequestHandler):
                     e.read(),
                 )
         else:
+            page_body = str(body)
             inventory = Path(__file__).with_name("scenarios.json")
             if inventory.exists():
                 for item in json.loads(inventory.read_text()):
-                    body += (
+                    page_body += (
                         '<p><a href="https://'
                         + html.escape(item["hostname"])
                         + html.escape(item["trigger"])
@@ -109,14 +116,13 @@ class Fixture(BaseHTTPRequestHandler):
                         + html.escape(item["id"])
                         + "</a></p>"
                     )
-            body += "</main></body></html>"
+            body = page_body + "</main></body></html>"
         if port == ERROR_PORT:
             status, body = 500, "<h1>Origin status 500</h1>"
-        if isinstance(body, str):
-            body = body.encode()
+        encoded_body = body.encode() if isinstance(body, str) else body
         self.send_response(status)
         self.send_header("Content-Type", content_type)
-        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Length", str(len(encoded_body)))
         self.send_header("X-Response-Owner", "custom-responses-origin")
         self.send_header("X-Origin-Remove", "synthetic")
         self.send_header("Set-Cookie", "origin-remove=synthetic; Path=/; SameSite=Lax")
@@ -124,7 +130,7 @@ class Fixture(BaseHTTPRequestHandler):
             self.send_header("Location", "/new")
         self.end_headers()
         with contextlib.suppress(BrokenPipeError, ConnectionResetError):
-            self.wfile.write(body)
+            self.wfile.write(encoded_body)
 
 
 if __name__ == "__main__":

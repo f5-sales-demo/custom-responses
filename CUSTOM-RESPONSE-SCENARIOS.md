@@ -12,7 +12,11 @@ You generate complete create bodies for isolated F5 Distributed Cloud Hypertext 
 - Confirm entitlement for automatic certificates, the web application firewall (WAF) and selected challenge features.
 - Reserve unused dedicated names. Stop on an existing object or hostname conflict; these examples are not replacements for shared objects.
 
-**Examples only — no deployment or traffic was executed.** The procedures below produce local JavaScript Object Notation (JSON) files and show API commands for an operator to run later. Do not execute every scenario as a single script. Prepare and create **one selected profile** at a time with a unique owned hostname. Domain Name System (DNS) configuration and automatic Transport Layer Security (TLS) certificate validation remain prerequisites for HTTP Secure (HTTPS) traffic. Do not bypass certificate validation.
+**Examples only — no deployment or traffic was executed.** The procedures below produce local JavaScript Object Notation
+(JSON) files and show API commands for an operator to run later. Do not execute every scenario as a single script.
+Prepare and create **one selected profile** at a time with a unique owned hostname. Domain Name System (DNS)
+configuration and automatic Transport Layer Security (TLS) certificate validation remain prerequisites for HTTP Secure
+(HTTPS) traffic. Do not bypass certificate validation.
 
 ## Prepare the shared baseline
 
@@ -57,7 +61,10 @@ jq \
   > custom-response-forward.create.json
 ```
 
-Treat both baselines as **fresh local create bodies**, never named `GET` responses. Do not copy server defaults or identifying metadata into examples. All later commands use `POST`, not partial `PUT`. For an existing shared LB, follow the [existing-resource warning](CUSTOM-RESPONSE-5XX.md#create-the-load-balancer), preserve the full current spec and review references before any authorized replacement.
+Treat both baselines as **fresh local create bodies**, never named `GET` responses. Do not copy server defaults or
+identifying metadata into examples. All later commands use `POST`, not partial `PUT`. For an existing shared LB, follow
+the [existing-resource warning](CUSTOM-RESPONSE-5XX.md#create-the-load-balancer), preserve the full current spec and
+review references before any authorized replacement.
 
 ## Configure other error mappings
 
@@ -73,7 +80,11 @@ jq \
   > custom-response-selected.create.json
 ```
 
-This is an exact-code body mapping, not a route that manufactures a `404`. Use a dedicated applicable edge-response test; an origin's normal `404` is not assumed to be rewritten. For exact `503` plus class `5`, encode two separate appropriately worded files and set both keys in **one** map; exact `503` takes precedence. Do not repeat authentication, source templates or fault injection here. A class `3` body mapping is not a substitute for configuring a redirect destination.
+This is an exact-code body mapping, not a route that manufactures a `404`. Use a dedicated applicable edge-response
+test; an origin's normal `404` is not assumed to be rewritten. For exact `503` plus class `5`, encode two separate
+appropriately worded files and set both keys in **one** map; exact `503` takes precedence. Do not repeat authentication,
+source templates or fault injection here. A class `3` body mapping is not a substitute for configuring a redirect
+destination.
 
 ## Configure a direct response
 
@@ -112,9 +123,19 @@ jq \
   > custom-response-selected.create.json
 ```
 
-`route_direct_response.response_code` is an integer (`100–599` in the schema); this guide selects `503` with a body. Do not use informational or bodyless statuses as arbitrary page examples. A non-error static acknowledgement uses the same mechanism with `response_code: 200`, exact path `/acknowledgement`, and a short `Request received` body in `custom-response-static.html`, on `example-response-static-lb`. It proves the static route responds, **not** application or origin health. No request-identifier substitution is established for direct responses; do not add the generic error placeholder.
+`route_direct_response.response_code` is an integer (`100–599` in the schema); this guide selects `503` with a body. Do
+not use informational or bodyless statuses as arbitrary page examples. A non-error static acknowledgement uses the same
+mechanism with `response_code: 200`, exact path `/acknowledgement`, and a short `Request received` body in
+`custom-response-static.html`, on `example-response-static-lb`. It proves the static route responds, **not** application
+or origin health. No request-identifier substitution is established for direct responses; do not add the generic error
+placeholder.
 
-Sources: [direct-response code](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].direct_response_route.route_direct_response.response_code), [encoded body](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes%5B%5D.direct_response_route.route_direct_response.response_body_encoded), [exact path](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].direct_response_route.path.path), and [catalog description](xcsh://api-catalog/http-loadbalancers).
+Sources: [direct-response
+code](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].direct_response_route.route_direct_response.response_code),
+[encoded
+body](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes%5B%5D.direct_response_route.route_direct_response.response_body_encoded),
+[exact path](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].direct_response_route.path.path),
+and [catalog description](xcsh://api-catalog/http-loadbalancers).
 
 ## Configure a WAF blocking response
 
@@ -186,7 +207,12 @@ jq \
   > custom-response-selected.create.json
 ```
 
-Sources: [WAF catalog](xcsh://api-catalog/?resource=app_firewall&compact=true), [blocking-page schema](xcsh://api-spec/virtual?resource=app_firewall), [response enum](xcsh://api-spec/virtual?resource=app_firewall&field=spec.blocking_page.response_code), [LB WAF reference](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.app_firewall), and [WAF enforcement and blocking-page procedure](xcsh://documentation/docs-cloud-f5-com/web-app-and-api-protection/how-to/app-security/application-firewall/index.md#create-a-waf).
+Sources: [WAF catalog](xcsh://api-catalog/?resource=app_firewall&compact=true), [blocking-page
+schema](xcsh://api-spec/virtual?resource=app_firewall), [response
+enum](xcsh://api-spec/virtual?resource=app_firewall&field=spec.blocking_page.response_code), [LB WAF
+reference](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.app_firewall), and [WAF enforcement and
+blocking-page
+procedure](xcsh://documentation/docs-cloud-f5-com/web-app-and-api-protection/how-to/app-security/application-firewall/index.md#create-a-waf).
 
 ## Configure challenge messages
 
@@ -232,9 +258,17 @@ jq \
   > custom-response-selected.create.json
 ```
 
-Each profile is generated from the clean forwarding baseline, not from the other profile's result. Top-level `js_challenge`, `captcha_challenge`, `enable_challenge`, `policy_based_challenge` and `no_challenge` are mutually exclusive. The selected cookie lifetime is seconds (`1–86400`); the selected JS delay is milliseconds (`1000–60000`). These are explicit lab values, not assertions of defaults. Do not reuse a challenge cookie from another profile or a previous test.
+Each profile is generated from the clean forwarding baseline, not from the other profile's result. Top-level
+`js_challenge`, `captcha_challenge`, `enable_challenge`, `policy_based_challenge` and `no_challenge` are mutually
+exclusive. The selected cookie lifetime is seconds (`1–86400`); the selected JS delay is milliseconds (`1000–60000`).
+These are explicit lab values, not assertions of defaults. Do not reuse a challenge cookie from another profile or a
+previous test.
 
-Sources: [JS message preparation](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-to/adv-security/js-challenge/index.md#prepare-custom-page-for-redirection), [challenge configuration](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-to/load-balance/create-http-load-balancer/index.md#configuration), and [JS/CAPTCHA leaf constraints](xcsh://api-spec/virtual?resource=http_loadbalancer).
+Sources: [JS message
+preparation](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-to/adv-security/js-challenge/index.md#prepare-custom-page-for-redirection),
+[challenge
+configuration](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-to/load-balance/create-http-load-balancer/index.md#configuration),
+and [JS/CAPTCHA leaf constraints](xcsh://api-spec/virtual?resource=http_loadbalancer).
 
 ## Extend challenge-message coverage
 
@@ -261,7 +295,10 @@ Sources: [DDoS challenge documentation](xcsh://documentation/docs-cloud-f5-com/m
 
 Bot Defense Standard has a **separate confirmed custom-body mechanism** at `spec.bot_defense.policy.protected_app_endpoints[].mitigation.block.body`; `.status` selects a status enum. `.mitigation.redirect.uri` selects a relative or absolute redirect destination. These fields are not WAF fields or Bot Defense Advanced web/mobile references.
 
-[Blocked: fresh runnable Bot Defense profile.] The embedded status projection reports both a 17-character length constraint and an enum that includes shorter values such as `Forbidden`. The full catalog lists the enum but no matching length restriction. This conflict prevents claiming a strictly validated complete example. Resolve the authoritative validation contract before supplying a production create body; do not silently guess a status or pad an enum.
+[Blocked: fresh runnable Bot Defense profile.] The embedded status projection reports both a 17-character length
+constraint and an enum that includes shorter values such as `Forbidden`. The full catalog lists the enum but no matching
+length restriction. This conflict prevents claiming a strictly validated complete example. Resolve the authoritative
+validation contract before supplying a production create body; do not silently guess a status or pad an enum.
 
 The following is a **bounded endpoint mitigation fragment, not a runnable resource**:
 
@@ -273,11 +310,25 @@ The following is a **bounded endpoint mitigation fragment, not a runnable resour
 }
 ```
 
-It decodes to `<p>Request not accepted.</p>`. It deliberately omits status pending the conflict above. Do not expose the protection engine in the message. The body URI limit is 4,096 characters; this is independently inspected, not inherited from the generic 5xx limit. No native Standard `content_type` leaf was confirmed, despite general planning documentation describing content-type customization on supported deployments.
+It decodes to `<p>Request not accepted.</p>`. It deliberately omits status pending the conflict above. Do not expose the
+protection engine in the message. The body URI limit is 4,096 characters; this is independently inspected, not inherited
+from the generic 5xx limit. No native Standard `content_type` leaf was confirmed, despite general planning documentation
+describing content-type customization on supported deployments.
 
-To implement later, establish Bot Defense entitlement, region, protected endpoint metadata, methods and domain/path matches, JavaScript insertion and web/mobile selection using the exact deployment contract. Initially use Continue/Flag, inspect human/known-bot false positives, then select Block only after authorized validation. Never merge the fragment as a top-level LB body or replace an existing full LB with it. The native Standard fragment belongs under the selected protected endpoint's `mitigation`, exclusive with `flag` and `redirect`.
+To implement later, establish Bot Defense entitlement, region, protected endpoint metadata, methods and domain/path
+matches, JavaScript insertion and web/mobile selection using the exact deployment contract. Initially use Continue/Flag,
+inspect human/known-bot false positives, then select Block only after authorized validation. Never merge the fragment as
+a top-level LB body or replace an existing full LB with it. The native Standard fragment belongs under the selected
+protected endpoint's `mitigation`, exclusive with `flag` and `redirect`.
 
-Sources: [native endpoint mitigation catalog](xcsh://api-catalog/http-loadbalancers), [block-body leaf](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.bot_defense.policy.protected_app_endpoints[].mitigation.block.body), [status constraint conflict](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.bot_defense.policy.protected_app_endpoints[].mitigation.block.status), [mitigation semantics](xcsh://documentation/docs-cloud-f5-com/bot-defense/how-tos/plan-bot-defense/index.md#configure-mitigation-actions), and [Standard prerequisites and testing](xcsh://documentation/docs-cloud-f5-com/bot-defense/quickstarts/bot-defense-waap/index.md).
+Sources: [native endpoint mitigation catalog](xcsh://api-catalog/http-loadbalancers), [block-body
+leaf](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.bot_defense.policy.protected_app_endpoints[].mitigation.block.body),
+[status constraint
+conflict](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.bot_defense.policy.protected_app_endpoints[].mitigation.block.status),
+[mitigation
+semantics](xcsh://documentation/docs-cloud-f5-com/bot-defense/how-tos/plan-bot-defense/index.md#configure-mitigation-actions),
+and [Standard prerequisites and
+testing](xcsh://documentation/docs-cloud-f5-com/bot-defense/quickstarts/bot-defense-waap/index.md).
 
 ## Configure a redirect
 
@@ -292,9 +343,17 @@ jq \
   > custom-response-selected.create.json
 ```
 
-Use `example-response-redirect-lb`. Do not add a matching generic `3xx` body map or auto-follow redirects when checking `Location`. Visiting `/new` needs a configured target route or origin; this origin-free example only demonstrates the redirect response. A cross-host variant needs an owned hostname in `host_redirect`, its own certificate and a review of sensitive query parameters; it is not supplied here.
+Use `example-response-redirect-lb`. Do not add a matching generic `3xx` body map or auto-follow redirects when checking
+`Location`. Visiting `/new` needs a configured target route or origin; this origin-free example only demonstrates the
+redirect response. A cross-host variant needs an owned hostname in `host_redirect`, its own certificate and a review of
+sensitive query parameters; it is not supplied here.
 
-Sources: [redirect concept](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-tos/advanced-app-nwg/virtual-hosts/index.md#create-route), [protocol enum](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].redirect_route.route_redirect.proto_redirect), [path](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].redirect_route.route_redirect.path_redirect), [status](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].redirect_route.route_redirect.response_code).
+Sources: [redirect
+concept](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-tos/advanced-app-nwg/virtual-hosts/index.md#create-route),
+[protocol
+enum](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].redirect_route.route_redirect.proto_redirect),
+[path](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].redirect_route.route_redirect.path_redirect),
+[status](xcsh://api-spec/virtual?resource=http_loadbalancer&field=spec.routes[].redirect_route.route_redirect.response_code).
 
 ## Configure response metadata
 
@@ -308,7 +367,10 @@ jq \
   > custom-response-selected.create.json
 ```
 
-The LB also supports response header removal and response cookie add/remove lists. Those have separate attributes and OneOf choices; do not copy a response-header object into a cookie list. This example does not restate cookie defaults, set a session cookie, falsify health/cache state or override security/content-type headers. Prove the marker on a normal forwarded response; do not assume all locally generated security replies receive it.
+The LB also supports response header removal and response cookie add/remove lists. Those have separate attributes and
+OneOf choices; do not copy a response-header object into a cookie list. This example does not restate cookie defaults,
+set a session cookie, falsify health/cache state or override security/content-type headers. Prove the marker on a normal
+forwarded response; do not assume all locally generated security replies receive it.
 
 Sources: [header and cookie schema](xcsh://api-spec/virtual?resource=http_loadbalancer) and [response-header configuration](xcsh://documentation/docs-cloud-f5-com/multi-cloud-app-connect/how-to/load-balance/create-http-load-balancer/index.md#configuration).
 
@@ -352,7 +414,10 @@ jq -e \
   custom-response-selected.create.response.json
 ```
 
-Expect `true`. Inspect the returned selected field against the submitted value: route status/body, WAF reference, challenge message/parameters, redirect fields or response-header rule, as applicable. Preserve this configuration evidence privately. The create response is the configuration check; no redundant `GET` is required. A successful response does not establish runtime effect. Stop on an API error, record it and avoid blind create retries.
+Expect `true`. Inspect the returned selected field against the submitted value: route status/body, WAF reference,
+challenge message/parameters, redirect fields or response-header rule, as applicable. Preserve this configuration
+evidence privately. The create response is the configuration check; no redundant `GET` is required. A successful
+response does not establish runtime effect. Stop on an API error, record it and avoid blind create retries.
 
 4. Complete the owned domain's DNS and certificate-validation records through your authorized process.
 

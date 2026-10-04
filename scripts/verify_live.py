@@ -69,6 +69,7 @@ def check_expected(expected: dict[str, Any], response: dict[str, Any]) -> list[s
     return failures
 
 
+# pylint: disable-next=too-many-branches
 def main() -> int:
     """Capture every scenario and leave incomplete evidence failing."""
     parser = argparse.ArgumentParser(description=__doc__)

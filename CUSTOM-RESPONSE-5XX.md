@@ -62,7 +62,12 @@ The body applies to matching error responses across the **entire load balancer**
 | `"5"` | Class `500–599`, including `500`, `502`, `503`, and `504` | `Service temporarily unavailable` |
 | Exact code plus class | Exact code takes precedence over the matching class | A status-specific exact body with a generic class fallback |
 
-For the inline Base64 format, each map value is limited to **65,536 characters**, including the 10-character `string:///` prefix. Standard padded Base64 therefore allows at most **49,143 decoded HTML bytes**. The pinned support procedure's “0–48 kB” is an approximate description, not a precise byte limit; 48 KiB (49,152 bytes) exceeds this URI-value constraint. A separate API-validation experiment on **2026-10-02** accepted 49,143 bytes and rejected 49,144 bytes; it did not execute this deployment guide or prove runtime rendering. See the [constraint finding](https://github.com/f5-sales-demo/api-specs-enriched/issues/1854).
+For the inline Base64 format, each map value is limited to **65,536 characters**, including the 10-character
+`string:///` prefix. Standard padded Base64 therefore allows at most **49,143 decoded HTML bytes**. The pinned support
+procedure's “0–48 kB” is an approximate description, not a precise byte limit; 48 KiB (49,152 bytes) exceeds this
+URI-value constraint. A separate API-validation experiment on **2026-10-02** accepted 49,143 bytes and rejected 49,144
+bytes; it did not execute this deployment guide or prove runtime rendering. See the [constraint
+finding](https://github.com/f5-sales-demo/api-specs-enriched/issues/1854).
 
 The `{{request_id}}` placeholder supplies the request identifier. Class `5` selects matching `500–599` responses; it does not change the HTTP status or prove its cause. Do not assume every origin-generated `5xx` body is replaced. Distinguish origin responses from errors generated at the edge, and verify the actual response path in your lab.
 
@@ -332,7 +337,10 @@ You distinguish configuration acceptance from observable traffic behavior. No li
 
 1. Prepare approved, controlled lab cases for applicable `500`, `502`, `503`, and `504` responses at this load balancer.
 
-Use your lab's approved fault scenarios, one case at a time. Record the expected status and whether the response originates at the origin or the edge. Do not break a shared origin, add a timeout healthcheck solely for this page, or assume a deliberately returned origin `5xx` body is necessarily replaced. If a case cannot be produced safely or does not exercise the custom-error response path, record that limitation; do not claim runtime coverage for it.
+Use your lab's approved fault scenarios, one case at a time. Record the expected status and whether the response
+originates at the origin or the edge. Do not break a shared origin, add a timeout healthcheck solely for this page, or
+assume a deliberately returned origin `5xx` body is necessarily replaced. If a case cannot be produced safely or does
+not exercise the custom-error response path, record that limitation; do not claim runtime coverage for it.
 
 2. Capture the application response without an API token for each approved case.
 
@@ -371,7 +379,10 @@ jq -Rrs -e '
 ' public.body.html
 ```
 
-For each applicable custom-error case, expect `true` with exit status `0`, an HTML content type in `public.headers.txt`, and a populated request identifier in the body. Correlate that identifier with the corresponding authorized request record; absence of the literal placeholder alone does not prove correct correlation. Record status, body-check result, and origin-versus-edge response path for each case. Keep identifiers private.
+For each applicable custom-error case, expect `true` with exit status `0`, an HTML content type in `public.headers.txt`,
+and a populated request identifier in the body. Correlate that identifier with the corresponding authorized request
+record; absence of the literal placeholder alone does not prove correct correlation. Record status, body-check result,
+and origin-versus-edge response path for each case. Keep identifiers private.
 
 4. Restore the normal lab condition.
 

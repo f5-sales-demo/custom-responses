@@ -1,19 +1,13 @@
 # ruff: noqa: PT009, PT027, S310 -- unittest with exclusively loopback HTTP fixture URLs
 """Exercise healthy and fault paths independently without cloud resources."""
 
-import importlib.util
 import threading
 import unittest
 import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
-from pathlib import Path
 
-spec = importlib.util.spec_from_file_location(
-    "fixture", Path(__file__).resolve().parents[1] / "origin/fixture.py"
-)
-fixture = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(fixture)
+from origin import fixture
 
 
 class FixtureTests(unittest.TestCase):
@@ -30,8 +24,11 @@ class FixtureTests(unittest.TestCase):
 
     def test_origin_status_does_not_break_health(self):
         for status in [404, 500, 502, 503, 504]:
-            with self.assertRaises(urllib.error.HTTPError) as error:
-                urllib.request.urlopen(self.base + "/status/" + str(status), timeout=2)
+            with (
+                self.assertRaises(urllib.error.HTTPError) as error,
+                urllib.request.urlopen(self.base + "/status/" + str(status), timeout=2),
+            ):
+                self.fail("Expected an origin error")
             self.assertEqual(error.exception.code, status)
             self.assertIn(
                 ("Origin status " + str(status)).encode(), error.exception.read()
@@ -59,10 +56,13 @@ class FixtureTests(unittest.TestCase):
         original = fixture.RESET_PORT
         fixture.RESET_PORT = self.server.server_port
         try:
-            with self.assertRaises(
-                (ConnectionResetError, urllib.error.URLError, OSError)
+            with (
+                self.assertRaises(
+                    (ConnectionResetError, urllib.error.URLError, OSError)
+                ),
+                urllib.request.urlopen(self.base + "/", timeout=2),
             ):
-                urllib.request.urlopen(self.base + "/", timeout=2)
+                self.fail("Expected a connection reset")
         finally:
             fixture.RESET_PORT = original
         with urllib.request.urlopen(self.base + "/healthy", timeout=2) as response:

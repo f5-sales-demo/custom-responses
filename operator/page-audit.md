@@ -28,7 +28,9 @@ Issue [#11](https://github.com/f5-sales-demo/custom-responses/issues/11) follows
 - [x] Pin official bounded schema and document member digests and selector provenance.
 - [x] Verify deterministic projection, object-block rejection, genuine arrays, placeholders and exact decoding.
 - [x] Changed-file pre-commit/prose/lint/secrets checks, Ruff, mypy, all managed shell tests and PII checks passed. Full Python suite: 23 tests passed. Terraform format/init/validate passed without applying infrastructure.
-- [x] Rendered all 13 English pages on desktop/mobile, with details closed and expanded (52 captures). DOM gates: one heading, correct reading order, no page overflow, empty code, unloaded content images or browser errors. Visual review covered mobile layouts and expanded desktop blocking examples. Search returned the revised maintenance page; LLM content contains the new headings and placeholders.
+- [x] Rendered all 13 English pages on desktop/mobile, with details closed and expanded (52 captures). DOM gates: one heading, correct reading order, no page
+  overflow, empty code, unloaded content images or browser errors. Visual review covered mobile layouts and expanded desktop blocking examples. Search returned
+  the revised maintenance page; LLM content contains the new headings and placeholders.
 - [x] Crawled 123 unique rendered links/fragments with three external attempts. All existing targets pass; the newly added provenance file is pending publication on main and must be rechecked after merge.
 - [ ] Merge linked PR with required checks passing and verify Pages commit and pinned builder.
 - [ ] Preserve evidence and retire task worktrees.
@@ -37,4 +39,7 @@ Historical demonstration results and infrastructure limits remain in `deployment
 
 ## Evidence notes
 
-Candidate evidence is retained outside Git in a task-specific evidence directory: `audit-local.json`, desktop/mobile closed and expanded screenshots, search captures, builder log, changed-file pre-commit log and shell-test logs. The immutable builder is the image recorded in `branding.md`. The full repository hook pass also reports pre-existing formatting issues in unchanged prototype Markdown; those prototypes remain preserved as scoped. Changed-file gates all pass. Existing shared-theme locale links remain outside this content revision; no translations were generated.
+Candidate evidence is retained outside Git in a task-specific evidence directory: `audit-local.json`, desktop/mobile closed and expanded screenshots, search
+captures, builder log, changed-file pre-commit log and shell-test logs. The immutable builder is the image recorded in `branding.md`. The full repository hook
+pass also reports pre-existing formatting issues in unchanged prototype Markdown; those prototypes remain preserved as scoped. Changed-file gates all pass.
+Existing shared-theme locale links remain outside this content revision; no translations were generated.

@@ -16,7 +16,7 @@ class Contract(unittest.TestCase):
 
     def test_isolation(self):
         self.assertEqual(len(self.items), len({x["id"] for x in self.items}))
-        hosts = {x["hostname"] for x in self.items}
+        hosts = {x["hostname"] for x in self.items if x["live_proof_required"]}
         self.assertTrue(all(h.endswith(".f5-sales-demo.com") for h in hosts))
         self.assertEqual(len(hosts), len(self.tf["resource"]["xcsh_http_loadbalancer"]))
 

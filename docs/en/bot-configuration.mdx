@@ -1,0 +1,40 @@
+---
+title: Bot Defense configuration
+description: Inactive Bot Standard block and redirect examples, excluded from live proof.
+---
+
+Bot Defense Standard is configuration-only in this showcase. Its entitlement, classified-bot evidence and browser controls are not required to qualify the other scenarios. The default Terraform configuration does not create Bot load balancers, and the live verifier reports both Bot entries as configuration-only without sending traffic or counting them as passes.
+
+## Read the examples
+
+`examples/bot-defense.json` retains two inactive load-balancer configurations using Terraform reference syntax. This file lives outside `terraform/` and is not loaded by Terraform. It is a source example, not a directly executable API body. Resolve references and build a complete reviewed configuration before optional deployment.
+
+| Example        | Endpoint                                                | Mitigation configuration                                                                                           |
+| -------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `bot-block`    | HTTPS POST `/bot-check`, web clients, good bots allowed | `mitigation.block.status = "Forbidden"`; `body` uses `string:///` padded Base64 for `<p>Request not accepted.</p>` |
+| `bot-redirect` | HTTPS POST `/bot-check`, web clients, good bots allowed | `mitigation.redirect.uri = "https://custom-responses.f5-sales-demo.com/bot-help"`                                  |
+
+The endpoint mitigation fragments are:
+
+```json
+{
+  "block": {
+    "status": "Forbidden",
+    "body": "string:///PHA+UmVxdWVzdCBub3QgYWNjZXB0ZWQuPC9wPg=="
+  }
+}
+```
+
+```json
+{
+  "redirect": {
+    "uri": "https://custom-responses.f5-sales-demo.com/bot-help"
+  }
+}
+```
+
+Both examples select the US regional endpoint and asynchronous JavaScript insertion after the head element. Block and redirect are exclusive endpoint mitigation choices. The Bot body must respect its separate 4,096-character URI limit. The provider schema exposes a status enum and no confirmed Content-Type leaf; no live block, redirect, classification or Content-Type outcome is claimed here.
+
+## Optional activation
+
+Future Bot deployment requires Bot Defense Standard entitlement, private API access, an approved saved Terraform plan, and review of genuine flag-mode inference and legitimate-browser controls before mitigation. Provision and verify the redirect destination as well. These requirements apply only if Bot runtime demonstration is later added to scope.

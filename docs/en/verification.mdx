@@ -7,7 +7,7 @@ description: Bind genuine live behavior and controls to source, provider, plan a
 
 The origin fixture and digest-pinned httpbin passed local VM health checks. No scenario has completed live acceptance. A green source test or saved plan is insufficient. Keep raw HTTP headers, bodies, origin logs, security records, browser traces and request IDs in an owner-only directory. Public receipts contain sanitized results and SHA-256 identities only.
 
-Run `python3 scripts/verify_live.py --captures /absolute/private/captures` after deployment. The verifier checks certificate hostname and trust, measured HTTP status, body markers, redirects, metadata and masking controls. Manual evidence remains mandatory for challenge completion, WAF event ownership, Bot inference and conditional selection. Missing evidence leaves the receipt incomplete.
+Run `python3 scripts/verify_live.py --captures /absolute/private/captures` after deployment. The verifier checks certificate hostname and trust, measured HTTP status, body markers, redirects, metadata and masking controls. Manual evidence remains mandatory for challenge completion, WAF event ownership and conditional selection. Missing evidence leaves the receipt incomplete.
 
 ## HTTP and origin checks
 
@@ -26,7 +26,7 @@ trigger and retain the actual event; ordinary traffic is the negative control.
 
 WAF acceptance requires a genuinely blocked synthetic request and its matching enforced event. Test HTML and JSON body variants independently, and record actual Content-Type.
 
-Bot LBs initially flag requests. Retain genuine classified-bot inference and legitimate-browser controls, review false positives, then prepare a new saved plan that changes the endpoint mitigation to block or redirect. Obtain approval before applying the changed plan. Measure the resulting response and repeat controls. The initial flag configuration cannot pass the required mitigation scenarios.
+Bot entries are [configuration-only](../bot-configuration/). The verifier skips their network requests and proof requirements, records `pass: null`, and excludes them from aggregate live completion. Their skipped result is not a live pass. All deployed scenarios retain their existing positive, negative-control and owner evidence gates.
 
 ## Publication and lifecycle
 

@@ -89,6 +89,18 @@ def main() -> int:
     )
     results = []
     for item in json.loads((ROOT / "scenarios.json").read_text()):
+        if item["verification"] == "configuration-only":
+            results.append(
+                {
+                    "scenario": item["id"],
+                    "pass": None,
+                    "outcome": "configuration-only",
+                    "status": None,
+                    "content_type": None,
+                    "failures": [],
+                }
+            )
+            continue
         failures = []
         try:
             positive = capture(
@@ -175,7 +187,10 @@ def main() -> int:
                 "failures": failures,
             }
         )
-    receipt = {"complete": all(r["pass"] for r in results), "results": results}
+    receipt = {
+        "complete": all(r["pass"] for r in results if r["pass"] is not None),
+        "results": results,
+    }
     (args.captures / "sanitized-receipt.json").write_text(
         json.dumps(receipt, indent=2) + "\n"
     )

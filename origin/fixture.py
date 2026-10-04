@@ -108,6 +108,8 @@ class Fixture(BaseHTTPRequestHandler):
             inventory = Path(__file__).with_name("scenarios.json")
             if inventory.exists():
                 for item in json.loads(inventory.read_text()):
+                    if not item.get("live_proof_required", True):
+                        continue
                     page_body += (
                         '<p><a href="https://'
                         + html.escape(item["hostname"])

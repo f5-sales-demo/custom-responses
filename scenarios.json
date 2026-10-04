@@ -15,7 +15,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "index",
@@ -33,7 +34,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "errors-3",
@@ -52,7 +54,8 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate."
+    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate.",
+    "live_proof_required": true
   },
   {
     "id": "errors-4",
@@ -71,7 +74,8 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate."
+    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate.",
+    "live_proof_required": true
   },
   {
     "id": "errors-5",
@@ -90,7 +94,8 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate."
+    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate.",
+    "live_proof_required": true
   },
   {
     "id": "exact-404",
@@ -108,7 +113,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "exact-503",
@@ -126,7 +132,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "fault-500",
@@ -144,7 +151,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "fault-502",
@@ -162,7 +170,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "fault-503",
@@ -180,7 +189,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "fault-504",
@@ -198,7 +208,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "maintenance",
@@ -216,7 +227,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "acknowledgement",
@@ -234,7 +246,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "http"
+    "verification": "http",
+    "live_proof_required": true
   },
   {
     "id": "waf-html",
@@ -252,7 +265,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["Enforced WAF signature", "matching private WAF event", "DNS", "automatic certificate"],
-    "verification": "waf-event"
+    "verification": "waf-event",
+    "live_proof_required": true
   },
   {
     "id": "waf-json",
@@ -270,7 +284,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["Enforced WAF signature", "matching private WAF event", "DNS", "automatic certificate"],
-    "verification": "waf-event"
+    "verification": "waf-event",
+    "live_proof_required": true
   },
   {
     "id": "js",
@@ -293,7 +308,8 @@
       "origin access after completion",
       "JS-capable browser"
     ],
-    "verification": "browser-js"
+    "verification": "browser-js",
+    "live_proof_required": true
   },
   {
     "id": "captcha",
@@ -316,7 +332,8 @@
       "origin access after completion",
       "human participant for CAPTCHA"
     ],
-    "verification": "human-captcha"
+    "verification": "human-captcha",
+    "live_proof_required": true
   },
   {
     "id": "policy-js",
@@ -339,7 +356,8 @@
       "origin access after completion",
       "JS-capable browser"
     ],
-    "verification": "browser-js"
+    "verification": "browser-js",
+    "live_proof_required": true
   },
   {
     "id": "policy-captcha",
@@ -362,7 +380,8 @@
       "origin access after completion",
       "human participant for CAPTCHA"
     ],
-    "verification": "human-captcha"
+    "verification": "human-captcha",
+    "live_proof_required": true
   },
   {
     "id": "ddos-js",
@@ -386,7 +405,8 @@
       "JS-capable browser",
       "Approved bounded actual mitigation trigger; no fabricated flood"
     ],
-    "verification": "ddos-mitigation-and-browser"
+    "verification": "ddos-mitigation-and-browser",
+    "live_proof_required": true
   },
   {
     "id": "bot-block",
@@ -409,11 +429,12 @@
       "Legitimate browser control",
       "False positives reviewed before block enablement"
     ],
-    "verification": "bot-inference-and-browser",
+    "verification": "configuration-only",
     "method": "POST",
-    "activation_gate": "Review real flag-mode inference and legitimate-browser controls before enabling mitigation.",
-    "enabled_mitigation": "flag",
-    "delivery_state": "pending mitigation review"
+    "activation_gate": "Optional future deployment requires entitlement, a reviewed plan and false-positive checks.",
+    "delivery_state": "configuration documented; live proof not required",
+    "live_proof_required": false,
+    "configuration_example": "examples/bot-defense.json"
   },
   {
     "id": "bot-redirect",
@@ -436,11 +457,12 @@
       "Legitimate browser control",
       "False positives reviewed before block enablement"
     ],
-    "verification": "bot-inference-and-browser",
+    "verification": "configuration-only",
     "method": "POST",
-    "activation_gate": "Review real flag-mode inference and legitimate-browser controls before enabling mitigation.",
-    "enabled_mitigation": "flag",
-    "delivery_state": "pending mitigation review"
+    "activation_gate": "Optional future deployment requires entitlement, a reviewed plan and false-positive checks.",
+    "delivery_state": "configuration documented; live proof not required",
+    "live_proof_required": false,
+    "configuration_example": "examples/bot-defense.json"
   },
   {
     "id": "redirect",
@@ -459,7 +481,8 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "expected_location": "https://cr-redirect.f5-sales-demo.com/new"
+    "expected_location": "https://cr-redirect.f5-sales-demo.com/new",
+    "live_proof_required": true
   },
   {
     "id": "metadata",
@@ -477,7 +500,8 @@
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
-    "verification": "headers-cookies-and-origin"
+    "verification": "headers-cookies-and-origin",
+    "live_proof_required": true
   },
   {
     "id": "disclosure",
@@ -496,7 +520,8 @@
     },
     "prerequisites": ["Synthetic data", "unmasked control", "origin unchanged", "measured masking"],
     "verification": "masked-versus-unmasked",
-    "synthetic_fields": ["card", "ssn"]
+    "synthetic_fields": ["card", "ssn"],
+    "live_proof_required": true
   },
   {
     "id": "data-guard",
@@ -521,6 +546,7 @@
       "WAF enabled: required by live XC validation"
     ],
     "verification": "masked-versus-unmasked",
-    "synthetic_fields": ["card"]
+    "synthetic_fields": ["card"],
+    "live_proof_required": true
   }
 ]

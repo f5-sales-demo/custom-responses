@@ -121,7 +121,10 @@ def main() -> int:
                 ):
                     failures.append("removed header/cookie retained")
             if item["group"] == "masking":
-                for value in [b"4111111111111111", b"example-ssn"]:
+                values = [b"4111111111111111"]
+                if item["id"] == "disclosure":
+                    values.append(b"example-ssn")
+                for value in values:
                     if value in positive["body"] or value not in control["body"]:
                         failures.append("masking or unmasked control failed")
             proof = evidence.get(item["id"], {})

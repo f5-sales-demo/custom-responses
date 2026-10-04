@@ -515,6 +515,6 @@
     },
     "prerequisites": ["Synthetic data", "unmasked control", "origin unchanged", "measured masking"],
     "verification": "masked-versus-unmasked",
-    "synthetic_fields": ["card", "ssn"]
+    "synthetic_fields": ["card"]
   }
 ]

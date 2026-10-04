@@ -15,7 +15,7 @@ Bot is configuration-only in this guide. Both examples are inactive, live outsid
 
 Use the examples to review a prospective protected endpoint's response configuration. Bot Defense Standard entitlement and genuine classification are prerequisites for runtime behavior. Legitimate-browser checks are also needed before enabling mitigation in your own authorized environment.
 
-Both examples protect secure HTTP POST requests to `/bot-check` for web clients, allow good bots, select the US regional endpoint, and configure asynchronous JavaScript insertion after the head element. Block and redirect are exclusive mitigation choices for a protected endpoint. The redirect destination must exist and offer the intended help.
+Both examples protect secure Hypertext Transfer Protocol (HTTP) POST requests to `/bot-check` for web clients, allow good bots, select the US regional endpoint, and configure asynchronous JavaScript insertion after the head element. Block and redirect are exclusive mitigation choices for a protected endpoint. The redirect destination must exist and offer the intended help.
 
 ## Configure it
 
@@ -24,7 +24,7 @@ Both examples protect secure HTTP POST requests to `/bot-check` for web clients,
 3. For a block, set the status enum and encoded body.
 4. For a redirect, set the destination URI.
 
-These are inactive Terraform JavaScript Object Notation (JSON) examples with block arrays and unresolved Terraform references. They are not complete executable API requests. The [configuration reference](../configuration-reference/) links to full source and optional operator activation requirements.
+These are inactive Terraform JavaScript Object Notation (JSON) examples with block arrays and unresolved Terraform references. They are not complete executable application programming interface (API) requests. The [configuration reference](../configuration-reference/) links to full source and optional operator activation requirements.
 
 [Source: Bot block and endpoint context](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) · `/bot-block/bot_defense`
 

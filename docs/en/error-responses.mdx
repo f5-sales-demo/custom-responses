@@ -9,7 +9,7 @@ sidebar:
 
 Give visitors a recognizable explanation when a request fails. An error map on an F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer selects a body by status class or exact status. The status still tells browsers and application clients what happened; your message explains what the visitor can do next.
 
-Use an exact mapping when one failure needs specific wording. A general server-error message can cover class `5`, while an exact `503` message explains temporary unavailability. The exact status takes precedence over its class mapping.
+Use an exact mapping when one failure needs specific wording. A general server-error message can cover class `5`, while an exact `503` message explains temporary unavailability. The exact status takes precedence over its class mapping. Encoded error-body URIs have a 65,536-character limit; check the encoded value, including its prefix.
 
 ## When to use it
 
@@ -20,7 +20,7 @@ Distinguish a status returned by the origin from a failure generated at the edge
 ## Configure it
 
 1. Choose the status classes and exact statuses that need distinct messages.
-2. Set `more_option.custom_errors` on the relevant load balancer. These are Terraform JSON map fragments, not complete API requests.
+2. Set `more_option.custom_errors` on the relevant load balancer. These are Terraform JavaScript Object Notation (JSON) map fragments, not complete application programming interface (API) requests.
 3. Supply the encoded body for each selected key. Retain the status-specific entry alongside its class fallback when both are needed.
 
 [Source: class map](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/errors-3/more_option/0/custom_errors`

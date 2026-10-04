@@ -15,7 +15,7 @@ Keep the message useful without exposing detection details. The examples say “
 
 Use a branded page for browser traffic or structured text for an application interface. You need a firewall in blocking mode, a load balancer referencing that firewall, and an authorized test environment with a request that the policy actually blocks. A benign request is essential for comparison.
 
-The two examples use separate firewall configurations for HTML and JSON. A JSON body alone does not establish the response's media type. Inspect `Content-Type` and confirm that your clients parse the response as intended. Do not assume an unsupported provider field exists to set that header.
+The two examples use separate firewall configurations for HTML and JSON. A blocking-page encoded URI has a 4,096-character limit, including its prefix. A JSON body alone does not establish the response's media type. Inspect `Content-Type` and confirm that your clients parse the response as intended. Do not assume an unsupported provider field exists to set that header.
 
 ## Configure it
 
@@ -23,7 +23,7 @@ The two examples use separate firewall configurations for HTML and JSON. A JSON 
 2. Set the firewall's `blocking_page.response_code` and encoded `blocking_page` body.
 3. Reference the firewall from the load balancer's `app_firewall` block.
 
-These are Terraform JSON fragments with provider block arrays, not complete API requests.
+These are Terraform JSON fragments with provider block arrays, not complete application programming interface (API) requests.
 
 [Source: firewall attachment](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/waf-html/app_firewall`
 

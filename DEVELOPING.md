@@ -14,7 +14,7 @@ Bot entries are configuration-only and excluded from deployment and required liv
 and captures. A changed recovery plan requires explicit approval before apply. Documentation publication does not
 qualify full live acceptance, teardown/rebuild or zero drift.
 
-Reader content lives only in `docs/en/`. Generated JSON-pointer snippets in ignored `docs/_data/` feed the existing `file=` code includes. Their bytes come from
+Reader content lives only in `docs/en/`. Generated schema-projected resource snippets in ignored `docs/_data/` feed the existing `file=` code includes. Their bytes come from
 `terraform/scenarios.tf.json` and inactive `examples/bot-defense.json`; do not copy configuration into prose. Run preparation before the governed builder.
-Preparation fails on missing selectors, malformed bodies and duplicate outputs. The page audit and lifecycle procedures live in [operator
+Preparation fails on missing selectors, unknown fields, incompatible schema types, unexpected object-block cardinality, malformed bodies and duplicate outputs. The bounded official-schema contract and selector provenance live in `operator/response-schema.json` and `operator/snippet-provenance.md`. The page audit and lifecycle procedures live in [operator
 instructions](operator/README.md).

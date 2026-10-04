@@ -5,38 +5,53 @@ sidebar:
   order: 10
 ---
 
-## Purpose
+Help visitors reach a resource that has moved. A load-balancer route redirects `/old` to `/new` over secure HTTP with status `302`; the destination application supplies the page.
 
-Help visitors reach a resource that has moved. An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer can return a redirect from a matching route. The browser receives the redirect status and `Location`, then requests the destination, whose application supplies the page the visitor sees.
+## Prerequisites
 
-The example sends `/old` to `/new` over secure HTTP with status `302`. A route redirect is useful when the load balancer should direct traffic before contacting an origin for the original path. It changes navigation rather than creating a replacement destination page.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. The destination must resolve and serve the intended content. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
 
-Use this for a temporary path relocation or a selected entry point that should lead elsewhere. You need an existing load balancer, a route selector for the original path, and a destination that resolves and serves the intended content.
+## Configure
 
-Confirm the status is appropriate for your callers. The example uses a temporary `302` redirect; it does not assert permanent movement or method-preservation behavior for every client. Check application clients as well as browsers if their handling matters. Avoid a destination that redirects back to the selected path, which could create a loop.
+### Redirect a selected path
 
-## Configure it
+The caller receives status `302` and a `Location` ending in `/new`. A `302` redirect describes temporary movement. If method preservation matters, check your application clients' handling. Avoid a destination that redirects back to `/old`.
 
-1. Choose the original path in `redirect_route.path`.
-2. Set `route_redirect.proto_redirect` for the intended protocol.
-3. Set `path_redirect` for the destination path.
-4. Set `response_code` for the redirect status.
+1. Save the previous settings for the fields you change.
+2. Add a `redirect_route` for `/old` to the load balancer's `routes` list.
+3. Set `route_redirect.proto_redirect` to `https`.
+4. Set `route_redirect.path_redirect` to `/new`.
+5. Set `route_redirect.response_code` to `302`.
+6. Save the load balancer.
 
-This fragment is Terraform JavaScript Object Notation (JSON), with arrays representing provider blocks inside the load balancer's route list. Integrate it into the complete resource; it is not a standalone application programming interface (API) request.
+[Redirect route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-[Source: redirect route](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/redirect/routes`
+HTTP load balancer resource fragment:
 
 ```json file=../_data/redirect.json
 ```
 
-## Expected behavior
+<details>
+<summary>Exact encoded configuration</summary>
 
-A request selected by the example's `/old` route should receive `302` and a secure destination ending in `/new`. A browser following the redirect should then receive the destination's own response. The custom response configuration does not supply the page at `/new` or guarantee that it is healthy.
+```json file=../_data/redirect-encoded.json wrap
+```
 
-The example's `/different` comparison path should continue to the normal origin and return `200`. That comparison helps distinguish route selection from a site-wide redirect or automatic secure-HTTP behavior.
+</details>
 
-## Check the result
+## Verify
 
-Request `/old` on your configured host without automatically following redirects. Inspect `302` and `Location`, then open the destination and confirm its content. Compare `/different` on the same host for the normal `200` origin response. Follow the full redirect chain once to check that it terminates at the intended page.
+1. Request `/old` without automatically following redirects.
+2. Inspect status `302` and the `Location` header.
+3. Open the destination.
+4. Confirm its intended content.
+5. Compare `/different` on the same host for the normal `200` origin response.
+6. Follow the full redirect chain to confirm it terminates.
+
+The route does not provide the destination page or guarantee its health.
+
+## Clean up
+
+Restore the previous route settings or remove only the redirect route you added. Preserve other routes, the load balancer and shared origin pools. Confirm the original path resumes its intended behavior.

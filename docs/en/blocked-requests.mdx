@@ -5,63 +5,114 @@ sidebar:
   order: 5
 ---
 
-## Purpose
+Explain a security block in a format your callers can understand. Use a branded page for browsers or a structured message for application clients. The application firewall supplies the body after it decides to block a request.
 
-Explain a security block in a format the caller can understand. F5 Distributed Cloud's web application firewall (WAF) can supply a custom body when its policy blocks a request. A browser can receive a Hypertext Markup Language (HTML) page, while an application client can read a JavaScript Object Notation (JSON) message.
+## Prerequisites
 
-Keep the message useful without exposing detection details. The examples say “Request not accepted” and retain a forbidden response. Customizing the page changes the explanation shown after a blocking decision; it does not create the detection rule that makes that decision.
+An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
 
-## When to use it
+A web application firewall (WAF) inspects requests for threats. Its application-firewall resource owns `blocking_page`; the load balancer references that resource through `app_firewall`.
 
-Use a branded page for browser traffic or structured text for an application interface. You need a firewall in blocking mode, a load balancer referencing that firewall, and an authorized test environment with a request that the policy actually blocks. A benign request is essential for comparison.
+You need permission to edit both resources, an application firewall in blocking mode, and an authorized test request that its policy blocks. Keep a benign request for comparison. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
 
-The two examples use separate firewall configurations for HTML and JSON. A blocking-page encoded URI has a 4,096-character limit, including its prefix. A JSON body alone does not establish the response's media type. Inspect `Content-Type` and confirm that your clients parse the response as intended. Do not assume an unsupported provider field exists to set that header.
+## Configure
 
-## Configure it
+### Choose the blocking format
 
-1. Choose the response format appropriate to the protected application's callers.
-2. Set the firewall's `blocking_page.response_code` and encoded `blocking_page` body.
-3. Reference the firewall from the load balancer's `app_firewall` block.
+| Format | Caller | Check |
+| --- | --- | --- |
+| Hypertext Markup Language (HTML) | Browser | Page readability and response media type. |
+| JavaScript Object Notation (JSON) | Application client | Response media type and client parsing. |
 
-These are Terraform JSON fragments with provider block arrays, not complete application programming interface (API) requests.
+These are alternative firewall configurations. The encoded `blocking_page` value has a 4,096-character limit, including its prefix. A JSON body alone does not establish `Content-Type`; verify the actual header with your client. Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
 
-[Source: firewall attachment](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/waf-html/app_firewall`
+### Configure an HTML blocking page
 
-```json file=../_data/waf-attach.json
-```
+> **Visitor message:** Request not accepted
 
-[Source: HTML blocking page](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_app_firewall/waf-html/blocking_page`
+1. Save the previous application-firewall blocking-page settings.
+2. Set the application firewall's `blocking_page.response_code` to `Forbidden`.
+3. Set its `blocking_page.blocking_page` to the encoded HTML body.
+4. Save the application firewall.
+5. Reference that firewall from the load balancer's `app_firewall` field.
+6. Save the load balancer.
 
-```html file=../_data/waf-html.html wrap
-```
+[HTML blocking page source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-<details>
-<summary>Terraform JSON: HTML blocking configuration</summary>
+Application firewall resource fragment:
 
 ```json file=../_data/waf-html.json
 ```
 
+<details>
+<summary>Exact encoded configuration and decoded body</summary>
+
+```json file=../_data/waf-html-encoded.json wrap
+```
+
+Decoded body (displayed as code):
+
+```html file=../_data/waf-html.html wrap
+```
+
 </details>
 
-[Source: JSON blocking page](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_app_firewall/waf-json/blocking_page`
+[Firewall attachment source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+HTTP load balancer resource fragment:
+
+```json file=../_data/waf-attach.json
+```
+
+<details>
+<summary>Exact encoded configuration</summary>
+
+```json file=../_data/waf-attach-encoded.json wrap
+```
+
+</details>
+
+Replace `<APP_FIREWALL_NAME>` and `<XC_NAMESPACE>` with the firewall you configured.
+
+### Configure a JSON blocking message
+
+Visitor response:
 
 ```json file=../_data/waf-json-body.json wrap
 ```
 
-<details>
-<summary>Terraform JSON: JSON blocking configuration</summary>
+1. Save the previous application-firewall blocking-page settings.
+2. Set the application firewall's `blocking_page.response_code` to `Forbidden`.
+3. Set its `blocking_page.blocking_page` to the encoded JSON body.
+4. Save the application firewall.
+5. Reference that firewall from the load balancer's `app_firewall` field.
+6. Save the load balancer.
+
+[JSON blocking page source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+Application firewall resource fragment:
 
 ```json file=../_data/waf-json.json
 ```
 
+<details>
+<summary>Exact encoded configuration</summary>
+
+```json file=../_data/waf-json-encoded.json wrap
+```
+
 </details>
 
-## Expected behavior
+## Verify
 
-A genuinely blocked request is expected to receive `403` and the configured “Request not accepted” content. A benign `/` request is expected to reach the origin
-with `200`. The repository reports a measured HTML blocked/benign pair; that limited result does not establish JSON behavior or complete firewall validation.
-See the [configuration reference](../configuration-reference/) for operator records.
+1. Send the authorized request that the application firewall should block.
+2. Confirm status `403` and “Request not accepted” in the body.
+3. Inspect `Content-Type` for your chosen format.
+4. Confirm the firewall recorded a blocking decision for the request.
+5. Compare a benign `/` request for the normal `200` origin response.
 
-## Check the result
+For JSON, confirm the application client can parse the response. Repeat for each format you use; a fixed `403` from a route does not prove a WAF block.
 
-Send your authorized blocking test request and inspect status, body and media type. Confirm the firewall recorded a blocking decision for that request. Compare a benign `/` request on the same host for the normal `200` origin response. A fixed `403` page from another response mechanism does not confirm WAF behavior.
+## Clean up
+
+Restore the previous blocking-page settings on the application firewall. If you changed the load balancer's firewall reference, restore its previous reference. Preserve the firewall's detection policy and any resources shared with other applications. Confirm benign traffic still reaches the origin.

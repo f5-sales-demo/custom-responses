@@ -1,0 +1,2457 @@
+{
+  "resources": {
+    "http_loadbalancer": {
+      "type": "object",
+      "properties": {
+        "more_option": {
+          "$ref": "http_loadbalancer:http_loadbalancerAdvancedOptionsType"
+        },
+        "routes": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "http_loadbalancer:viewshttp_loadbalancerRouteType"
+          }
+        },
+        "app_firewall": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "js_challenge": {
+          "$ref": "http_loadbalancer:virtual_hostJavascriptChallengeType"
+        },
+        "captcha_challenge": {
+          "$ref": "http_loadbalancer:virtual_hostCaptchaChallengeType"
+        },
+        "policy_based_challenge": {
+          "$ref": "http_loadbalancer:viewscommon_wafPolicyBasedChallenge"
+        },
+        "l7_ddos_action_js_challenge": {
+          "$ref": "http_loadbalancer:virtual_hostJavascriptChallengeType"
+        },
+        "bot_defense": {
+          "$ref": "http_loadbalancer:common_securityShapeBotDefenseType"
+        },
+        "sensitive_data_disclosure_rules": {
+          "$ref": "http_loadbalancer:http_loadbalancerSensitiveDataDisclosureRules"
+        },
+        "data_guard_rules": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "http_loadbalancer:policySimpleDataGuardRule"
+          }
+        }
+      }
+    },
+    "app_firewall": {
+      "type": "object",
+      "properties": {
+        "blocking_page": {
+          "$ref": "app_firewall:app_firewallCustomBlockingPage"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "http_loadbalancer:http_loadbalancerAdvancedOptionsType": {
+      "type": "object",
+      "properties": {
+        "buffer_policy": {
+          "$ref": "http_loadbalancer:schemaBufferConfigType"
+        },
+        "compression_params": {
+          "$ref": "http_loadbalancer:virtual_hostCompressionType"
+        },
+        "custom_errors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 65536,
+            "encodedBody": true
+          },
+          "maxProperties": 16,
+          "propertyPattern": "^(?:[345]|[345][0-9]{2})$"
+        },
+        "disable_default_error_pages": {
+          "type": "boolean"
+        },
+        "disable_path_normalize": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "enable_path_normalize": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "idle_timeout": {
+          "type": "integer"
+        },
+        "max_request_header_size": {
+          "type": "integer"
+        },
+        "max_requests_per_connection": {
+          "type": "integer"
+        },
+        "no_request_limit_per_connection": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "request_cookies_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaCookieValueOption"
+          }
+        },
+        "request_cookies_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "request_headers_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaHeaderManipulationOptionType"
+          }
+        },
+        "request_headers_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "response_cookies_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaSetCookieValueOption"
+          }
+        },
+        "response_cookies_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "response_headers_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaHeaderManipulationOptionType"
+          }
+        },
+        "response_headers_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemaBufferConfigType": {
+      "type": "object",
+      "properties": {
+        "disabled": {
+          "type": "boolean"
+        },
+        "max_request_bytes": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:virtual_hostCompressionType": {
+      "type": "object",
+      "properties": {
+        "content_length": {
+          "type": "integer"
+        },
+        "content_type": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "disable_on_etag_header": {
+          "type": "boolean"
+        },
+        "remove_accept_encoding_header": {
+          "type": "boolean"
+        }
+      }
+    },
+    "http_loadbalancer:ioschemaEmpty": {
+      "type": "object"
+    },
+    "http_loadbalancer:schemaCookieValueOption": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "overwrite": {
+          "type": "boolean"
+        },
+        "secret_value": {
+          "$ref": "http_loadbalancer:schemaSecretType"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 8096
+        }
+      }
+    },
+    "http_loadbalancer:schemaSecretType": {
+      "type": "object",
+      "properties": {
+        "blindfold_secret_info": {
+          "$ref": "http_loadbalancer:schemaBlindfoldSecretInfoType"
+        },
+        "clear_secret_info": {
+          "$ref": "http_loadbalancer:schemaClearSecretInfoType"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBlindfoldSecretInfoType": {
+      "type": "object",
+      "properties": {
+        "decryption_provider": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "store_provider": {
+          "type": "string"
+        }
+      }
+    },
+    "http_loadbalancer:schemaClearSecretInfoType": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "maxLength": 131072
+        }
+      }
+    },
+    "http_loadbalancer:schemaHeaderManipulationOptionType": {
+      "type": "object",
+      "properties": {
+        "append": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "secret_value": {
+          "$ref": "http_loadbalancer:schemaSecretType"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 8096
+        }
+      }
+    },
+    "http_loadbalancer:schemaSetCookieValueOption": {
+      "type": "object",
+      "properties": {
+        "add_domain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "add_expiry": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "add_httponly": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "add_partitioned": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "add_path": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "add_secure": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_expiry": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_httponly": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_max_age": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_partitioned": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_path": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_samesite": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_secure": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_value": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "max_age_value": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "overwrite": {
+          "type": "boolean"
+        },
+        "samesite_lax": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "samesite_none": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "samesite_strict": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "secret_value": {
+          "$ref": "http_loadbalancer:schemaSecretType"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 8096
+        }
+      }
+    },
+    "http_loadbalancer:viewshttp_loadbalancerRouteType": {
+      "type": "object",
+      "properties": {
+        "custom_route_object": {
+          "$ref": "http_loadbalancer:http_loadbalancerRouteTypeCustomRoute"
+        },
+        "direct_response_route": {
+          "$ref": "http_loadbalancer:http_loadbalancerRouteTypeDirectResponse"
+        },
+        "redirect_route": {
+          "$ref": "http_loadbalancer:http_loadbalancerRouteTypeRedirect"
+        },
+        "route_state_disabled": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "route_state_enabled": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "simple_route": {
+          "$ref": "http_loadbalancer:http_loadbalancerRouteTypeSimple"
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerRouteTypeCustomRoute": {
+      "type": "object",
+      "properties": {
+        "caching_disable": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "caching_inherit": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "route_ref": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        }
+      }
+    },
+    "http_loadbalancer:schemaviewsObjectRefType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "namespace": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "tenant": {
+          "type": "string",
+          "maxLength": 64
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerRouteTypeDirectResponse": {
+      "type": "object",
+      "properties": {
+        "headers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:ioschemaHeaderMatcherType"
+          }
+        },
+        "http_method": {
+          "$ref": "http_loadbalancer:schemaHttpMethod"
+        },
+        "incoming_port": {
+          "$ref": "http_loadbalancer:ioschemaPortMatcherType"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        },
+        "route_direct_response": {
+          "$ref": "http_loadbalancer:routeRouteDirectResponse"
+        }
+      }
+    },
+    "http_loadbalancer:ioschemaHeaderMatcherType": {
+      "type": "object",
+      "properties": {
+        "exact": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "invert_match": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "presence": {
+          "type": "boolean"
+        },
+        "regex": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:schemaHttpMethod": {
+      "type": "string",
+      "enum": ["ANY", "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH", "COPY"]
+    },
+    "http_loadbalancer:ioschemaPortMatcherType": {
+      "type": "object",
+      "properties": {
+        "no_port_match": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "port_ranges": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        }
+      }
+    },
+    "http_loadbalancer:ioschemaPathMatcherType": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "prefix": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "regex": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:routeRouteDirectResponse": {
+      "type": "object",
+      "properties": {
+        "response_body_encoded": {
+          "type": "string",
+          "maxLength": 65536,
+          "encodedBody": true
+        },
+        "response_code": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerRouteTypeRedirect": {
+      "type": "object",
+      "properties": {
+        "headers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:ioschemaHeaderMatcherType"
+          }
+        },
+        "http_method": {
+          "$ref": "http_loadbalancer:schemaHttpMethod"
+        },
+        "incoming_port": {
+          "$ref": "http_loadbalancer:ioschemaPortMatcherType"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        },
+        "route_redirect": {
+          "$ref": "http_loadbalancer:routeRouteRedirect"
+        }
+      }
+    },
+    "http_loadbalancer:routeRouteRedirect": {
+      "type": "object",
+      "properties": {
+        "host_redirect": {
+          "type": "string"
+        },
+        "path_redirect": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "prefix_rewrite": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "proto_redirect": {
+          "type": "string"
+        },
+        "remove_all_params": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "replace_params": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "response_code": {
+          "type": "integer"
+        },
+        "retain_all_params": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerRouteTypeSimple": {
+      "type": "object",
+      "properties": {
+        "advanced_options": {
+          "$ref": "http_loadbalancer:http_loadbalancerRouteSimpleAdvancedOptions"
+        },
+        "auto_host_rewrite": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "caching_disable": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "caching_inherit": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_host_rewrite": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "headers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:ioschemaHeaderMatcherType"
+          }
+        },
+        "host_rewrite": {
+          "type": "string"
+        },
+        "http_method": {
+          "$ref": "http_loadbalancer:schemaHttpMethod"
+        },
+        "incoming_port": {
+          "$ref": "http_loadbalancer:ioschemaPortMatcherType"
+        },
+        "origin_pools": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:viewsOriginPoolWithWeight"
+          }
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        },
+        "query_params": {
+          "$ref": "http_loadbalancer:routeQueryParamsSimpleRoute"
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerRouteSimpleAdvancedOptions": {
+      "type": "object",
+      "properties": {
+        "app_firewall": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "bot_defense_javascript_injection": {
+          "$ref": "http_loadbalancer:routeBotDefenseJavascriptInjectionType"
+        },
+        "buffer_policy": {
+          "$ref": "http_loadbalancer:schemaBufferConfigType"
+        },
+        "common_buffering": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "common_hash_policy": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "cors_policy": {
+          "$ref": "http_loadbalancer:schemaCorsPolicy"
+        },
+        "csrf_policy": {
+          "$ref": "http_loadbalancer:schemaCsrfPolicy"
+        },
+        "default_retry_policy": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_location_add": {
+          "type": "boolean"
+        },
+        "disable_mirroring": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_prefix_rewrite": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_spdy": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_waf": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_web_socket_config": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "do_not_retract_cluster": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "enable_spdy": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "endpoint_subsets": {
+          "type": "object"
+        },
+        "inherited_bot_defense_javascript_injection": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "inherited_waf": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "inherited_waf_exclusion": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "mirror_policy": {
+          "$ref": "http_loadbalancer:viewshttp_loadbalancerMirrorPolicyType"
+        },
+        "no_retry_policy": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "prefix_rewrite": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "priority": {
+          "$ref": "http_loadbalancer:schemaRoutingPriority"
+        },
+        "regex_rewrite": {
+          "$ref": "http_loadbalancer:schemaRegexMatchRewrite"
+        },
+        "request_cookies_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaCookieValueOption"
+          }
+        },
+        "request_cookies_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "request_headers_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaHeaderManipulationOptionType"
+          }
+        },
+        "request_headers_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "response_cookies_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaSetCookieValueOption"
+          }
+        },
+        "response_cookies_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "response_headers_to_add": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:schemaHeaderManipulationOptionType"
+          }
+        },
+        "response_headers_to_remove": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "retract_cluster": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "retry_policy": {
+          "$ref": "http_loadbalancer:schemaRetryPolicyType"
+        },
+        "specific_hash_policy": {
+          "$ref": "http_loadbalancer:http_loadbalancerHashPolicyListType"
+        },
+        "timeout": {
+          "type": "integer"
+        },
+        "waf_exclusion_policy": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "web_socket_config": {
+          "$ref": "http_loadbalancer:routeWebsocketConfigType"
+        }
+      }
+    },
+    "http_loadbalancer:routeBotDefenseJavascriptInjectionType": {
+      "type": "object",
+      "properties": {
+        "javascript_location": {
+          "$ref": "http_loadbalancer:schemarouteJavaScriptLocation"
+        },
+        "javascript_tags": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "$ref": "http_loadbalancer:routeJavaScriptTag"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemarouteJavaScriptLocation": {
+      "type": "string",
+      "enum": ["AFTER_HEAD", "AFTER_TITLE_END", "BEFORE_SCRIPT"]
+    },
+    "http_loadbalancer:routeJavaScriptTag": {
+      "type": "object",
+      "properties": {
+        "javascript_url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "tag_attributes": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "http_loadbalancer:routeTagAttribute"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:routeTagAttribute": {
+      "type": "object",
+      "properties": {
+        "javascript_tag": {
+          "$ref": "http_loadbalancer:routeTagAttributeName"
+        },
+        "tag_value": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      }
+    },
+    "http_loadbalancer:routeTagAttributeName": {
+      "type": "string",
+      "enum": [
+        "JS_ATTR_ID",
+        "JS_ATTR_CID",
+        "JS_ATTR_CN",
+        "JS_ATTR_API_DOMAIN",
+        "JS_ATTR_API_URL",
+        "JS_ATTR_API_PATH",
+        "JS_ATTR_ASYNC",
+        "JS_ATTR_DEFER"
+      ]
+    },
+    "http_loadbalancer:schemaCorsPolicy": {
+      "type": "object",
+      "properties": {
+        "allow_credentials": {
+          "type": "boolean"
+        },
+        "allow_headers": {
+          "type": "string"
+        },
+        "allow_methods": {
+          "type": "string"
+        },
+        "allow_origin": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "allow_origin_regex": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "disabled": {
+          "type": "boolean"
+        },
+        "expose_headers": {
+          "type": "string"
+        },
+        "maximum_age": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:schemaCsrfPolicy": {
+      "type": "object",
+      "properties": {
+        "all_load_balancer_domains": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "custom_domain_list": {
+          "$ref": "http_loadbalancer:schemaDomainNameList"
+        },
+        "disabled": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaDomainNameList": {
+      "type": "object",
+      "properties": {
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "http_loadbalancer:viewshttp_loadbalancerMirrorPolicyType": {
+      "type": "object",
+      "properties": {
+        "origin_pool": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "percent": {
+          "$ref": "http_loadbalancer:schemaFractionalPercent"
+        }
+      }
+    },
+    "http_loadbalancer:schemaFractionalPercent": {
+      "type": "object",
+      "properties": {
+        "denominator": {
+          "$ref": "http_loadbalancer:schemaDenominatorType"
+        },
+        "numerator": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:schemaDenominatorType": {
+      "type": "string",
+      "enum": ["HUNDRED", "TEN_THOUSAND", "MILLION"]
+    },
+    "http_loadbalancer:schemaRoutingPriority": {
+      "type": "string",
+      "enum": ["DEFAULT", "HIGH"]
+    },
+    "http_loadbalancer:schemaRegexMatchRewrite": {
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "substitution": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:schemaRetryPolicyType": {
+      "type": "object",
+      "properties": {
+        "back_off": {
+          "$ref": "http_loadbalancer:schemaRetryBackOff"
+        },
+        "num_retries": {
+          "type": "integer"
+        },
+        "per_try_timeout": {
+          "type": "integer"
+        },
+        "retriable_status_codes": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "integer"
+          }
+        },
+        "retry_condition": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 7,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemaRetryBackOff": {
+      "type": "object",
+      "properties": {
+        "base_interval": {
+          "type": "integer"
+        },
+        "max_interval": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerHashPolicyListType": {
+      "type": "object",
+      "properties": {
+        "hash_policy": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "$ref": "http_loadbalancer:routeHashPolicyType"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:routeHashPolicyType": {
+      "type": "object",
+      "properties": {
+        "cookie": {
+          "$ref": "http_loadbalancer:routeCookieForHashing"
+        },
+        "header_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "source_ip": {
+          "type": "boolean"
+        },
+        "terminal": {
+          "type": "boolean"
+        }
+      }
+    },
+    "http_loadbalancer:routeCookieForHashing": {
+      "type": "object",
+      "properties": {
+        "add_httponly": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "add_secure": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_httponly": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_samesite": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ignore_secure": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "path": {
+          "type": "string"
+        },
+        "samesite_lax": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "samesite_none": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "samesite_strict": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "ttl": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:routeWebsocketConfigType": {
+      "type": "object",
+      "properties": {
+        "use_websocket": {
+          "type": "boolean"
+        }
+      }
+    },
+    "http_loadbalancer:viewsOriginPoolWithWeight": {
+      "type": "object",
+      "properties": {
+        "cluster": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "endpoint_subsets": {
+          "type": "object"
+        },
+        "pool": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "weight": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:routeQueryParamsSimpleRoute": {
+      "type": "object",
+      "properties": {
+        "remove_all_params": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "replace_params": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "retain_all_params": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:virtual_hostJavascriptChallengeType": {
+      "type": "object",
+      "properties": {
+        "cookie_expiry": {
+          "type": "integer"
+        },
+        "custom_page": {
+          "type": "string",
+          "maxLength": 65536,
+          "encodedBody": true
+        },
+        "js_script_delay": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:virtual_hostCaptchaChallengeType": {
+      "type": "object",
+      "properties": {
+        "cookie_expiry": {
+          "type": "integer"
+        },
+        "custom_page": {
+          "type": "string",
+          "maxLength": 65536,
+          "encodedBody": true
+        }
+      }
+    },
+    "http_loadbalancer:viewscommon_wafPolicyBasedChallenge": {
+      "type": "object",
+      "properties": {
+        "always_enable_captcha_challenge": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "always_enable_js_challenge": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "captcha_challenge_parameters": {
+          "$ref": "http_loadbalancer:virtual_hostCaptchaChallengeType"
+        },
+        "default_captcha_challenge_parameters": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "default_js_challenge_parameters": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "default_mitigation_settings": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "default_temporary_blocking_parameters": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "js_challenge_parameters": {
+          "$ref": "http_loadbalancer:virtual_hostJavascriptChallengeType"
+        },
+        "malicious_user_mitigation": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "no_challenge": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "rule_list": {
+          "$ref": "http_loadbalancer:common_wafChallengeRuleList"
+        },
+        "temporary_user_blocking": {
+          "$ref": "http_loadbalancer:virtual_hostTemporaryUserBlockingType"
+        }
+      }
+    },
+    "http_loadbalancer:common_wafChallengeRuleList": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "http_loadbalancer:common_wafChallengeRule"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:common_wafChallengeRule": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "http_loadbalancer:schemaMessageMetaType"
+        },
+        "spec": {
+          "$ref": "http_loadbalancer:service_policy_ruleChallengeRuleSpec"
+        }
+      }
+    },
+    "http_loadbalancer:schemaMessageMetaType": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "http_loadbalancer:service_policy_ruleChallengeRuleSpec": {
+      "type": "object",
+      "properties": {
+        "any_asn": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "any_client": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "any_ip": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "arg_matchers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:policyArgMatcherType"
+          }
+        },
+        "asn_list": {
+          "$ref": "http_loadbalancer:policyAsnMatchList"
+        },
+        "asn_matcher": {
+          "$ref": "http_loadbalancer:policyAsnMatcherType"
+        },
+        "body_matcher": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "client_selector": {
+          "$ref": "http_loadbalancer:schemaLabelSelectorType"
+        },
+        "cookie_matchers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:policyCookieMatcherType"
+          }
+        },
+        "disable_challenge": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "domain_matcher": {
+          "$ref": "http_loadbalancer:policyMatcherTypeBasic"
+        },
+        "enable_captcha_challenge": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "enable_javascript_challenge": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "expiration_timestamp": {
+          "type": "string"
+        },
+        "headers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemapolicyHeaderMatcherType"
+          }
+        },
+        "http_method": {
+          "$ref": "http_loadbalancer:policyHttpMethodMatcherType"
+        },
+        "ip_matcher": {
+          "$ref": "http_loadbalancer:policyIpMatcherType"
+        },
+        "ip_prefix_list": {
+          "$ref": "http_loadbalancer:policyPrefixMatchList"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:schemapolicyPathMatcherType"
+        },
+        "query_params": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemapolicyQueryParameterMatcherType"
+          }
+        },
+        "tls_fingerprint_matcher": {
+          "$ref": "http_loadbalancer:policyTlsFingerprintMatcherType"
+        }
+      }
+    },
+    "http_loadbalancer:policyArgMatcherType": {
+      "type": "object",
+      "properties": {
+        "check_not_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "check_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "item": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:policyMatcherType": {
+      "type": "object",
+      "properties": {
+        "exact_values": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "regex_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "transformers": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "http_loadbalancer:policyTransformer"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyTransformer": {
+      "type": "string",
+      "enum": [
+        "LOWER_CASE",
+        "UPPER_CASE",
+        "BASE64_DECODE",
+        "NORMALIZE_PATH",
+        "REMOVE_WHITESPACE",
+        "URL_DECODE",
+        "TRIM_LEFT",
+        "TRIM_RIGHT",
+        "TRIM"
+      ]
+    },
+    "http_loadbalancer:policyAsnMatchList": {
+      "type": "object",
+      "properties": {
+        "as_numbers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyAsnMatcherType": {
+      "type": "object",
+      "properties": {
+        "asn_sets": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "$ref": "http_loadbalancer:ioschemaObjectRefType"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:ioschemaObjectRefType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "http_loadbalancer:schemaLabelSelectorType": {
+      "type": "object",
+      "properties": {
+        "expressions": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyCookieMatcherType": {
+      "type": "object",
+      "properties": {
+        "check_not_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "check_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "item": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:policyMatcherTypeBasic": {
+      "type": "object",
+      "properties": {
+        "exact_values": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "regex_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemapolicyHeaderMatcherType": {
+      "type": "object",
+      "properties": {
+        "check_not_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "check_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "item": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:policyHttpMethodMatcherType": {
+      "type": "object",
+      "properties": {
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "methods": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemaHttpMethod"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyIpMatcherType": {
+      "type": "object",
+      "properties": {
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "prefix_sets": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "$ref": "http_loadbalancer:ioschemaObjectRefType"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyPrefixMatchList": {
+      "type": "object",
+      "properties": {
+        "invert_match": {
+          "type": "boolean"
+        },
+        "ip_prefixes": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemapolicyPathMatcherType": {
+      "type": "object",
+      "properties": {
+        "encoded_path_matcher": {
+          "type": "boolean"
+        },
+        "exact_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "prefix_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "regex_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "suffix_values": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "maxLength": 64
+          }
+        },
+        "transformers": {
+          "type": "array",
+          "maxItems": 9,
+          "items": {
+            "$ref": "http_loadbalancer:policyTransformer"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemapolicyQueryParameterMatcherType": {
+      "type": "object",
+      "properties": {
+        "check_not_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "check_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "item": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "key": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:policyTlsFingerprintMatcherType": {
+      "type": "object",
+      "properties": {
+        "classes": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:policyKnownTlsFingerprintClass"
+          }
+        },
+        "exact_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string"
+          }
+        },
+        "excluded_values": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyKnownTlsFingerprintClass": {
+      "type": "string",
+      "enum": [
+        "TLS_FINGERPRINT_NONE",
+        "ANY_MALICIOUS_FINGERPRINT",
+        "ADWARE",
+        "ADWIND",
+        "DRIDEX",
+        "GOOTKIT",
+        "GOZI",
+        "JBIFROST",
+        "QUAKBOT",
+        "RANSOMWARE",
+        "TROLDESH",
+        "TOFSEE",
+        "TORRENTLOCKER",
+        "TRICKBOT"
+      ]
+    },
+    "http_loadbalancer:virtual_hostTemporaryUserBlockingType": {
+      "type": "object",
+      "properties": {
+        "custom_page": {
+          "type": "string",
+          "maxLength": 65536,
+          "encodedBody": true
+        }
+      }
+    },
+    "http_loadbalancer:common_securityShapeBotDefenseType": {
+      "type": "object",
+      "properties": {
+        "disable_cors_support": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "enable_cors_support": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "policy": {
+          "$ref": "http_loadbalancer:common_securityShapeBotDefensePolicyType"
+        },
+        "regional_endpoint": {
+          "$ref": "http_loadbalancer:common_securityShapeBotDefenseRegion"
+        },
+        "timeout": {
+          "type": "integer"
+        }
+      }
+    },
+    "http_loadbalancer:common_securityShapeBotDefensePolicyType": {
+      "type": "object",
+      "properties": {
+        "disable_js_insert": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "disable_mobile_sdk": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "javascript_mode": {
+          "$ref": "http_loadbalancer:schemaJavaScriptMode"
+        },
+        "js_download_path": {
+          "type": "string"
+        },
+        "js_insert_all_pages": {
+          "$ref": "http_loadbalancer:common_securityShapeJavaScriptInsertAllType"
+        },
+        "js_insert_all_pages_except": {
+          "$ref": "http_loadbalancer:common_securityShapeJavaScriptInsertAllWithExceptionsType"
+        },
+        "js_insertion_rules": {
+          "$ref": "http_loadbalancer:common_securityShapeJavaScriptInsertType"
+        },
+        "mobile_sdk_config": {
+          "$ref": "http_loadbalancer:common_securityMobileSDKConfigType"
+        },
+        "protected_app_endpoints": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "$ref": "http_loadbalancer:common_securityAppEndpointType"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemaJavaScriptMode": {
+      "type": "string",
+      "enum": ["ASYNC_JS_NO_CACHING", "ASYNC_JS_CACHING", "SYNC_JS_NO_CACHING", "SYNC_JS_CACHING"]
+    },
+    "http_loadbalancer:common_securityShapeJavaScriptInsertAllType": {
+      "type": "object",
+      "properties": {
+        "javascript_location": {
+          "$ref": "http_loadbalancer:viewscommon_securityJavaScriptLocation"
+        }
+      }
+    },
+    "http_loadbalancer:viewscommon_securityJavaScriptLocation": {
+      "type": "string",
+      "enum": ["AFTER_HEAD", "AFTER_TITLE_END", "BEFORE_SCRIPT"]
+    },
+    "http_loadbalancer:common_securityShapeJavaScriptInsertAllWithExceptionsType": {
+      "type": "object",
+      "properties": {
+        "exclude_list": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "http_loadbalancer:common_securityShapeJavaScriptExclusionRule"
+          }
+        },
+        "javascript_location": {
+          "$ref": "http_loadbalancer:viewscommon_securityJavaScriptLocation"
+        }
+      }
+    },
+    "http_loadbalancer:common_securityShapeJavaScriptExclusionRule": {
+      "type": "object",
+      "properties": {
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "domain": {
+          "$ref": "http_loadbalancer:schemaDomainType"
+        },
+        "metadata": {
+          "$ref": "http_loadbalancer:schemaMessageMetaType"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        }
+      }
+    },
+    "http_loadbalancer:schemaDomainType": {
+      "type": "object",
+      "properties": {
+        "exact_value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "regex_value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "suffix_value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:common_securityShapeJavaScriptInsertType": {
+      "type": "object",
+      "properties": {
+        "exclude_list": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "$ref": "http_loadbalancer:common_securityShapeJavaScriptExclusionRule"
+          }
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "$ref": "http_loadbalancer:common_securityShapeJavaScriptInsertionRule"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:common_securityShapeJavaScriptInsertionRule": {
+      "type": "object",
+      "properties": {
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "domain": {
+          "$ref": "http_loadbalancer:schemaDomainType"
+        },
+        "javascript_location": {
+          "$ref": "http_loadbalancer:viewscommon_securityJavaScriptLocation"
+        },
+        "metadata": {
+          "$ref": "http_loadbalancer:schemaMessageMetaType"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        }
+      }
+    },
+    "http_loadbalancer:common_securityMobileSDKConfigType": {
+      "type": "object",
+      "properties": {
+        "mobile_identifier": {
+          "$ref": "http_loadbalancer:common_securityMobileTrafficIdentifierType"
+        }
+      }
+    },
+    "http_loadbalancer:common_securityMobileTrafficIdentifierType": {
+      "type": "object",
+      "properties": {
+        "headers": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:policyHeaderMatcherTypeBasic"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyHeaderMatcherTypeBasic": {
+      "type": "object",
+      "properties": {
+        "check_not_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "check_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "item": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:common_securityAppEndpointType": {
+      "type": "object",
+      "properties": {
+        "allow_good_bots": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "domain": {
+          "$ref": "http_loadbalancer:schemaDomainType"
+        },
+        "flow_label": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelCategoriesChoiceType"
+        },
+        "headers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemapolicyHeaderMatcherType"
+          }
+        },
+        "http_methods": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "$ref": "http_loadbalancer:schemaBotHttpMethod"
+          }
+        },
+        "metadata": {
+          "$ref": "http_loadbalancer:schemaMessageMetaType"
+        },
+        "mitigate_good_bots": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "mitigation": {
+          "$ref": "http_loadbalancer:policyShapeBotMitigationAction"
+        },
+        "mobile": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        },
+        "protocol": {
+          "$ref": "http_loadbalancer:common_securityURLScheme"
+        },
+        "query_params": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemapolicyQueryParameterMatcherType"
+          }
+        },
+        "undefined_flow_label": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "web": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "web_mobile": {
+          "$ref": "http_loadbalancer:common_securityWebMobileTrafficType"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelCategoriesChoiceType": {
+      "type": "object",
+      "properties": {
+        "account_management": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelAccountManagementChoiceType"
+        },
+        "authentication": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelAuthenticationChoiceType"
+        },
+        "financial_services": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelFinancialServicesChoiceType"
+        },
+        "flight": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelFlightChoiceType"
+        },
+        "profile_management": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelProfileManagementChoiceType"
+        },
+        "search": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelSearchChoiceType"
+        },
+        "shopping_gift_cards": {
+          "$ref": "http_loadbalancer:schemaBotDefenseFlowLabelShoppingGiftCardsChoiceType"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelAccountManagementChoiceType": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "password_reset": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelAuthenticationChoiceType": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "$ref": "http_loadbalancer:schemaBotDefenseTransactionResult"
+        },
+        "login_mfa": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "login_partner": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "logout": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "token_refresh": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseTransactionResult": {
+      "type": "object",
+      "properties": {
+        "disable_transaction_result": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "transaction_result": {
+          "$ref": "http_loadbalancer:schemaBotDefenseTransactionResultType"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseTransactionResultType": {
+      "type": "object",
+      "properties": {
+        "failure_conditions": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "http_loadbalancer:schemaBotDefenseTransactionResultCondition"
+          }
+        },
+        "success_conditions": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "$ref": "http_loadbalancer:schemaBotDefenseTransactionResultCondition"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseTransactionResultCondition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "regex_values": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "status": {
+          "$ref": "http_loadbalancer:schemaHttpStatusCode"
+        }
+      }
+    },
+    "http_loadbalancer:schemaHttpStatusCode": {
+      "type": "string",
+      "enum": [
+        "EmptyStatusCode",
+        "Continue",
+        "OK",
+        "Created",
+        "Accepted",
+        "NonAuthoritativeInformation",
+        "NoContent",
+        "ResetContent",
+        "PartialContent",
+        "MultiStatus",
+        "AlreadyReported",
+        "IMUsed",
+        "MultipleChoices",
+        "MovedPermanently",
+        "Found",
+        "SeeOther",
+        "NotModified",
+        "UseProxy",
+        "TemporaryRedirect",
+        "PermanentRedirect",
+        "BadRequest",
+        "Unauthorized",
+        "PaymentRequired",
+        "Forbidden",
+        "NotFound",
+        "MethodNotAllowed",
+        "NotAcceptable",
+        "ProxyAuthenticationRequired",
+        "RequestTimeout",
+        "Conflict",
+        "Gone",
+        "LengthRequired",
+        "PreconditionFailed",
+        "PayloadTooLarge",
+        "URITooLong",
+        "UnsupportedMediaType",
+        "RangeNotSatisfiable",
+        "ExpectationFailed",
+        "MisdirectedRequest",
+        "UnprocessableEntity",
+        "Locked",
+        "FailedDependency",
+        "UpgradeRequired",
+        "PreconditionRequired",
+        "TooManyRequests",
+        "RequestHeaderFieldsTooLarge",
+        "InternalServerError",
+        "NotImplemented",
+        "BadGateway",
+        "ServiceUnavailable",
+        "GatewayTimeout",
+        "HTTPVersionNotSupported",
+        "VariantAlsoNegotiates",
+        "InsufficientStorage",
+        "LoopDetected",
+        "NotExtended",
+        "NetworkAuthenticationRequired"
+      ]
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelFinancialServicesChoiceType": {
+      "type": "object",
+      "properties": {
+        "apply": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "money_transfer": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelFlightChoiceType": {
+      "type": "object",
+      "properties": {
+        "checkin": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelProfileManagementChoiceType": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "update": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "view": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelSearchChoiceType": {
+      "type": "object",
+      "properties": {
+        "flight_search": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "product_search": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "reservation_search": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "room_search": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotDefenseFlowLabelShoppingGiftCardsChoiceType": {
+      "type": "object",
+      "properties": {
+        "gift_card_make_purchase_with_gift_card": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "gift_card_validation": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_add_to_cart": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_checkout": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_choose_seat": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_enter_drawing_submission": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_make_payment": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_order": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_price_inquiry": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_promo_code_validation": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_purchase_gift_card": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "shop_update_quantity": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:schemaBotHttpMethod": {
+      "type": "string",
+      "enum": [
+        "METHOD_ANY",
+        "METHOD_GET",
+        "METHOD_POST",
+        "METHOD_PUT",
+        "METHOD_PATCH",
+        "METHOD_DELETE",
+        "METHOD_GET_DOCUMENT"
+      ]
+    },
+    "http_loadbalancer:policyShapeBotMitigationAction": {
+      "type": "object",
+      "properties": {
+        "block": {
+          "$ref": "http_loadbalancer:policyShapeBotBlockMitigationActionType"
+        },
+        "flag": {
+          "$ref": "http_loadbalancer:policyShapeBotFlagMitigationActionChoiceType"
+        },
+        "redirect": {
+          "$ref": "http_loadbalancer:policyShapeBotRedirectMitigationActionType"
+        }
+      }
+    },
+    "http_loadbalancer:policyShapeBotBlockMitigationActionType": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "maxLength": 4096,
+          "encodedBody": true
+        },
+        "status": {
+          "$ref": "http_loadbalancer:schemaHttpStatusCode"
+        }
+      }
+    },
+    "http_loadbalancer:policyShapeBotFlagMitigationActionChoiceType": {
+      "type": "object",
+      "properties": {
+        "append_headers": {
+          "$ref": "http_loadbalancer:policyShapeBotFlagMitigationActionType"
+        },
+        "no_headers": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:policyShapeBotFlagMitigationActionType": {
+      "type": "object",
+      "properties": {
+        "auto_type_header_name": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "inference_header_name": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:policyShapeBotRedirectMitigationActionType": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string"
+        }
+      }
+    },
+    "http_loadbalancer:common_securityURLScheme": {
+      "type": "string",
+      "enum": ["BOTH", "HTTP", "HTTPS"]
+    },
+    "http_loadbalancer:common_securityWebMobileTrafficType": {
+      "type": "object",
+      "properties": {
+        "mobile_identifier": {
+          "$ref": "http_loadbalancer:common_securityMobileIdentifier"
+        }
+      }
+    },
+    "http_loadbalancer:common_securityMobileIdentifier": {
+      "type": "string",
+      "enum": ["HEADERS"]
+    },
+    "http_loadbalancer:common_securityShapeBotDefenseRegion": {
+      "type": "string",
+      "enum": ["AUTO", "US", "EU", "ASIA"]
+    },
+    "http_loadbalancer:http_loadbalancerSensitiveDataDisclosureRules": {
+      "type": "object",
+      "properties": {
+        "sensitive_data_types_in_response": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "http_loadbalancer:http_loadbalancerSensitiveDataTypes"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerSensitiveDataTypes": {
+      "type": "object",
+      "properties": {
+        "api_endpoint": {
+          "$ref": "http_loadbalancer:common_wafApiEndpointDetails"
+        },
+        "body": {
+          "$ref": "http_loadbalancer:http_loadbalancerBodySectionMaskingOptions"
+        },
+        "mask": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "report": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:common_wafApiEndpointDetails": {
+      "type": "object",
+      "properties": {
+        "methods": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemaHttpMethod"
+          }
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      }
+    },
+    "http_loadbalancer:http_loadbalancerBodySectionMaskingOptions": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policySimpleDataGuardRule": {
+      "type": "object",
+      "properties": {
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "apply_data_guard": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "exact_value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "metadata": {
+          "$ref": "http_loadbalancer:schemaMessageMetaType"
+        },
+        "path": {
+          "$ref": "http_loadbalancer:ioschemaPathMatcherType"
+        },
+        "skip_data_guard": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "suffix_value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      }
+    },
+    "app_firewall:app_firewallCustomBlockingPage": {
+      "type": "object",
+      "properties": {
+        "blocking_page": {
+          "type": "string",
+          "maxLength": 4096,
+          "encodedBody": true
+        },
+        "response_code": {
+          "$ref": "app_firewall:schemaHttpStatusCode"
+        }
+      }
+    },
+    "app_firewall:schemaHttpStatusCode": {
+      "type": "string",
+      "enum": [
+        "EmptyStatusCode",
+        "Continue",
+        "OK",
+        "Created",
+        "Accepted",
+        "NonAuthoritativeInformation",
+        "NoContent",
+        "ResetContent",
+        "PartialContent",
+        "MultiStatus",
+        "AlreadyReported",
+        "IMUsed",
+        "MultipleChoices",
+        "MovedPermanently",
+        "Found",
+        "SeeOther",
+        "NotModified",
+        "UseProxy",
+        "TemporaryRedirect",
+        "PermanentRedirect",
+        "BadRequest",
+        "Unauthorized",
+        "PaymentRequired",
+        "Forbidden",
+        "NotFound",
+        "MethodNotAllowed",
+        "NotAcceptable",
+        "ProxyAuthenticationRequired",
+        "RequestTimeout",
+        "Conflict",
+        "Gone",
+        "LengthRequired",
+        "PreconditionFailed",
+        "PayloadTooLarge",
+        "URITooLong",
+        "UnsupportedMediaType",
+        "RangeNotSatisfiable",
+        "ExpectationFailed",
+        "MisdirectedRequest",
+        "UnprocessableEntity",
+        "Locked",
+        "FailedDependency",
+        "UpgradeRequired",
+        "PreconditionRequired",
+        "TooManyRequests",
+        "RequestHeaderFieldsTooLarge",
+        "InternalServerError",
+        "NotImplemented",
+        "BadGateway",
+        "ServiceUnavailable",
+        "GatewayTimeout",
+        "HTTPVersionNotSupported",
+        "VariantAlsoNegotiates",
+        "InsufficientStorage",
+        "LoopDetected",
+        "NotExtended",
+        "NetworkAuthenticationRequired"
+      ]
+    }
+  },
+  "sources": [
+    {
+      "resource": "http_loadbalancer",
+      "url": "https://docs.cloud.f5.com/docs-v2/downloads/f5-distributed-cloud-open-api.zip",
+      "member": "docs-cloud-f5-com.0080.public.ves.io.schema.views.http_loadbalancer.ves-swagger.json",
+      "sha256": "326c0df9d8758fa7125a450063a962da859ee9685b87857d13e4fdf8005fed96",
+      "spec_ref": "#/components/schemas/viewshttp_loadbalancerCreateSpecType"
+    },
+    {
+      "resource": "app_firewall",
+      "url": "https://docs.cloud.f5.com/docs-v2/downloads/f5-distributed-cloud-open-api.zip",
+      "member": "docs-cloud-f5-com.0019.public.ves.io.schema.app_firewall.ves-swagger.json",
+      "sha256": "d98233c45b3e19bab72282b1f9e12609fd6f645f2ae9174e6a6492eb3f61b664",
+      "spec_ref": "#/components/schemas/app_firewallCreateSpecType"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+---
+title: Return a static acknowledgement
+description: Answer a selected path with a fixed acknowledgement status and message.
+sidebar:
+  order: 4
+---
+
+## Purpose
+
+Give visitors a stable acknowledgement page when a selected request needs a fixed answer. An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer can return the response directly from a matching route, avoiding an origin round trip for that response.
+
+The example returns `200` with “Request received.” This can provide a consistent informational page or a fixed response for a controlled demonstration. A static body does not inspect the request, persist submitted information, or prove that a backend accepted work. Use wording that matches the behavior your application actually provides.
+
+## When to use it
+
+Use this when every request selected by the route should receive the same status and content. You need an existing load balancer and a dedicated path whose meaning is clear to its callers. The example uses `/acknowledgement`; its other traffic continues to the configured origin.
+
+If a client needs a unique receipt, validation result, job identifier, or processing status, obtain that information from your application. A fixed acknowledgement can describe an informational outcome, but it cannot supply request-specific confirmation. Consider how callers interpret a successful HTTP status before selecting the response code.
+
+## Configure it
+
+1. Choose a path for the fixed acknowledgement.
+2. Add a `direct_response_route` that selects that path.
+3. Set `route_direct_response.response_code` to the response status your callers should receive.
+4. Set `response_body_encoded` to the static message.
+
+The source-derived example below is Terraform JavaScript Object Notation (JSON). The arrays represent provider blocks; the fragment belongs in the resource's route list and is not a complete application programming interface (API) request.
+
+[Source: acknowledgement route](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/acknowledgement/routes`
+
+<details>
+<summary>Terraform JSON: route and literal encoded body</summary>
+
+```json file=../_data/acknowledgement.json
+```
+
+</details>
+
+The decoded body is displayed as escaped code so you can read the configured message:
+
+```html file=../_data/acknowledgement.html wrap
+```
+
+## Expected behavior
+
+The selected `/acknowledgement` request receives status `200` and the “Request received” body directly from the load balancer. Origin health does not create this body. The normal `/` path is expected to return the origin's `200` response rather than the acknowledgement page.
+
+The example supplies page content, not a guarantee about downstream processing. Preserve that distinction in your own wording and in any client integration.
+
+## Check the result
+
+Request `/acknowledgement` on your configured host and confirm status `200` with the acknowledgement message. Compare `/` on the same host and check for the normal origin body. The different bodies help confirm that path selection works even though both responses have the same status.

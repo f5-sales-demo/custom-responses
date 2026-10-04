@@ -1,0 +1,56 @@
+---
+title: Mask sensitive response data
+description: Hide selected JSON fields or recognized sensitive values before a response reaches callers.
+sidebar:
+  order: 12
+---
+
+## Purpose
+
+Reduce unintended disclosure when an application returns sensitive values. F5 Distributed Cloud offers selected-field masking through sensitive-data disclosure rules and response inspection through Data Guard. These mechanisms transform response content rather than replacing it with a fixed error page.
+
+Use selected fields when you know the response structure. Use Data Guard when the supported inspection should recognize sensitive values in responses. Match the rule to the application endpoint so other content keeps its intended behavior.
+
+## When to use it
+
+Use selected-field masking for an application interface returning JavaScript Object Notation (JSON) with known fields. The example selects GET `/sensitive` and fields named `card` and `ssn` (Social Security number). Check only synthetic values in your test environment.
+
+The Data Guard example selects `/sensitive` and attaches the example application firewall. You need an existing load balancer and the supported inspection configuration for your chosen mechanism. Review which sensitive types the attached firewall recognizes; a path rule alone does not define every recognition pattern.
+
+## Configure it
+
+1. Choose selected-field masking or Data Guard for the response you need to protect.
+2. For selected fields, configure the endpoint's path and methods in `sensitive_data_types_in_response.api_endpoint`.
+3. Set `body.fields` to the intended field names and choose `mask`.
+4. For Data Guard, select the path in `data_guard_rules` and choose `apply_data_guard` with the relevant firewall attached.
+
+These are Terraform JSON fragments with arrays representing provider blocks. Keep the complete resource and firewall source as the configuration reference.
+
+[Source: selected-field masking](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/disclosure/sensitive_data_disclosure_rules`
+
+```json file=../_data/disclosure.json
+```
+
+[Source: Data Guard selection](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/data-guard/data_guard_rules`
+
+```json file=../_data/data-guard.json
+```
+
+[Source: attached example firewall](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `data-guard/app_firewall`
+
+The Data Guard variant attaches this example firewall:
+
+```json file=../_data/data-guard-attach.json
+```
+
+## Expected behavior
+
+The selected response is expected to retain status `200` while synthetic sensitive values are masked. Do not assume a particular replacement string without measuring it. Confirm the remaining JSON structure and unrelated fields still meet your application's needs.
+
+The two mechanisms have different selectors and inspection behavior. Successful masking by one does not establish the other's outcome. The guide describes intended configuration rather than verified masking on every demo endpoint.
+
+## Check the result
+
+Request `/sensitive` on your configured host and check that the selected synthetic values are absent from the returned body. Compare `/sensitive-control`, which
+should preserve the unselected response, and confirm unrelated content remains usable. Repeat separately for Data Guard and selected-field masking so you can
+attribute each transformation to its configured mechanism.

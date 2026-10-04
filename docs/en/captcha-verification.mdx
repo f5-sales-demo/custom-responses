@@ -1,0 +1,53 @@
+---
+title: Explain CAPTCHA verification
+description: Help visitors understand and complete a human-verification challenge.
+sidebar:
+  order: 7
+---
+
+## Purpose
+
+Give people a clear instruction when they need to complete a Completely Automated Public Turing test to tell Computers and Humans Apart (CAPTCHA). F5 Distributed Cloud supplies the challenge interaction; your custom wording explains why the visitor sees it and what to do next.
+
+The example says “Please complete the verification to continue.” This wording describes the required action without replacing the platform-controlled challenge. Keep the interactive elements available and usable when you customize the page, so a person can complete verification and continue to the application.
+
+## When to use it
+
+Use this when your security configuration selects human verification and the default wording needs application-specific context. You need an existing load balancer with challenge support and a browser capable of displaying and completing the interaction. Check both a fresh visitor and a returning visitor with a valid verification cookie.
+
+This example configures the CAPTCHA challenge choice rather than a rule limited to one path. The inventory's `/challenge` request gives you a place to check the experience; that path is not a selector in this fragment. To challenge selected paths while allowing a comparison path, use [conditional challenge selection](../conditional-challenges/).
+
+## Configure it
+
+1. Select `captcha_challenge` on the load balancer.
+2. Set `custom_page` to the encoded instruction body.
+3. Set `cookie_expiry` for the verification cookie's lifetime.
+
+The source sets `cookie_expiry` to `300` seconds. The fragment is Terraform JavaScript Object Notation (JSON), whose array represents a provider block inside a complete resource. Use the configuration source when integrating the fragment, rather than sending this block-array representation as an application programming interface (API) request.
+
+[Source: CAPTCHA challenge](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) · `/resource/xcsh_http_loadbalancer/captcha/captcha_challenge`
+
+The exact decoded message is displayed as code:
+
+```html file=../_data/captcha.html wrap
+```
+
+<details>
+<summary>Terraform JSON: parameters and literal encoded page</summary>
+
+```json file=../_data/captcha.json
+```
+
+</details>
+
+## Expected behavior
+
+When selected, the challenge should show the custom instruction alongside working human verification. Successful completion should let the visitor continue to the application. The inventory does not specify a fixed challenge status; inspect the actual browser interaction and subsequent navigation.
+
+The code preview is the configured wording, not a replacement implementation of CAPTCHA. Seeing that text does not establish that the interactive challenge appeared or that completion worked.
+
+## Check the result
+
+Open `/challenge` in a fresh browser session on your configured host. Confirm the wording, visible interaction and successful completion. Compare a normal
+request using the accepted verification cookie for the expected application response. Repeat without the cookie to confirm the first-visit experience, and use
+the conditional example when you need an unselected-path comparison.

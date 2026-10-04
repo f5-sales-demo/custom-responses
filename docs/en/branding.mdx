@@ -11,6 +11,14 @@ The published `@f5-sales-demo/docs-theme` version is **4.7.0**. Its shared Secur
 
 Builder **1.3.2** consumes `vendor/npm/docs-theme-4.7.0.tgz` through an exact package reference, committed lockfile and integrity manifest. [Builder PR #1462](https://github.com/f5-sales-demo/docs-builder/pull/1462) merged with passing checks. The cache, security and compact-publication tests were independently rerun successfully.
 
+The accepted builder image is:
+
+```text
+ghcr.io/f5-sales-demo/docs-builder@sha256:5785f53f8dcbcc8786d1c255aed3beb2f0371f1fcdde8bb3f42243f53a8126a3
+```
+
+The protected-main image publication workflow completed successfully, including immutable tag and published-image smoke checks. This image embeds builder 1.3.2 and theme 4.7.0.
+
 ## Verify the published revision
 
 The governed Pages workflow records the exact merged source commit and immutable builder image at [api/revision.json](https://f5-sales-demo.github.io/custom-responses/api/revision.json). Check that `content_ref` equals `commit`, and that the builder is a SHA-256 image reference. A successful source build alone does not prove the published revision.

@@ -513,7 +513,13 @@
       "status": 200,
       "body_contains": "Custom responses origin"
     },
-    "prerequisites": ["Synthetic data", "unmasked control", "origin unchanged", "measured masking"],
+    "prerequisites": [
+      "Synthetic data",
+      "unmasked control",
+      "origin unchanged",
+      "measured masking",
+      "WAF enabled: required by live XC validation"
+    ],
     "verification": "masked-versus-unmasked",
     "synthetic_fields": ["card"]
   }

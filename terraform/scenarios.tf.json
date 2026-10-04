@@ -1238,6 +1238,12 @@
             ],
             "apply_data_guard": {}
           }
+        ],
+        "app_firewall": [
+          {
+            "name": "${xcsh_app_firewall.waf-html.name}",
+            "namespace": "${xcsh_namespace.showcase.name}"
+          }
         ]
       }
     }

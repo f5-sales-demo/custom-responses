@@ -2,7 +2,7 @@
   "approved_plan_sha256": "00f9b02a336ad291831ecf7f3ad4c3ca7eb8e33cec9dfac997267031731f6072",
   "applied": true,
   "apply_complete": false,
-  "namespace": "custom-responses",
+  "namespace": "${xcsh_namespace.showcase.name}",
   "origin_health": "fixture and pinned httpbin responding on VM",
   "created_scenario_lbs": ["cr-waf-html"],
   "live_acceptance_complete": false,

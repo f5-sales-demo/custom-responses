@@ -44,6 +44,55 @@ CONSTRAINTS = {
 BODY_FIELDS = {"custom_page", "blocking_page", "response_body_encoded"}
 
 
+def reduce_schema(schema: dict, resource: str, schemas: dict, contract: dict) -> dict:
+    """Recursively retain bounded schema structure with explicit source context."""
+    if "$ref" in schema:
+        name = schema["$ref"].split("/")[-1]
+        key = resource + ":" + name
+        if key not in contract["definitions"]:
+            contract["definitions"][key] = {}
+            contract["definitions"][key] = reduce_schema(
+                schemas[name], resource, schemas, contract
+            )
+        return {"$ref": key}
+    result = {key: value for key, value in schema.items() if key in CONSTRAINTS}
+    rules = schema.get("x-ves-validation-rules", {})
+    if "ves.io.schema.rules.map.values.string.max_len" in rules:
+        result["additionalProperties"] = {
+            "type": "string",
+            "maxLength": int(rules["ves.io.schema.rules.map.values.string.max_len"]),
+            "encodedBody": True,
+        }
+        result["maxProperties"] = int(rules["ves.io.schema.rules.map.max_pairs"])
+        if rules["ves.io.schema.rules.map.keys.uint32.ranges"] != "3,4,5,300-599":
+            message = "Unexpected official error-map key ranges"
+            raise ValueError(message)
+        result["propertyPattern"] = "^(?:[345]|[345][0-9]{2})$"
+    if "properties" in schema:
+        result["properties"] = {}
+        for key, value in schema["properties"].items():
+            child = reduce_schema(value, resource, schemas, contract)
+            if key in BODY_FIELDS or (key == "body" and child.get("type") == "string"):
+                child["encodedBody"] = True
+            result["properties"][key] = child
+    if "items" in schema:
+        result["items"] = reduce_schema(schema["items"], resource, schemas, contract)
+    if "additionalProperties" in schema:
+        extra = schema["additionalProperties"]
+        result["additionalProperties"] = (
+            reduce_schema(extra, resource, schemas, contract)
+            if isinstance(extra, dict)
+            else extra
+        )
+    if "type" not in result:
+        result["type"] = (
+            "object"
+            if "properties" in result or "format" not in schema
+            else schema["format"]
+        )
+    return result
+
+
 def derive(specifications: dict[str, bytes]) -> dict:
     """Keep selected fields, reachable definitions and official validation bounds."""
     contract: dict = {"resources": {}, "definitions": {}, "sources": []}
@@ -52,64 +101,12 @@ def derive(specifications: dict[str, bytes]) -> dict:
         request = schemas[resource + "CreateRequest"]
         reference = request["properties"]["spec"]["$ref"].split("/")[-1]
 
-        def reduce_schema(
-            schema: dict, resource: str = resource, schemas: dict = schemas
-        ) -> dict:
-            if "$ref" in schema:
-                name = schema["$ref"].split("/")[-1]
-                key = resource + ":" + name
-                if key not in contract["definitions"]:
-                    contract["definitions"][key] = {}
-                    contract["definitions"][key] = reduce_schema(schemas[name])
-                return {"$ref": key}
-            result = {key: value for key, value in schema.items() if key in CONSTRAINTS}
-            rules = schema.get("x-ves-validation-rules", {})
-            if "ves.io.schema.rules.map.values.string.max_len" in rules:
-                result["additionalProperties"] = {
-                    "type": "string",
-                    "maxLength": int(
-                        rules["ves.io.schema.rules.map.values.string.max_len"]
-                    ),
-                    "encodedBody": True,
-                }
-                result["maxProperties"] = int(
-                    rules["ves.io.schema.rules.map.max_pairs"]
-                )
-                if (
-                    rules["ves.io.schema.rules.map.keys.uint32.ranges"]
-                    != "3,4,5,300-599"
-                ):
-                    message = "Unexpected official error-map key ranges"
-                    raise ValueError(message)
-                result["propertyPattern"] = "^(?:[345]|[345][0-9]{2})$"
-            if "properties" in schema:
-                result["properties"] = {}
-                for key, value in schema["properties"].items():
-                    child = reduce_schema(value)
-                    if key in BODY_FIELDS or (
-                        key == "body" and child.get("type") == "string"
-                    ):
-                        child["encodedBody"] = True
-                    result["properties"][key] = child
-            if "items" in schema:
-                result["items"] = reduce_schema(schema["items"])
-            if "additionalProperties" in schema:
-                extra = schema["additionalProperties"]
-                result["additionalProperties"] = (
-                    reduce_schema(extra) if isinstance(extra, dict) else extra
-                )
-            if "type" not in result:
-                result["type"] = (
-                    "object"
-                    if "properties" in result or "format" not in schema
-                    else schema["format"]
-                )
-            return result
-
         contract["resources"][resource] = {
             "type": "object",
             "properties": {
-                key: reduce_schema(schemas[reference]["properties"][key])
+                key: reduce_schema(
+                    schemas[reference]["properties"][key], resource, schemas, contract
+                )
                 for key in FIELDS[resource]
             },
         }

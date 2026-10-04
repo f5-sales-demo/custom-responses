@@ -239,11 +239,17 @@ def project(value: JsonValue, schema: dict) -> JsonValue:
             message = "Array cardinality outside schema bounds"
             raise ValueError(message)
         return [project(child, schema["items"]) for child in value]
+    return scalar(value, schema)
+
+
+def scalar(value: JsonValue, schema: dict) -> JsonValue:
+    """Validate scalar API types and body encodings without accepting bool numbers."""
+    kind = schema["type"]
     valid = {
         "string": isinstance(value, str),
-        "integer": type(value) is int,
-        "number": type(value) in {int, float},
-        "boolean": type(value) is bool,
+        "integer": isinstance(value, int) and not isinstance(value, bool),
+        "number": isinstance(value, (int, float)) and not isinstance(value, bool),
+        "boolean": isinstance(value, bool),
     }
     if not valid.get(kind, False):
         message = "Incompatible schema type: " + kind

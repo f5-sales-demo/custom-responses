@@ -204,60 +204,87 @@ class DocumentationTests(unittest.TestCase):
                 self.assertEqual(item["verification"], "configuration-only")
 
     def test_editorial_and_includes(self):
-        ordered = []
-        outputs = {i["output"] for i in self.prepare.SELECTIONS}
-        outputs |= {
+        pages = [
+            ("index", "Custom Responses"),
+            ("error-responses", "Error responses"),
+            ("maintenance", "Maintenance"),
+            ("acknowledgement", "Static acknowledgement"),
+            ("blocked-requests", "WAF blocking"),
+            ("browser-verification", "JavaScript challenge"),
+            ("captcha-verification", "CAPTCHA"),
+            ("conditional-challenges", "Conditional challenges"),
+            ("bot-configuration", "Bot Defense"),
+            ("redirects", "Redirects"),
+            ("headers-cookies", "Headers and cookies"),
+            ("masking", "Data masking"),
+            ("configuration-reference", "Configuration reference"),
+        ]
+        outputs = {item["output"] for item in self.prepare.SELECTIONS}
+        valid_includes = outputs | {
             name.replace(".json", "-encoded.json")
             for name in outputs
             if name.endswith(".json")
         }
-        for page in (ROOT / "docs/en").glob("*.mdx"):
-            text = page.read_text()
-            order = re.search(r"order: (\d+)", text)
-            self.assertIsNotNone(order, page.name)
-            assert order is not None
-            ordered.append((int(order[1]), page.stem))
-            if page.stem not in {"index", "configuration-reference"}:
-                for heading in [
-                    "Prerequisites",
-                    "Configure",
-                    "Verify",
-                    "Clean up",
-                ]:
-                    self.assertIn("## " + heading, text, page.name)
-            self.assertNotRegex(text, r"/resource/|/0/|Terraform JSON|## Purpose")
-            if page.stem not in {"index", "configuration-reference"}:
-                self.assertIn("receives application requests", text)
-                self.assertRegex(text, r"minutes")
-                self.assertIn("previous", text)
+        used_includes = set()
+        for order, (slug, title) in enumerate(pages, start=1):
+            text = (ROOT / "docs/en" / (slug + ".mdx")).read_text()
+            self.assertIn(f"title: {title}\n", text, slug)
+            self.assertIn(f"description: {title}", text, slug)
+            self.assertIn(f"  order: {order}\n", text, slug)
+            self.assertNotRegex(
+                text, r"(?m)^## (?:Prerequisites|Configure|Verify|Clean up)$"
+            )
+            self.assertNotRegex(text, r"(?m)^\d+\. ")
             self.assertNotRegex(
                 text,
-                r"terraform.*(?:apply|destroy)|sha256:|saved plan|private captures|live proof|zero drift",
+                r"(?i)save the previous|restore the previous|allow about "
+                r"|receives application requests",
             )
-            for filename in re.findall(r"file=\.\./_data/(\S+)", text):
-                self.assertIn(filename, outputs, page.name)
+            self.assertNotRegex(text, r"/resource/|/0/|Terraform JSON|## Purpose")
+            self.assertNotRegex(
+                text,
+                r"terraform.*(?:apply|destroy)|sha256:|saved plan|private captures"
+                r"|live proof|zero drift",
+            )
+            includes = re.findall(r"file=\.\./_data/([^\s]+)", text)
+            for filename in includes:
+                self.assertIn(filename, valid_includes, slug)
+            used_includes.update(includes)
+            if slug not in {"index", "configuration-reference"}:
+                self.assertIn("Visitor", text, slug)
+                self.assertRegex(text, r"\*\*Expected (?:result|configuration):\*\*")
+                self.assertTrue(any(name.endswith(".json") for name in includes))
             self.assertNotRegex(
                 text,
                 r"\.\./(?:deployment|verification|branding|teardown|ownership|scenarios)/",
             )
         self.assertEqual(
-            [name for _, name in sorted(ordered)],
-            [
-                "index",
-                "error-responses",
-                "maintenance",
-                "acknowledgement",
-                "blocked-requests",
-                "browser-verification",
-                "captcha-verification",
-                "conditional-challenges",
-                "bot-configuration",
-                "redirects",
-                "headers-cookies",
-                "masking",
-                "configuration-reference",
-            ],
+            set(path.stem for path in (ROOT / "docs/en").glob("*.mdx")),
+            {slug for slug, _ in pages},
         )
+        self.assertTrue(outputs.issubset(used_includes), outputs - used_includes)
+        body_examples = {
+            "errors-class", "errors-exact", "errors-404", "maintenance",
+            "acknowledgement", "waf-html", "waf-json", "js", "captcha",
+            "policy-js", "policy-captcha", "ddos-js", "bot-block",
+        }
+        self.assertEqual(
+            {name for name in used_includes if name.endswith("-encoded.json")},
+            {name + "-encoded.json" for name in body_examples},
+        )
+
+        landing = (ROOT / "docs/en/index.mdx").read_text()
+        cards = re.findall(
+            r'<LinkCard title="([^"]+)" description="([^"]+)" '
+            r'href="\./([^/]+)/" />',
+            landing,
+        )
+        self.assertEqual(
+            [(slug, title) for title, _, slug in cards],
+            pages[1:],
+        )
+        for title, description, _ in cards:
+            self.assertTrue(description.startswith(title), description)
 
 
 if __name__ == "__main__":

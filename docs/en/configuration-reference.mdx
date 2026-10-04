@@ -1,29 +1,28 @@
 ---
 title: Configuration reference
-description: Use F5 resource JSON fragments, encode response bodies and find complete source examples.
+description: Configuration reference explains resource fragments, placeholders, and encoded response bodies.
 sidebar:
   order: 13
 ---
 
-Use the outcome pages to identify the resource you edit. An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer receives application requests and selects routing or security behavior. It owns error mappings, routes, challenges, Bot settings, response metadata and masking rules. The application firewall referenced by the load balancer owns its blocking page.
+The outcome pages show the fields relevant to each response. Their source-derived examples are resource fragments, not complete create or replacement requests.
 
 ## Resource fragments
 
-The examples use JavaScript Object Notation (JSON) under `spec`, with the object and array types from the official F5 resource schemas. Each fragment shows fields to modify on an existing resource. It is not a complete create or replacement request. Preserve your resource's other settings and select the appropriate mutually exclusive choice when changing a response mechanism.
+Examples use JSON under `spec` with object and array types from the F5 resource schemas. Apply the illustrated fields to the existing resource while preserving its other settings. Routes and rules remain arrays; add entries without replacing unrelated entries. Choose the appropriate mutually exclusive response mechanism.
 
-Replace `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_NAMESPACE>` with the referenced resource name and namespace. Routes and rules remain arrays; merge the illustrated entries into the existing lists rather than replacing unrelated entries.
+Replace `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>`, and `<XC_NAMESPACE>` with resource names and the namespace in your environment.
 
 ## Response-body encoding
 
-Primary examples use `<ENCODED_RESPONSE_BODY>` to keep configuration readable. Replace it with `string:///` followed by canonical padded Base64 encoding of your UTF-8 message. The prefix is part of the value and counts toward the field's length limit. Each outcome states any relevant limit beside its procedure.
+`<ENCODED_RESPONSE_BODY>` marks a body field in a readable example. Replace it with `string:///` followed by canonical padded Base64 encoding of the UTF-8 body. The prefix counts toward the field's length limit. Body examples retain exact encoded values in expanded details. Decoded previews appear as escaped code, so their HTML is not executed or changed.
 
-Expanded details show the exact encoded projected values and decoded source body as code. Code previews display the body without executing its HTML or changing its bytes. Preserve platform-controlled scripts and interactive elements when customizing challenge messages. The error-body `request_id` template remains part of the source body.
+Preserve platform-controlled scripts and interactive elements in challenge bodies. The error-body `request_id` template is part of the source body.
 
 ## Complete configuration sources
 
-- [Load-balancer and application-firewall examples](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) maintain the demonstration settings in Terraform.
-- [Inactive Bot Defense examples](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) maintain the configuration-only alternatives.
+- [Load-balancer and application-firewall examples](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) contain the demonstration settings.
+- [Inactive Bot Defense examples](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) contain configuration-only alternatives.
 - [Provider requirements](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/versions.tf) describe the complete Terraform configuration.
-- [Repository operator instructions](https://github.com/f5-sales-demo/custom-responses/blob/main/operator/README.md) cover infrastructure lifecycle, scenario testing and historical demonstration results.
 
-The preparation script regenerates examples from these sources using a pinned, bounded schema contract. [Projection provenance](https://github.com/f5-sales-demo/custom-responses/blob/main/operator/snippet-provenance.md) records official specification sources and selectors for repository maintainers.
+Maintainer provenance for selectors and schema sources is recorded in the [repository operator notes](https://github.com/f5-sales-demo/custom-responses/blob/main/operator/snippet-provenance.md).

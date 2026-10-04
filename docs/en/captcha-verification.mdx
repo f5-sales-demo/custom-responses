@@ -1,42 +1,25 @@
 ---
-title: Explain CAPTCHA verification
-description: Help visitors understand and complete a human-verification challenge.
+title: CAPTCHA
+description: CAPTCHA explains the human-verification step before a visitor reaches the application.
 sidebar:
   order: 7
 ---
 
-Help visitors understand why they see a verification page before your application. F5 Distributed Cloud supplies Completely Automated Public Turing test to tell Computers and Humans Apart (CAPTCHA); your custom wording explains what the visitor must do next.
-
-## Prerequisites
-
-An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
-
-You need permission to edit an existing HTTP load balancer in its namespace and a test application you are authorized to configure. Your environment must support the chosen challenge. Use a browser that can display and complete the interaction. Allow about 10–15 minutes for configuration, excluding provisioning and security-event testing.
-
-## Configure
-
-### Customize the verification message
+A CAPTCHA asks a visitor to complete a human-verification interaction before reaching the application. The custom page explains what to do.
 
 > **Visitor message:** Please complete the verification to continue.
 
-Keep the platform-controlled interactive elements working when you change the message. This load-balancer choice is unconditional: `/challenge` is a test path, not a path selector. For selected paths, use [conditional challenges](../conditional-challenges/).
+The load balancer's `captcha_challenge.custom_page` supplies the wording; `cookie_expiry` is `300` seconds in this example. Keep the platform-controlled interaction working when changing the page. An accepted cookie changes the returning visitor's experience.
 
-1. Save the previous settings for the fields you change.
-2. Set the load balancer's `captcha_challenge.custom_page` to the encoded message.
-3. Set `cookie_expiry` to `300` seconds.
-4. Save the load balancer.
-
-Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
+This challenge choice is unconditional: `/challenge` is a test path, not a selector. For a selected path, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
 
 [CAPTCHA challenge source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/captcha.json wrap
 ```
 
 <details>
-<summary>Exact encoded configuration and decoded body</summary>
+<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/captcha-encoded.json wrap
 ```
@@ -48,17 +31,4 @@ Decoded body (displayed as code):
 
 </details>
 
-## Verify
-
-1. Open `/challenge` in a fresh browser session on your configured host.
-2. Confirm the custom wording appears alongside the visible human-verification interaction.
-3. Complete verification.
-4. Confirm navigation to the application.
-5. Request the application with the accepted verification cookie.
-6. Confirm the normal application response.
-
-Clear the verification cookie to repeat the first-visit check. Inspect the interaction and completion rather than assuming a fixed challenge status.
-
-## Clean up
-
-Restore the previous load-balancer challenge choice and its message and parameters. Preserve shared security policies and the load balancer. Clear the test browser's challenge cookie before checking the restored experience.
+**Expected result:** In a fresh browser session, the message and usable CAPTCHA appear; completion reaches the application. The accepted cookie allows a normal application response. Clear it to repeat the first-visit experience.

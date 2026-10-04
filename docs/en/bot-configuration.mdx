@@ -1,47 +1,27 @@
 ---
-title: Configure Bot responses
-description: Explore inactive Bot Defense Standard block and redirect examples.
+title: Bot Defense
+description: Bot Defense shows configuration-only block and redirect alternatives for a protected endpoint.
 sidebar:
   order: 9
 ---
 
-Choose the response for a protected endpoint when Bot Defense Standard selects mitigation. A block explains why the request stopped; a redirect leads callers to a help page. These examples remain inactive and configuration-only.
+Bot Defense Standard can block a classified request or redirect its caller to help. These examples are inactive and configuration-only; they do not establish runtime classification or mitigation.
 
-## Prerequisites
+Both alternatives describe secure HTTP POST `/bot-check` for web clients, allow good bots, use the US regional endpoint, and insert asynchronous JavaScript after the head element. `mitigation.block` and `mitigation.redirect` are exclusive choices.
 
-An F5 Distributed Cloud Hypertext Transfer Protocol (HTTP) load balancer is the resource that receives application requests and selects routing or security behavior.
-
-You need access to review its Bot settings and the intended protected endpoint. Bot Defense Standard entitlement and genuine classification are prerequisites for future runtime use. Allow about 10–15 minutes to review a variant, excluding provisioning and security-event testing.
-
-## Configure
-
-### Review the protected endpoint
-
-Both examples configure secure HTTP POST `/bot-check` for web clients, allow good bots, use the US regional endpoint and insert asynchronous JavaScript after the head element. Block and redirect are exclusive mitigation choices.
-
-Replace `<ENCODED_RESPONSE_BODY>` with your encoded message. See [response-body encoding](../configuration-reference/#response-body-encoding).
-
-### Review a block response
+## Block response
 
 > **Visitor message:** Request not accepted.
 
-1. Record the previous load-balancer Bot settings for comparison.
-2. In the load balancer's `bot_defense.policy`, review `protected_app_endpoints` for the method, protocol and path.
-3. Select its `mitigation.block` choice in your configuration draft.
-4. Set `status` to `Forbidden`.
-5. Set `body` to the encoded message.
-
-The encoded block body has a 4,096-character limit, including the prefix. This example does not expose a confirmed field for `Content-Type`.
+The protected endpoint selects `mitigation.block` with `status: Forbidden` and an encoded body. The body has a 4,096-character limit including its prefix. The example does not expose a confirmed `Content-Type` field. See [response-body encoding](../configuration-reference/#response-body-encoding) for the placeholder.
 
 [Bot block source](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/bot-block.json wrap
 ```
 
 <details>
-<summary>Exact encoded configuration and decoded body</summary>
+<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/bot-block-encoded.json wrap
 ```
@@ -53,39 +33,15 @@ Decoded body (displayed as code):
 
 </details>
 
-### Review a help redirect
+**Expected configuration:** The POST endpoint selects the block choice and the intended message. Runtime status, media type, and actual classification remain unverified.
 
-1. Record the previous load-balancer Bot settings for comparison.
-2. Review the protected endpoint selector in your configuration draft.
-3. Select its `mitigation.redirect` choice.
-4. Set `uri` to a help destination that serves the intended content.
+## Help redirect
 
-The example uses an F5-owned help destination. The redirect choice does not establish a particular response status.
+The alternative protected endpoint selects `mitigation.redirect` and sets `uri` to a help destination. The choice does not establish a particular redirect status.
 
 [Bot redirect source](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json)
-
-HTTP load balancer resource fragment:
 
 ```json file=../_data/bot-redirect.json wrap
 ```
 
-<details>
-<summary>Exact encoded configuration</summary>
-
-```json file=../_data/bot-redirect-encoded.json wrap
-```
-
-</details>
-
-## Verify
-
-1. Confirm the draft selects POST `/bot-check` over secure HTTP for web clients.
-2. Confirm each endpoint selects exactly one mitigation action.
-3. Compare the block and redirect variants.
-4. Confirm the redirect destination is suitable before any future activation.
-
-This configuration review does not verify runtime classification, blocking, redirect status or media type. If you later enable mitigation in an authorized environment, compare genuinely classified traffic with legitimate-browser traffic.
-
-## Clean up
-
-Discard the configuration draft or restore the previous Bot settings in it. These examples create no resources, so cleanup is configuration-only. Preserve the load balancer and shared Bot policies.
+**Expected configuration:** The POST endpoint selects only the redirect choice and the destination serves the intended help content. Runtime redirect behavior remains unverified.

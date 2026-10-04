@@ -1,6 +1,6 @@
 ---
 title: Custom Responses
-description: Choose the response experience you want to give visitors and application clients.
+description: Custom Responses explains the visitor experiences available through F5 Distributed Cloud.
 sidebar:
   order: 1
 ---
@@ -9,24 +9,19 @@ import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
 ![Cloud traffic passing through a gateway into clear application and security responses](../assets/custom-responses-hero.webp)
 
-Give visitors a useful explanation when an application fails, a security rule intervenes, or a resource moves. F5 Distributed Cloud lets you customize the message, status, redirect, headers, cookies, or selected response data. Choose the outcome below, then use its configuration example and focused comparison check.
-
-The response mechanism determines when your message appears. Error maps replace eligible error bodies; direct routes answer selected paths; security engines customize their own blocking or challenge responses. Response transformations adjust traffic returned by an origin. Each page explains the distinction where you need it.
+Give visitors a useful explanation when an application fails, a security rule intervenes, or a resource moves. Choose the response you want to show, then inspect its resource example and expected result.
 
 <CardGrid>
-  <LinkCard title="Brand error responses" description="Explain error classes and specific failures with your own message." href="./error-responses/" />
-  <LinkCard title="Display a maintenance message" description="Answer a selected path while an application is unavailable." href="./maintenance/" />
-  <LinkCard title="Return a static acknowledgement" description="Show a fixed receipt message without contacting an origin." href="./acknowledgement/" />
-  <LinkCard title="Customize blocked-request responses" description="Give browser and application clients a clear security-block message." href="./blocked-requests/" />
-  <LinkCard title="Explain browser verification" description="Tell visitors why their browser is being checked." href="./browser-verification/" />
-  <LinkCard title="Explain CAPTCHA verification" description="Help people understand and complete a human-verification challenge." href="./captcha-verification/" />
-  <LinkCard title="Select challenges conditionally" description="Use policy or application-layer protection to select a challenge." href="./conditional-challenges/" />
-  <LinkCard title="Configure Bot responses" description="Explore inactive block and redirect configuration examples." href="./bot-configuration/" />
-  <LinkCard title="Redirect visitors" description="Send a selected path to its new location." href="./redirects/" />
-  <LinkCard title="Adjust response headers and cookies" description="Add useful metadata and remove unwanted origin values." href="./headers-cookies/" />
-  <LinkCard title="Mask sensitive response data" description="Hide selected fields or recognized sensitive values." href="./masking/" />
+  <LinkCard title="Error responses" description="Error responses replace eligible error bodies while retaining status." href="./error-responses/" />
+  <LinkCard title="Maintenance" description="Maintenance shows a fixed page on a selected path." href="./maintenance/" />
+  <LinkCard title="Static acknowledgement" description="Static acknowledgement returns a fixed receipt message." href="./acknowledgement/" />
+  <LinkCard title="WAF blocking" description="WAF blocking gives browsers or clients a clear security message." href="./blocked-requests/" />
+  <LinkCard title="JavaScript challenge" description="JavaScript challenge explains browser verification." href="./browser-verification/" />
+  <LinkCard title="CAPTCHA" description="CAPTCHA explains human verification." href="./captcha-verification/" />
+  <LinkCard title="Conditional challenges" description="Conditional challenges use a policy or mitigation decision." href="./conditional-challenges/" />
+  <LinkCard title="Bot Defense" description="Bot Defense shows configuration-only block and redirect alternatives." href="./bot-configuration/" />
+  <LinkCard title="Redirects" description="Redirects send a selected path to a new location." href="./redirects/" />
+  <LinkCard title="Headers and cookies" description="Headers and cookies adjust response metadata." href="./headers-cookies/" />
+  <LinkCard title="Data masking" description="Data masking hides selected fields or recognized values." href="./masking/" />
+  <LinkCard title="Configuration reference" description="Configuration reference explains fragments and body encoding." href="./configuration-reference/" />
 </CardGrid>
-
-Start with an existing HTTP load balancer and permission to edit the resources described by your chosen outcome. Each page identifies the response owner, shows the visitor experience, and explains how to configure and check it. Bot examples remain configuration-only.
-
-Use the [configuration reference](./configuration-reference/) for resource fragments, response-body encoding and complete source examples.

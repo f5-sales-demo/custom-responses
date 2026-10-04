@@ -9,6 +9,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-control.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: origin
 - Trigger: `/`
 - Expected: `{"body_contains": "Custom responses origin", "status": 200}`
@@ -20,6 +21,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://custom-responses.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: origin
 - Trigger: `/`
 - Expected: `{"body_contains": "Custom responses origin", "status": 200}`
@@ -31,6 +33,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-errors-3.f5-sales-demo.com/status/302)
 
+- Live proof: required
 - Owner: origin; XC mapping applicability must be measured
 - Trigger: `/status/302`
 - Expected: `{"body_contains": "Class 3", "status": 302}`
@@ -42,6 +45,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-errors-4.f5-sales-demo.com/status/418)
 
+- Live proof: required
 - Owner: origin; XC mapping applicability must be measured
 - Trigger: `/status/418`
 - Expected: `{"body_contains": "Class 4", "status": 418}`
@@ -53,6 +57,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-errors-5.f5-sales-demo.com/status/500)
 
+- Live proof: required
 - Owner: origin; XC mapping applicability must be measured
 - Trigger: `/status/500`
 - Expected: `{"body_contains": "Class 5", "status": 500}`
@@ -64,6 +69,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-exact-404.f5-sales-demo.com/status/404)
 
+- Live proof: required
 - Owner: origin; XC exact mapping applicability must be measured
 - Trigger: `/status/404`
 - Expected: `{"body_contains": "Exact 404", "status": 404}`
@@ -75,6 +81,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-exact-503.f5-sales-demo.com/status/503)
 
+- Live proof: required
 - Owner: origin; XC exact mapping applicability must be measured
 - Trigger: `/status/503`
 - Expected: `{"body_contains": "Exact 503", "status": 503}`
@@ -86,6 +93,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-fault-500.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: origin
 - Trigger: `/`
 - Expected: `{"body_contains": "Class 5", "status": 500}`
@@ -97,6 +105,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-fault-502.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: XC upstream fault response
 - Trigger: `/`
 - Expected: `{"body_contains": "Class 5", "status": 502}`
@@ -108,6 +117,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-fault-503.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: XC upstream fault response
 - Trigger: `/`
 - Expected: `{"body_contains": "Class 5", "status": 503}`
@@ -119,6 +129,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-fault-504.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: XC upstream fault response
 - Trigger: `/`
 - Expected: `{"body_contains": "Class 5", "status": 504}`
@@ -130,6 +141,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-maintenance.f5-sales-demo.com/maintenance)
 
+- Live proof: required
 - Owner: XC direct route
 - Trigger: `/maintenance`
 - Expected: `{"body_contains": "Scheduled maintenance", "status": 503}`
@@ -141,6 +153,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-acknowledgement.f5-sales-demo.com/acknowledgement)
 
+- Live proof: required
 - Owner: XC direct route
 - Trigger: `/acknowledgement`
 - Expected: `{"body_contains": "Request received", "status": 200}`
@@ -152,6 +165,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-waf-html.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--)
 
+- Live proof: required
 - Owner: XC WAF
 - Trigger: `/?q=%27%20OR%201%3D1%20--`
 - Expected: `{"body_contains": "Request not accepted", "status": 403}`
@@ -163,6 +177,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-waf-json.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--)
 
+- Live proof: required
 - Owner: XC WAF
 - Trigger: `/?q=%27%20OR%201%3D1%20--`
 - Expected: `{"body_contains": "Request not accepted", "status": 403}`
@@ -174,6 +189,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-js.f5-sales-demo.com/challenge)
 
+- Live proof: required
 - Owner: XC js challenge
 - Trigger: `/challenge`
 - Expected: `{"body_contains": "Please wait while your browser is verified.", "status": null}`
@@ -185,6 +201,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-captcha.f5-sales-demo.com/challenge)
 
+- Live proof: required
 - Owner: XC captcha challenge
 - Trigger: `/challenge`
 - Expected: `{"body_contains": "Please complete the verification to continue.", "status": null}`
@@ -196,6 +213,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-policy-js.f5-sales-demo.com/challenge)
 
+- Live proof: required
 - Owner: XC policy-js challenge
 - Trigger: `/challenge`
 - Expected: `{"body_contains": "Please wait while your browser is verified.", "status": null}`
@@ -207,6 +225,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-policy-captcha.f5-sales-demo.com/challenge)
 
+- Live proof: required
 - Owner: XC policy-captcha challenge
 - Trigger: `/challenge`
 - Expected: `{"body_contains": "Please complete the verification to continue.", "status": null}`
@@ -218,6 +237,7 @@ All endpoints below remain unverified until their live receipt passes.
 
 [Open planned scenario](https://cr-ddos-js.f5-sales-demo.com/challenge)
 
+- Live proof: required
 - Owner: XC ddos-js challenge
 - Trigger: `/challenge`
 - Expected: `{"body_contains": "Please wait while your browser is verified.", "status": null}`
@@ -227,34 +247,37 @@ All endpoints below remain unverified until their live receipt passes.
 
 ## bot-block
 
-[Open planned scenario](https://cr-bot-block.f5-sales-demo.com/bot-check)
+[Configuration example](../bot-configuration/)
 
+- Live proof: not required; configuration-only
 - Owner: XC Bot Defense Standard
 - Trigger: `/bot-check`
 - Expected: `{"body_contains": "Request not accepted", "status": 403}`
 - Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
 - Prerequisites: Bot Defense Standard entitlement; Genuine classified-bot inference; Legitimate browser control; False positives reviewed before block enablement
-- Verification: bot-inference-and-browser
+- Verification: configuration-only
 
-Activation: Review real flag-mode inference and legitimate-browser controls before enabling mitigation.
+Activation: Optional future deployment requires entitlement, a reviewed plan and false-positive checks.
 
 ## bot-redirect
 
-[Open planned scenario](https://cr-bot-redirect.f5-sales-demo.com/bot-check)
+[Configuration example](../bot-configuration/)
 
+- Live proof: not required; configuration-only
 - Owner: XC Bot Defense Standard
 - Trigger: `/bot-check`
 - Expected: `{"body_contains": null, "status": null}`
 - Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
 - Prerequisites: Bot Defense Standard entitlement; Genuine classified-bot inference; Legitimate browser control; False positives reviewed before block enablement
-- Verification: bot-inference-and-browser
+- Verification: configuration-only
 
-Activation: Review real flag-mode inference and legitimate-browser controls before enabling mitigation.
+Activation: Optional future deployment requires entitlement, a reviewed plan and false-positive checks.
 
 ## redirect
 
 [Open planned scenario](https://cr-redirect.f5-sales-demo.com/old)
 
+- Live proof: required
 - Owner: XC redirect route
 - Trigger: `/old`
 - Expected: `{"body_contains": null, "status": 302}`
@@ -266,6 +289,7 @@ Activation: Review real flag-mode inference and legitimate-browser controls befo
 
 [Open planned scenario](https://cr-metadata.f5-sales-demo.com/)
 
+- Live proof: required
 - Owner: XC response metadata; origin body
 - Trigger: `/`
 - Expected: `{"body_contains": "Custom responses origin", "status": 200}`
@@ -277,6 +301,7 @@ Activation: Review real flag-mode inference and legitimate-browser controls befo
 
 [Open planned scenario](https://cr-disclosure.f5-sales-demo.com/sensitive)
 
+- Live proof: required
 - Owner: XC response masking
 - Trigger: `/sensitive`
 - Expected: `{"body_contains": null, "status": 200}`
@@ -288,9 +313,10 @@ Activation: Review real flag-mode inference and legitimate-browser controls befo
 
 [Open planned scenario](https://cr-data-guard.f5-sales-demo.com/sensitive)
 
+- Live proof: required
 - Owner: XC response masking
 - Trigger: `/sensitive`
 - Expected: `{"body_contains": null, "status": 200}`
 - Negative control: `{"body_contains": "Custom responses origin", "path": "/sensitive-control", "status": 200}`
-- Prerequisites: Synthetic data; unmasked control; origin unchanged; measured masking
+- Prerequisites: Synthetic data; unmasked control; origin unchanged; measured masking; WAF enabled: required by live XC validation
 - Verification: masked-versus-unmasked

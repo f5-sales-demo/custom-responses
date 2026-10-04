@@ -10,7 +10,7 @@ description: Understand which engine owns each custom response.
 | WAF blocking           | Application firewall                    | Genuine blocking decision plus custom body and status enum.                                  |
 | JS and CAPTCHA         | Challenge engine                        | Custom wording retains platform scripts and human interaction.                               |
 | Conditional challenges | Policy or DDoS mitigation               | Prove the actual selecting rule or mitigation event.                                         |
-| Bot Standard           | Classified-bot mitigation               | Prove inference and legitimate-browser controls before enabling block or redirect.           |
+| Bot Standard           | Classified-bot mitigation               | Configuration-only; live proof is not required.                                              |
 | Redirect               | Matching route                          | Status and Location; the destination renders its own page.                                   |
 | Metadata               | Load balancer response transformation   | Header and cookie changes preserve the expected origin response.                             |
 | Masking                | Sensitive-data disclosure or Data Guard | Mask selected synthetic data; compare unmasked controls.                                     |
@@ -21,4 +21,4 @@ Service-policy denial, native rate limiting, Advanced Bot connectors and failure
 
 Inline bodies use `string:///` followed by padded Base64. Generic errors, direct responses and challenge messages use a conservative complete-URI limit of 65,536 characters. WAF and Bot bodies use 4,096 characters. JSON source text does not establish a JSON response Content-Type.
 
-The v13.0.3 installed schema lists the Bot status enum without the prototype's length claim. This resolves the local schema projection discrepancy, but does not establish the server contract or entitlement. Bot block remains disabled pending exact server acceptance and inference evidence.
+The v13.0.3 installed schema lists the Bot status enum without the prototype's length claim. This resolves the local schema projection discrepancy, but does not establish the server contract or entitlement. Bot configurations remain inactive examples; runtime acceptance is outside the current proof scope.

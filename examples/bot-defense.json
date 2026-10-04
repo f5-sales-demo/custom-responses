@@ -1,0 +1,137 @@
+{
+  "bot-block": {
+    "name": "cr-bot-block",
+    "namespace": "${xcsh_namespace.showcase.name}",
+    "domains": ["cr-bot-block.f5-sales-demo.com"],
+    "advertise_on_public_default_vip": {},
+    "https_auto_cert": [
+      {
+        "http_redirect": true
+      }
+    ],
+    "default_route_pools": [
+      {
+        "pool": [
+          {
+            "name": "${xcsh_origin_pool.healthy.name}",
+            "namespace": "${xcsh_namespace.showcase.name}"
+          }
+        ],
+        "weight": 1,
+        "priority": 1
+      }
+    ],
+    "bot_defense": [
+      {
+        "regional_endpoint": "US",
+        "policy": [
+          {
+            "javascript_mode": "ASYNC_JS_NO_CACHING",
+            "js_insert_all_pages": [
+              {
+                "javascript_location": "AFTER_HEAD"
+              }
+            ],
+            "protected_app_endpoints": [
+              {
+                "metadata": [
+                  {
+                    "name": "bot-block"
+                  }
+                ],
+                "any_domain": {},
+                "http_methods": ["METHOD_POST"],
+                "protocol": "HTTPS",
+                "web": {},
+                "allow_good_bots": {},
+                "undefined_flow_label": {},
+                "path": [
+                  {
+                    "path": "/bot-check"
+                  }
+                ],
+                "mitigation": [
+                  {
+                    "block": [
+                      {
+                        "status": "Forbidden",
+                        "body": "string:///PHA+UmVxdWVzdCBub3QgYWNjZXB0ZWQuPC9wPg=="
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "bot-redirect": {
+    "name": "cr-bot-redirect",
+    "namespace": "${xcsh_namespace.showcase.name}",
+    "domains": ["cr-bot-redirect.f5-sales-demo.com"],
+    "advertise_on_public_default_vip": {},
+    "https_auto_cert": [
+      {
+        "http_redirect": true
+      }
+    ],
+    "default_route_pools": [
+      {
+        "pool": [
+          {
+            "name": "${xcsh_origin_pool.healthy.name}",
+            "namespace": "${xcsh_namespace.showcase.name}"
+          }
+        ],
+        "weight": 1,
+        "priority": 1
+      }
+    ],
+    "bot_defense": [
+      {
+        "regional_endpoint": "US",
+        "policy": [
+          {
+            "javascript_mode": "ASYNC_JS_NO_CACHING",
+            "js_insert_all_pages": [
+              {
+                "javascript_location": "AFTER_HEAD"
+              }
+            ],
+            "protected_app_endpoints": [
+              {
+                "metadata": [
+                  {
+                    "name": "bot-redirect"
+                  }
+                ],
+                "any_domain": {},
+                "http_methods": ["METHOD_POST"],
+                "protocol": "HTTPS",
+                "web": {},
+                "allow_good_bots": {},
+                "undefined_flow_label": {},
+                "path": [
+                  {
+                    "path": "/bot-check"
+                  }
+                ],
+                "mitigation": [
+                  {
+                    "redirect": [
+                      {
+                        "uri": "https://custom-responses.f5-sales-demo.com/bot-help"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

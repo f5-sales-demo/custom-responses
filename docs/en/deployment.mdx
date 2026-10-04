@@ -42,8 +42,9 @@ terraform -chdir=terraform show ../.artifacts/showcase.tfplan
 sha256sum .artifacts/showcase.tfplan
 ```
 
-The initial plan creates 42 resources: eight Azure resources, one XC namespace, five origin pools, two WAFs and 26 HTTPS
-load balancers. It changes and destroys no existing resources. Costs include B2s VM hours, a 32-GiB Standard LRS disk,
+The current default configuration contains 40 resources: eight Azure resources, one XC namespace, five origin pools,
+two WAFs and 24 HTTPS load balancers. The originally approved plan contained two additional Bot LBs; it has already
+been consumed by the partial apply. Generate and review a new plan for the current configuration. Costs include B2s VM hours, a 32-GiB Standard LRS disk,
 static public IP, outbound traffic, and tenant-specific XC feature charges. Automatic certificates and security features
 depend on tenant entitlement. Use Azure's current estimate for the selected subscription and currency; no unverified
 fixed monthly price is implied.
@@ -60,7 +61,6 @@ Wait for cloud-init, origin health, LB acceptance, DNS and all automatic certifi
 ## Resume the partial deployment
 
 The initial approved apply created the owned origin resources, namespace, pools, WAFs and one LB. Public virtual-host
-usage updates rejected the remaining LBs, and Bot Standard requires an unavailable entitlement. These prerequisites are
-deferred by the user to the next iteration. The current saved recovery plan also replaces the origin VM because
+usage updates rejected the remaining LBs, and Bot Standard is now documented as configuration-only. Public-LB capacity remains deferred to the next iteration. The current saved recovery plan also replaces the origin VM because
 cloud-init content changed. Review that replacement and obtain explicit approval of the new plan before applying.
 Preserve private local state; never reapply the consumed initial plan.

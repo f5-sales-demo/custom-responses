@@ -6,7 +6,7 @@
   "origin_health": "fixture and pinned httpbin responding on VM",
   "created_scenario_lbs": ["cr-waf-html"],
   "live_acceptance_complete": false,
-  "deferred_prerequisites": ["public virtual-host capacity", "Bot Defense Standard entitlement"],
+  "deferred_prerequisites": ["public virtual-host capacity"],
   "certificate_state": "DomainChallengePending",
   "teardown_rebuild_complete": false,
   "zero_change_plan": false,
@@ -14,5 +14,7 @@
   "recovery_plan_sha256": "b6f72ba58b4e49f209b0af71901265668071d8e8b0d39a368b129be03ff93b8b",
   "recovery_plan_applied": false,
   "recovery_requires_review": "Origin VM replacement because custom_data changed; plus remaining LB creates",
-  "source_tests": "9 passed; Terraform validate; documentation lint; secret history scan"
+  "source_tests": "9 passed; Terraform validate; documentation lint; secret history scan",
+  "configuration_only_scenarios": ["bot-block", "bot-redirect"],
+  "bot_live_proof_required": false
 }

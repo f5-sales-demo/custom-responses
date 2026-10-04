@@ -18,8 +18,21 @@ for item in items:
     lines += [
         "## " + item["id"],
         "",
-        "[Open planned scenario](https://" + item["hostname"] + item["trigger"] + ")",
+        (
+            "[Configuration example](../bot-configuration/)"
+            if item["verification"] == "configuration-only"
+            else "[Open planned scenario](https://"
+            + item["hostname"]
+            + item["trigger"]
+            + ")"
+        ),
         "",
+        "- Live proof: "
+        + (
+            "required"
+            if item["live_proof_required"]
+            else "not required; configuration-only"
+        ),
         "- Owner: " + item["owner"],
         "- Trigger: `" + item["trigger"] + "`",
         "- Expected: `" + json.dumps(item["expected"], sort_keys=True) + "`",

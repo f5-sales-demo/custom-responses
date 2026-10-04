@@ -1,0 +1,28 @@
+---
+title: Verify every scenario
+description: Bind genuine live behavior and controls to source, provider, plan and documentation identity.
+---
+
+## Evidence contract
+
+No live acceptance has been completed. A green source test or saved plan is insufficient. Keep raw HTTP headers, bodies, origin logs, security records, browser traces and request IDs in an owner-only directory. Public receipts contain sanitized results and SHA-256 identities only.
+
+Run `python3 scripts/verify_live.py --captures /absolute/private/captures` after deployment. The verifier checks certificate hostname and trust, measured HTTP status, body markers, redirects, metadata and masking controls. Manual evidence remains mandatory for challenge completion, WAF event ownership, Bot inference and conditional selection. Missing evidence leaves the receipt incomplete.
+
+## HTTP and origin checks
+
+For each [inventory entry](../scenarios/), verify DNS, certificate chain and hostname, accepted exact configuration, Content-Type, body, status and negative control. Do not use insecure TLS. Correlate origin and XC records to establish the response owner. `500`, `502`, `503` and `504` expectations are independent assertions, not labels on a returned page. Keep error classes and exact-status precedence configuration separate from proof of applicable runtime replacement.
+
+## Browser and security checks
+
+Use fresh browser contexts for JS and CAPTCHA. Capture the custom wording, actual platform completion and subsequent origin access. A CAPTCHA needs a human participant. Prove unsolved access does not reach the protected origin. For policy challenges, record the matching `challenge-selected-path` rule. For DDoS, use an approved bounded mitigation trigger and retain the actual event; ordinary traffic is the negative control.
+
+WAF acceptance requires a genuinely blocked synthetic request and its matching enforced event. Test HTML and JSON body variants independently, and record actual Content-Type.
+
+Bot LBs initially flag requests. Retain genuine classified-bot inference and legitimate-browser controls, review false positives, then prepare a new saved plan that changes the endpoint mitigation to block or redirect. Obtain approval before applying the changed plan. Measure the resulting response and repeat controls. The initial flag configuration cannot pass the required mitigation scenarios.
+
+## Publication and lifecycle
+
+Inspect desktop and mobile documentation, all scenario links, shared mega-menu navigation, search, hero loading and machine-readable endpoints. Verify the published revision matches the merged source and immutable builder image.
+
+Complete one reviewed owned-resource teardown and rebuild. Compare shared DNS zone and unrelated resources before and after. Repeat all live acceptance and finish with `terraform plan -refresh=true -detailed-exitcode`; only exit 0 qualifies zero drift. Leave the rebuilt showcase online.

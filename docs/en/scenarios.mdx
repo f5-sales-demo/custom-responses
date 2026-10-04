@@ -1,0 +1,296 @@
+---
+title: Scenario inventory
+description: Planned hosts, triggers, owners and acceptance gates.
+---
+
+All endpoints below remain unverified until their live receipt passes.
+
+## control
+
+[Open planned scenario](https://cr-control.f5-sales-demo.com/)
+
+- Owner: origin
+- Trigger: `/`
+- Expected: `{"body_contains": "Custom responses origin", "status": 200}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## index
+
+[Open planned scenario](https://custom-responses.f5-sales-demo.com/)
+
+- Owner: origin
+- Trigger: `/`
+- Expected: `{"body_contains": "Custom responses origin", "status": 200}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## errors-3
+
+[Open planned scenario](https://cr-errors-3.f5-sales-demo.com/status/302)
+
+- Owner: origin; XC mapping applicability must be measured
+- Trigger: `/status/302`
+- Expected: `{"body_contains": "Class 3", "status": 302}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## errors-4
+
+[Open planned scenario](https://cr-errors-4.f5-sales-demo.com/status/418)
+
+- Owner: origin; XC mapping applicability must be measured
+- Trigger: `/status/418`
+- Expected: `{"body_contains": "Class 4", "status": 418}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## errors-5
+
+[Open planned scenario](https://cr-errors-5.f5-sales-demo.com/status/500)
+
+- Owner: origin; XC mapping applicability must be measured
+- Trigger: `/status/500`
+- Expected: `{"body_contains": "Class 5", "status": 500}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## exact-404
+
+[Open planned scenario](https://cr-exact-404.f5-sales-demo.com/status/404)
+
+- Owner: origin; XC exact mapping applicability must be measured
+- Trigger: `/status/404`
+- Expected: `{"body_contains": "Exact 404", "status": 404}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## exact-503
+
+[Open planned scenario](https://cr-exact-503.f5-sales-demo.com/status/503)
+
+- Owner: origin; XC exact mapping applicability must be measured
+- Trigger: `/status/503`
+- Expected: `{"body_contains": "Exact 503", "status": 503}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## fault-500
+
+[Open planned scenario](https://cr-fault-500.f5-sales-demo.com/)
+
+- Owner: origin
+- Trigger: `/`
+- Expected: `{"body_contains": "Class 5", "status": 500}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/healthy", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## fault-502
+
+[Open planned scenario](https://cr-fault-502.f5-sales-demo.com/)
+
+- Owner: XC upstream fault response
+- Trigger: `/`
+- Expected: `{"body_contains": "Class 5", "status": 502}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/healthy", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## fault-503
+
+[Open planned scenario](https://cr-fault-503.f5-sales-demo.com/)
+
+- Owner: XC upstream fault response
+- Trigger: `/`
+- Expected: `{"body_contains": "Class 5", "status": 503}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/healthy", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## fault-504
+
+[Open planned scenario](https://cr-fault-504.f5-sales-demo.com/)
+
+- Owner: XC upstream fault response
+- Trigger: `/`
+- Expected: `{"body_contains": "Class 5", "status": 504}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/healthy", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## maintenance
+
+[Open planned scenario](https://cr-maintenance.f5-sales-demo.com/maintenance)
+
+- Owner: XC direct route
+- Trigger: `/maintenance`
+- Expected: `{"body_contains": "Scheduled maintenance", "status": 503}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## acknowledgement
+
+[Open planned scenario](https://cr-acknowledgement.f5-sales-demo.com/acknowledgement)
+
+- Owner: XC direct route
+- Trigger: `/acknowledgement`
+- Expected: `{"body_contains": "Request received", "status": 200}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## waf-html
+
+[Open planned scenario](https://cr-waf-html.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--)
+
+- Owner: XC WAF
+- Trigger: `/?q=%27%20OR%201%3D1%20--`
+- Expected: `{"body_contains": "Request not accepted", "status": 403}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Enforced WAF signature; matching private WAF event; DNS; automatic certificate
+- Verification: waf-event
+
+## waf-json
+
+[Open planned scenario](https://cr-waf-json.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--)
+
+- Owner: XC WAF
+- Trigger: `/?q=%27%20OR%201%3D1%20--`
+- Expected: `{"body_contains": "Request not accepted", "status": 403}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Enforced WAF signature; matching private WAF event; DNS; automatic certificate
+- Verification: waf-event
+
+## js
+
+[Open planned scenario](https://cr-js.f5-sales-demo.com/challenge)
+
+- Owner: XC js challenge
+- Trigger: `/challenge`
+- Expected: `{"body_contains": "Please wait while your browser is verified.", "status": null}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Actual challenge selection record; fresh browser context; origin access after completion; JS-capable browser
+- Verification: browser-js
+
+## captcha
+
+[Open planned scenario](https://cr-captcha.f5-sales-demo.com/challenge)
+
+- Owner: XC captcha challenge
+- Trigger: `/challenge`
+- Expected: `{"body_contains": "Please complete the verification to continue.", "status": null}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Actual challenge selection record; fresh browser context; origin access after completion; human participant for CAPTCHA
+- Verification: human-captcha
+
+## policy-js
+
+[Open planned scenario](https://cr-policy-js.f5-sales-demo.com/challenge)
+
+- Owner: XC policy-js challenge
+- Trigger: `/challenge`
+- Expected: `{"body_contains": "Please wait while your browser is verified.", "status": null}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Actual challenge selection record; fresh browser context; origin access after completion; JS-capable browser
+- Verification: browser-js
+
+## policy-captcha
+
+[Open planned scenario](https://cr-policy-captcha.f5-sales-demo.com/challenge)
+
+- Owner: XC policy-captcha challenge
+- Trigger: `/challenge`
+- Expected: `{"body_contains": "Please complete the verification to continue.", "status": null}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Actual challenge selection record; fresh browser context; origin access after completion; human participant for CAPTCHA
+- Verification: human-captcha
+
+## ddos-js
+
+[Open planned scenario](https://cr-ddos-js.f5-sales-demo.com/challenge)
+
+- Owner: XC ddos-js challenge
+- Trigger: `/challenge`
+- Expected: `{"body_contains": "Please wait while your browser is verified.", "status": null}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Actual challenge selection record; fresh browser context; origin access after completion; JS-capable browser; Approved bounded actual mitigation trigger; no fabricated flood
+- Verification: ddos-mitigation-and-browser
+
+## bot-block
+
+[Open planned scenario](https://cr-bot-block.f5-sales-demo.com/bot-check)
+
+- Owner: XC Bot Defense Standard
+- Trigger: `/bot-check`
+- Expected: `{"body_contains": "Request not accepted", "status": 403}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Bot Defense Standard entitlement; Genuine classified-bot inference; Legitimate browser control; False positives reviewed before block enablement
+- Verification: bot-inference-and-browser
+
+Activation: Review real flag-mode inference and legitimate-browser controls before enabling mitigation.
+
+## bot-redirect
+
+[Open planned scenario](https://cr-bot-redirect.f5-sales-demo.com/bot-check)
+
+- Owner: XC Bot Defense Standard
+- Trigger: `/bot-check`
+- Expected: `{"body_contains": null, "status": null}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: Bot Defense Standard entitlement; Genuine classified-bot inference; Legitimate browser control; False positives reviewed before block enablement
+- Verification: bot-inference-and-browser
+
+Activation: Review real flag-mode inference and legitimate-browser controls before enabling mitigation.
+
+## redirect
+
+[Open planned scenario](https://cr-redirect.f5-sales-demo.com/old)
+
+- Owner: XC redirect route
+- Trigger: `/old`
+- Expected: `{"body_contains": null, "status": 302}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/different", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: http
+
+## metadata
+
+[Open planned scenario](https://cr-metadata.f5-sales-demo.com/)
+
+- Owner: XC response metadata; origin body
+- Trigger: `/`
+- Expected: `{"body_contains": "Custom responses origin", "status": 200}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/", "status": 200}`
+- Prerequisites: DNS; automatic certificate; reachable fixture origin
+- Verification: headers-cookies-and-origin
+
+## disclosure
+
+[Open planned scenario](https://cr-disclosure.f5-sales-demo.com/sensitive)
+
+- Owner: XC response masking
+- Trigger: `/sensitive`
+- Expected: `{"body_contains": null, "status": 200}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/sensitive-control", "status": 200}`
+- Prerequisites: Synthetic data; unmasked control; origin unchanged; measured masking
+- Verification: masked-versus-unmasked
+
+## data-guard
+
+[Open planned scenario](https://cr-data-guard.f5-sales-demo.com/sensitive)
+
+- Owner: XC response masking
+- Trigger: `/sensitive`
+- Expected: `{"body_contains": null, "status": 200}`
+- Negative control: `{"body_contains": "Custom responses origin", "path": "/sensitive-control", "status": 200}`
+- Prerequisites: Synthetic data; unmasked control; origin unchanged; measured masking
+- Verification: masked-versus-unmasked

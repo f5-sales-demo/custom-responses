@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: wide documentation landing-page hero illustration
+Primary request: Cloud traffic becoming clear, branded responses in an F5 Distributed Cloud custom responses showcase.
+Scene: flowing luminous traffic lines enter a cloud gateway, emerging as orderly response cards with abstract HTML, JSON, shield, redirect arrow and browser verification symbols.
+Style: polished technical illustration, clean geometry, restrained depth, matching an enterprise F5 documentation theme.
+Composition: wide panoramic arrangement with generous breathing room; readable at mobile scale.
+Color palette: deep navy, white, F5 red accents, subtle cool cyan.
+Constraints: no text, no invented logo, no watermark, no people, no sensitive data. The response cards express clarity and successful handling of varied traffic.

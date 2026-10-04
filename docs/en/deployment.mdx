@@ -1,0 +1,51 @@
+---
+title: Deploy with Terraform
+description: Prepare and approve a private saved plan before creating the showcase.
+---
+
+## Prerequisites
+
+Use the authorized `f5-sales-demo` tenant and Azure lab subscription. The operator needs Azure resource permissions and a private XC API context. Keep credentials in private sources or process environment, never in committed files or chat.
+
+The root configuration pins `f5-sales-demo/xcsh` 13.0.3 and `hashicorp/azurerm` 4.51.0. Commit the lockfile. Verify the provider archive against its release checksum and signature before planning.
+
+## State and resource scope
+
+The current backend is **local**, as requested. On the deployment workstation, initialize the backend at an absolute owner-only path outside the checkout:
+
+```bash
+install -d -m 700 "$HOME/.local/state/custom-responses"
+terraform -chdir=terraform init \
+  -backend-config="path=$HOME/.local/state/custom-responses/custom-responses.tfstate"
+```
+
+Retain and back up this state privately. Never initialize against another project's state. Do not run concurrent operators against the local file. The shared Azure storage account is preserved; a future remote-state migration needs a reviewed, separately authorized change.
+
+The project owns `rg-custom-responses` in `eastus2`, a `Standard_B2s` Ubuntu VM, network, subnet, static IP, security group and interface. SSH permits the operator's IPv4 `/32`. Origin listeners permit the provider's pinned Regional Edge networks plus the operator address. httpbin binds only on VM loopback behind the fixture service. The shared DNS zone is consumed through LB-managed records and is not a Terraform resource here.
+
+## Private inputs
+
+Create ignored `terraform/terraform.tfvars.json` containing `subscription_id`, `operator_cidr`, `ssh_public_key`, and `httpbin_image`. The image must use the verified `mccutchen/go-httpbin@sha256:...` digest. No private key is uploaded. Provider authentication reads `XCSH_API_URL` and `XCSH_API_TOKEN` from the process environment.
+
+## Validate and plan
+
+```bash
+python3 -m unittest discover -s tests -p 'test_*.py'
+terraform -chdir=terraform fmt -check
+terraform -chdir=terraform validate
+install -d -m 700 .artifacts
+terraform -chdir=terraform plan -out=../.artifacts/showcase.tfplan
+terraform -chdir=terraform show ../.artifacts/showcase.tfplan
+sha256sum .artifacts/showcase.tfplan
+```
+
+The initial plan creates 42 resources: eight Azure resources, one XC namespace, five origin pools, two WAFs and 26 HTTPS load balancers. It changes and destroys no existing resources. Costs include B2s VM hours, a 32-GiB Standard LRS disk, static public IP, outbound traffic, and tenant-specific XC feature charges. Automatic certificates and security features depend on tenant entitlement. Use Azure's current estimate for the selected subscription and currency; no unverified fixed monthly price is implied.
+
+Obtain explicit user confirmation of the **exact saved plan** before apply. A changed plan requires another review. After approval:
+
+```bash
+terraform -chdir=terraform apply ../.artifacts/showcase.tfplan
+terraform -chdir=terraform output
+```
+
+Wait for cloud-init, origin health, LB acceptance, DNS and all automatic certificates before traffic acceptance. Use [verification](../verification/) to qualify the deployment.

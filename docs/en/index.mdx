@@ -1,0 +1,39 @@
+---
+title: Custom Responses
+description: Explore F5 Distributed Cloud response customization with isolated Terraform scenarios.
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+![Cloud traffic passing through a gateway into clear application and security responses](../assets/custom-responses-hero.webp)
+
+Turn application failures, security decisions, redirects, and response metadata into clear customer experiences. Each scenario uses its own HTTPS hostname and a dedicated response owner.
+
+:::caution[Deployment status]
+This showcase is prepared for deployment. Infrastructure apply and live acceptance are pending. Scenario links describe planned endpoints and are not verified services. Bot mitigations start in flag mode.
+:::
+
+<CardGrid>
+  <LinkCard
+    title="Response ownership"
+    description="Choose the engine that controls the response."
+    href="./ownership/"
+  />
+  <LinkCard
+    title="Scenario inventory"
+    description="Hosts, triggers, expected results, and negative controls."
+    href="./scenarios/"
+  />
+  <LinkCard
+    title="Terraform deployment"
+    description="Review the saved plan and provision isolated infrastructure."
+    href="./deployment/"
+  />
+  <LinkCard
+    title="Live verification"
+    description="Measure response behavior and genuine security triggers."
+    href="./verification/"
+  />
+</CardGrid>
+
+The planned live index is [custom-responses.f5-sales-demo.com](https://custom-responses.f5-sales-demo.com/). Start with the [Terraform walkthrough](./deployment/) and review [teardown ownership](./teardown/) before provisioning.

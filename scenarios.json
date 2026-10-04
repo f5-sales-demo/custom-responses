@@ -1,0 +1,520 @@
+[
+  {
+    "id": "control",
+    "hostname": "cr-control.f5-sales-demo.com",
+    "group": "control",
+    "owner": "origin",
+    "trigger": "/",
+    "expected": {
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "index",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "index",
+    "owner": "origin",
+    "trigger": "/",
+    "expected": {
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "errors-3",
+    "hostname": "cr-errors-3.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "origin; XC mapping applicability must be measured",
+    "trigger": "/status/302",
+    "expected": {
+      "status": 302,
+      "body_contains": "Class 3"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate."
+  },
+  {
+    "id": "errors-4",
+    "hostname": "cr-errors-4.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "origin; XC mapping applicability must be measured",
+    "trigger": "/status/418",
+    "expected": {
+      "status": 418,
+      "body_contains": "Class 4"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate."
+  },
+  {
+    "id": "errors-5",
+    "hostname": "cr-errors-5.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "origin; XC mapping applicability must be measured",
+    "trigger": "/status/500",
+    "expected": {
+      "status": 500,
+      "body_contains": "Class 5"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate."
+  },
+  {
+    "id": "exact-404",
+    "hostname": "cr-exact-404.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "origin; XC exact mapping applicability must be measured",
+    "trigger": "/status/404",
+    "expected": {
+      "status": 404,
+      "body_contains": "Exact 404"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "exact-503",
+    "hostname": "cr-exact-503.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "origin; XC exact mapping applicability must be measured",
+    "trigger": "/status/503",
+    "expected": {
+      "status": 503,
+      "body_contains": "Exact 503"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "fault-500",
+    "hostname": "cr-fault-500.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "origin",
+    "trigger": "/",
+    "expected": {
+      "status": 500,
+      "body_contains": "Class 5"
+    },
+    "negative_control": {
+      "path": "/healthy",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "fault-502",
+    "hostname": "cr-fault-502.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "XC upstream fault response",
+    "trigger": "/",
+    "expected": {
+      "status": 502,
+      "body_contains": "Class 5"
+    },
+    "negative_control": {
+      "path": "/healthy",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "fault-503",
+    "hostname": "cr-fault-503.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "XC upstream fault response",
+    "trigger": "/",
+    "expected": {
+      "status": 503,
+      "body_contains": "Class 5"
+    },
+    "negative_control": {
+      "path": "/healthy",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "fault-504",
+    "hostname": "cr-fault-504.f5-sales-demo.com",
+    "group": "errors",
+    "owner": "XC upstream fault response",
+    "trigger": "/",
+    "expected": {
+      "status": 504,
+      "body_contains": "Class 5"
+    },
+    "negative_control": {
+      "path": "/healthy",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "maintenance",
+    "hostname": "cr-maintenance.f5-sales-demo.com",
+    "group": "direct",
+    "owner": "XC direct route",
+    "trigger": "/maintenance",
+    "expected": {
+      "status": 503,
+      "body_contains": "Scheduled maintenance"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "acknowledgement",
+    "hostname": "cr-acknowledgement.f5-sales-demo.com",
+    "group": "direct",
+    "owner": "XC direct route",
+    "trigger": "/acknowledgement",
+    "expected": {
+      "status": 200,
+      "body_contains": "Request received"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http"
+  },
+  {
+    "id": "waf-html",
+    "hostname": "cr-waf-html.f5-sales-demo.com",
+    "group": "waf",
+    "owner": "XC WAF",
+    "trigger": "/?q=%27%20OR%201%3D1%20--",
+    "expected": {
+      "status": 403,
+      "body_contains": "Request not accepted"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["Enforced WAF signature", "matching private WAF event", "DNS", "automatic certificate"],
+    "verification": "waf-event"
+  },
+  {
+    "id": "waf-json",
+    "hostname": "cr-waf-json.f5-sales-demo.com",
+    "group": "waf",
+    "owner": "XC WAF",
+    "trigger": "/?q=%27%20OR%201%3D1%20--",
+    "expected": {
+      "status": 403,
+      "body_contains": "Request not accepted"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["Enforced WAF signature", "matching private WAF event", "DNS", "automatic certificate"],
+    "verification": "waf-event"
+  },
+  {
+    "id": "js",
+    "hostname": "cr-js.f5-sales-demo.com",
+    "group": "challenge",
+    "owner": "XC js challenge",
+    "trigger": "/challenge",
+    "expected": {
+      "status": null,
+      "body_contains": "Please wait while your browser is verified."
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Actual challenge selection record",
+      "fresh browser context",
+      "origin access after completion",
+      "JS-capable browser"
+    ],
+    "verification": "browser-js"
+  },
+  {
+    "id": "captcha",
+    "hostname": "cr-captcha.f5-sales-demo.com",
+    "group": "challenge",
+    "owner": "XC captcha challenge",
+    "trigger": "/challenge",
+    "expected": {
+      "status": null,
+      "body_contains": "Please complete the verification to continue."
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Actual challenge selection record",
+      "fresh browser context",
+      "origin access after completion",
+      "human participant for CAPTCHA"
+    ],
+    "verification": "human-captcha"
+  },
+  {
+    "id": "policy-js",
+    "hostname": "cr-policy-js.f5-sales-demo.com",
+    "group": "conditional",
+    "owner": "XC policy-js challenge",
+    "trigger": "/challenge",
+    "expected": {
+      "status": null,
+      "body_contains": "Please wait while your browser is verified."
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Actual challenge selection record",
+      "fresh browser context",
+      "origin access after completion",
+      "JS-capable browser"
+    ],
+    "verification": "browser-js"
+  },
+  {
+    "id": "policy-captcha",
+    "hostname": "cr-policy-captcha.f5-sales-demo.com",
+    "group": "conditional",
+    "owner": "XC policy-captcha challenge",
+    "trigger": "/challenge",
+    "expected": {
+      "status": null,
+      "body_contains": "Please complete the verification to continue."
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Actual challenge selection record",
+      "fresh browser context",
+      "origin access after completion",
+      "human participant for CAPTCHA"
+    ],
+    "verification": "human-captcha"
+  },
+  {
+    "id": "ddos-js",
+    "hostname": "cr-ddos-js.f5-sales-demo.com",
+    "group": "conditional",
+    "owner": "XC ddos-js challenge",
+    "trigger": "/challenge",
+    "expected": {
+      "status": null,
+      "body_contains": "Please wait while your browser is verified."
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Actual challenge selection record",
+      "fresh browser context",
+      "origin access after completion",
+      "JS-capable browser",
+      "Approved bounded actual mitigation trigger; no fabricated flood"
+    ],
+    "verification": "ddos-mitigation-and-browser"
+  },
+  {
+    "id": "bot-block",
+    "hostname": "cr-bot-block.f5-sales-demo.com",
+    "group": "bot",
+    "owner": "XC Bot Defense Standard",
+    "trigger": "/bot-check",
+    "expected": {
+      "status": 403,
+      "body_contains": "Request not accepted"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Bot Defense Standard entitlement",
+      "Genuine classified-bot inference",
+      "Legitimate browser control",
+      "False positives reviewed before block enablement"
+    ],
+    "verification": "bot-inference-and-browser",
+    "method": "POST",
+    "activation_gate": "Review real flag-mode inference and legitimate-browser controls before enabling mitigation.",
+    "enabled_mitigation": "flag",
+    "delivery_state": "pending mitigation review"
+  },
+  {
+    "id": "bot-redirect",
+    "hostname": "cr-bot-redirect.f5-sales-demo.com",
+    "group": "bot",
+    "owner": "XC Bot Defense Standard",
+    "trigger": "/bot-check",
+    "expected": {
+      "status": null,
+      "body_contains": null
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "Bot Defense Standard entitlement",
+      "Genuine classified-bot inference",
+      "Legitimate browser control",
+      "False positives reviewed before block enablement"
+    ],
+    "verification": "bot-inference-and-browser",
+    "method": "POST",
+    "activation_gate": "Review real flag-mode inference and legitimate-browser controls before enabling mitigation.",
+    "enabled_mitigation": "flag",
+    "delivery_state": "pending mitigation review"
+  },
+  {
+    "id": "redirect",
+    "hostname": "cr-redirect.f5-sales-demo.com",
+    "group": "redirect",
+    "owner": "XC redirect route",
+    "trigger": "/old",
+    "expected": {
+      "status": 302,
+      "body_contains": null
+    },
+    "negative_control": {
+      "path": "/different",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "expected_location": "https://cr-redirect.f5-sales-demo.com/new"
+  },
+  {
+    "id": "metadata",
+    "hostname": "cr-metadata.f5-sales-demo.com",
+    "group": "metadata",
+    "owner": "XC response metadata; origin body",
+    "trigger": "/",
+    "expected": {
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "headers-cookies-and-origin"
+  },
+  {
+    "id": "disclosure",
+    "hostname": "cr-disclosure.f5-sales-demo.com",
+    "group": "masking",
+    "owner": "XC response masking",
+    "trigger": "/sensitive",
+    "expected": {
+      "status": 200,
+      "body_contains": null
+    },
+    "negative_control": {
+      "path": "/sensitive-control",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["Synthetic data", "unmasked control", "origin unchanged", "measured masking"],
+    "verification": "masked-versus-unmasked",
+    "synthetic_fields": ["card", "ssn"]
+  },
+  {
+    "id": "data-guard",
+    "hostname": "cr-data-guard.f5-sales-demo.com",
+    "group": "masking",
+    "owner": "XC response masking",
+    "trigger": "/sensitive",
+    "expected": {
+      "status": 200,
+      "body_contains": null
+    },
+    "negative_control": {
+      "path": "/sensitive-control",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["Synthetic data", "unmasked control", "origin unchanged", "measured masking"],
+    "verification": "masked-versus-unmasked",
+    "synthetic_fields": ["card", "ssn"]
+  }
+]

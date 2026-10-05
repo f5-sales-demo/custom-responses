@@ -67,3 +67,40 @@ All 13 English pages passed at 1440 × 1000 and 390 × 844 with details closed a
 Landing groups, 33 distinct internal content links and fragments, Pagefind, and English LLM output passed. The mobile landing and CAPTCHA pages were also inspected at full size.
 
 Snippet preparation produced 54 source-selected files. All 23 Python tests, seven managed shell test files, Terraform format and validation, Ruff, managed prose and pre-commit checks, changed-scope PII enforcement and audit, repository hygiene, and Gitleaks passed. Terraform configuration, inactive Bot sources, scenario inventory, generator code, and shared theme were not changed.
+
+## Content and outline audit for issue #17
+
+This pass checks the 13 English pages for empty-looking sections, repeated labels, and prose that does not help the reader. Normal titles, breadcrumbs, sidebar labels, and card order remain useful navigation. The page-specific disposition is below.
+
+| Page | Finding | Disposition |
+| --- | --- | --- |
+| Overview | “Use a resource example” introduces one card, making the heading look larger than its content. | Keep the three outcome groups and their card order; link the Configuration reference in one sentence after them. |
+| Error responses | Collapsed class and exact-status disclosures hide encoded values. The class `3` JSON and class `5` decoded message come from different mappings. | Show encoded JSON inline; label the separate class `5` decoded preview explicitly. Keep the status comparison and real subsection outline. |
+| Maintenance | “On this page → Overview” has no subsection to list. The resource fragment repeats the encoded version in a collapsed disclosure. | Disable the outline and show exact encoded JSON followed by its escaped decoded preview. |
+| Static acknowledgement | The empty outline and collapsed duplicate slow scanning. | Disable the outline and show one encoded fragment and its escaped preview; keep the backend-processing limit beside it. |
+| WAF blocking | HTML and JSON body alternatives are hidden behind duplicate fragments. | Show each encoded firewall example inline, keep their different labels, and retain the attachment fragment and real subsection outline. |
+| JavaScript challenge | The empty outline and collapsed body obscure the message. | Disable the outline; show encoded JSON and escaped preview inline. Keep the cookie and test-path context. |
+| CAPTCHA | The empty outline and collapsed body obscure the visitor prompt. | Disable the outline; show encoded JSON and escaped preview inline. Keep the controls and returning-cookie context. |
+| Conditional challenges | Three collapsed examples resemble empty alternative sections. | Show each encoded policy or mitigation example and escaped preview inline; keep the selector comparison and real subsection outline. |
+| Bot Defense | The block body is hidden behind a duplicate fragment. | Show encoded block JSON and escaped preview inline; retain the distinct redirect example and configuration-only limit. |
+| Redirects | The page has no subsections, so the outline displays only “Overview.” | Disable the outline; keep the single exact route JSON and redirect-chain check. |
+| Headers and cookies | The page has no subsections, so the outline displays only “Overview.” | Disable the outline; keep the single exact metadata JSON and control-host comparison. |
+| Data masking | The two mechanisms and their attachment are distinct, with real subsections. | Keep both source-selected fragments, their labels, and the outline; no prose added. |
+| Configuration reference | Placeholder-body guidance repeats the old two-copy display. | Explain how to encode a body using the exact examples now visible in outcome pages; keep reference subsections and resource-name placeholders. |
+
+The previous audits remain as historical records of their own revisions. This pass preserves generated snippet bytes and source validation; only the reader's choice of existing generated includes changes.
+
+### Verification for issue #17
+
+The pinned builder `ghcr.io/f5-sales-demo/docs-builder@sha256:5785f53f8dcbcc8786d1c255aed3beb2f0371f1fcdde8bb3f42243f53a8126a3` built the candidate.
+Local evidence is retained at `/data/robin-GIT/evidence/custom-responses-17/` with build and check logs, the browser audit, and 26 desktop/mobile screenshots.
+The review used 1440 × 1000 and 390 × 844 viewports. All 13 pages retained a title, sidebar entry, breadcrumb where applicable, and readable code.
+No page overflow, empty code, unloaded image, script error, collapsed example, or encoded-body placeholder appeared.
+The six pages without subsections omitted the “On this page” outline; pages with subsections retained it.
+Contact sheets and full Maintenance and WAF mobile captures were inspected for layout and wrapping.
+
+The rendered crawl passed 32 distinct internal links and fragments; the three distinct external source links returned HTTP 200.
+Pagefind found Maintenance, and the English LLM index and full text contained the expected titles and Configuration reference.
+Snippet preparation produced 54 source-selected files. All 23 Python tests, seven managed shell suites, Terraform format and validation, Ruff,
+managed prose and changed-file pre-commit checks, changed-scope PII enforcement and audit, repository hygiene, and Gitleaks passed.
+No source JSON, generator, scenario inventory, infrastructure, shared theme, or translation file changed.

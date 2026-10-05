@@ -13,25 +13,17 @@ Both examples protect POST `/bot-check` over a secure connection for web clients
 
 > **Visitor message:** Request not accepted.
 
-The block alternative uses `mitigation.block` with `status: Forbidden` and an encoded body. The body has a 4,096-character limit including its prefix. The Bot response has no confirmed `Content-Type` setting. See [response-body encoding](../configuration-reference/#response-body-encoding) for the placeholder.
+The block alternative uses `mitigation.block` with `status: Forbidden` and an encoded body. The body has a 4,096-character limit including its prefix. The Bot response has no confirmed `Content-Type` setting. See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
 
 [Bot block source](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json)
-
-```json file=../_data/bot-block.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/bot-block-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/bot-block.html wrap
 ```
-
-</details>
 
 **Expected configuration:** The POST endpoint has one block action and the intended message. This checks settings only; runtime classification, response status, and media type remain unverified.
 

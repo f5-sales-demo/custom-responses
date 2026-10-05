@@ -9,7 +9,7 @@ A web application firewall (WAF) decides when to block a request. Configure `blo
 
 Use Hypertext Markup Language (HTML) for browser pages or JavaScript Object Notation (JSON) for application clients.
 
-The encoded `blocking_page` value has a 4,096-character limit including the prefix. See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
+The encoded `blocking_page` value has a 4,096-character limit including the prefix. See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
 
 ## HTML blocking page
 
@@ -19,21 +19,13 @@ Set `blocking_page.response_code` to `Forbidden` and put the HTML message in `bl
 
 [HTML blocking page source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/waf-html.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
-
 ```json file=../_data/waf-html-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/waf-html.html wrap
 ```
-
-</details>
 
 Attach the configured firewall to the load balancer by name and namespace:
 
@@ -44,24 +36,16 @@ Attach the configured firewall to the load balancer by name and namespace:
 
 ## JSON blocking message
 
-Visitor response:
-
-```json file=../_data/waf-json-body.json wrap
-```
-
-For application clients, use the same `Forbidden` code with the JSON body shown above:
+For application clients, use the same `Forbidden` code with a JSON body:
 
 [JSON blocking page source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/waf-json.json wrap
-```
-
-<details>
-<summary>Exact encoded JSON blocking body</summary>
 
 ```json file=../_data/waf-json-encoded.json wrap
 ```
 
-</details>
+**Decoded preview (shown as JSON):**
+
+```json file=../_data/waf-json-body.json wrap
+```
 
 **Expected result:** A blocked request returns `403` with parseable JSON, and the firewall event confirms the block. Inspect `Content-Type` because a JSON body does not set that header by itself. Compare a benign request with the normal origin response.

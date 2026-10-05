@@ -1,6 +1,7 @@
 ---
 title: CAPTCHA
 description: CAPTCHA guides visitors through the human-verification step.
+tableOfContents: false
 sidebar:
   order: 7
 ---
@@ -11,24 +12,16 @@ A human-verification challenge asks visitors to complete a task before reaching 
 
 The load balancer's `captcha_challenge.custom_page` supplies the wording; `cookie_expiry` is `300` seconds in this example. Keep the CAPTCHA controls usable when customizing the page. A returning visitor with an accepted cookie may not see the challenge again.
 
-This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
+This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
 
 [CAPTCHA challenge source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/captcha.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/captcha-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/captcha.html wrap
 ```
-
-</details>
 
 **Expected result:** In a fresh browser session, the visitor sees the message, completes a usable CAPTCHA, and reaches the application. With an accepted cookie, a repeat request normally reaches the application without another challenge. Clear the cookie to test the first visit again.

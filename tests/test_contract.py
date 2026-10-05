@@ -223,6 +223,20 @@ class Contract(unittest.TestCase):
             self.assertLessEqual(len(uri), 4096)
             base64.b64decode(uri.removeprefix("string:///"), validate=True)
 
+    def test_acceptance_record_does_not_promote_examples(self):
+        record = json.loads((ROOT / "acceptance/current-iteration.json").read_text())
+        self.assertEqual(record["source_load_balancer_count"], len(self.lbs))
+        self.assertEqual(record["source_scenario_count"], len(self.items))
+        self.assertEqual(
+            record["live_proof_required_count"],
+            sum(item["live_proof_required"] for item in self.items),
+        )
+        self.assertEqual(record["created_scenario_lbs"], ["cr-waf-html"])
+        self.assertEqual(record["verified_live_scenarios"], [])
+        self.assertTrue(record["unverified_scenarios_are_examples"])
+        self.assertFalse(record["first_wave_plan_approved"])
+        self.assertFalse(record["first_wave_plan_applied"])
+
     def test_teardown_and_state(self):
         self.assertNotIn("xcsh_dns_zone", self.tf["resource"])
         self.assertEqual(

@@ -10,6 +10,29 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+BODY_EXAMPLES = {
+    "errors-class",
+    "errors-exact",
+    "errors-404",
+    "maintenance",
+    "acknowledgement",
+    "waf-html",
+    "waf-json",
+    "js",
+    "captcha",
+    "policy-js",
+    "policy-captcha",
+    "ddos-js",
+    "bot-block",
+}
+NO_SUBSECTIONS = {
+    "maintenance",
+    "acknowledgement",
+    "browser-verification",
+    "captcha-verification",
+    "redirects",
+    "headers-cookies",
+}
 
 
 class DocumentationTests(unittest.TestCase):
@@ -220,29 +243,6 @@ class DocumentationTests(unittest.TestCase):
             ("configuration-reference", "Configuration reference"),
         ]
         outputs = {item["output"] for item in self.prepare.SELECTIONS}
-        body_examples = {
-            "errors-class",
-            "errors-exact",
-            "errors-404",
-            "maintenance",
-            "acknowledgement",
-            "waf-html",
-            "waf-json",
-            "js",
-            "captcha",
-            "policy-js",
-            "policy-captcha",
-            "ddos-js",
-            "bot-block",
-        }
-        no_subsections = {
-            "maintenance",
-            "acknowledgement",
-            "browser-verification",
-            "captcha-verification",
-            "redirects",
-            "headers-cookies",
-        }
         valid_includes = outputs | {
             name.replace(".json", "-encoded.json")
             for name in outputs
@@ -256,10 +256,10 @@ class DocumentationTests(unittest.TestCase):
             self.assertIn(f"  order: {order}\n", text, slug)
             self.assertEqual(
                 "tableOfContents: false\n" in text,
-                slug in no_subsections,
+                slug in NO_SUBSECTIONS,
                 slug,
             )
-            if slug in no_subsections:
+            if slug in NO_SUBSECTIONS:
                 self.assertNotIn("\n## ", text, slug)
             elif slug != "index":
                 self.assertIn("\n## ", text, slug)
@@ -297,16 +297,16 @@ class DocumentationTests(unittest.TestCase):
             {slug for slug, _ in pages},
         )
         expected_includes = {
-            name for name in outputs if name.removesuffix(".json") not in body_examples
-        } | {name + "-encoded.json" for name in body_examples}
+            name for name in outputs if name.removesuffix(".json") not in BODY_EXAMPLES
+        } | {name + "-encoded.json" for name in BODY_EXAMPLES}
         self.assertEqual(used_includes, expected_includes)
         self.assertEqual(
             {name for name in used_includes if name.endswith("-encoded.json")},
-            {name + "-encoded.json" for name in body_examples},
+            {name + "-encoded.json" for name in BODY_EXAMPLES},
         )
         for slug in {slug for slug, _ in pages} - {"index", "configuration-reference"}:
             text = (ROOT / "docs/en" / (slug + ".mdx")).read_text()
-            for name in body_examples:
+            for name in BODY_EXAMPLES:
                 encoded = f"file=../_data/{name}-encoded.json"
                 if encoded not in text:
                     continue
@@ -329,7 +329,11 @@ class DocumentationTests(unittest.TestCase):
         )
         self.assertEqual(
             re.findall(r"(?m)^## (.+)$", landing),
-            ["Application messages", "Security checks and blocks", "Routes and response data"],
+            [
+                "Application messages",
+                "Security checks and blocks",
+                "Routes and response data",
+            ],
         )
         self.assertEqual(
             landing.count("[Configuration reference](./configuration-reference/)"), 1

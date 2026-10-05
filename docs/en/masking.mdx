@@ -9,27 +9,27 @@ Masking hides sensitive values without replacing the entire response. For known 
 
 | Mechanism | Selection | Expected change |
 | --- | --- | --- |
-| Sensitive-data disclosure rule | GET `/sensitive` and named JSON fields | Selected values are hidden; other fields remain usable. |
-| Data Guard rule | `/sensitive` with an attached application firewall | Supported sensitive values are masked in the selected response. |
+| Sensitive-data disclosure rule | GET `/disclosure` and named JSON fields | Selected values are hidden; other fields remain usable. |
+| Data Guard rule | `/data-guard` with an attached application firewall | Supported sensitive values are masked in the selected response. |
 
 ## Selected JSON fields
 
 > **Visitor response:** The JSON response keeps its structure but hides the values of `card` and `ssn`.
 
-The `sensitive_data_disclosure_rules` entry matches GET `/sensitive`, names `card` and `ssn` in `body.fields`, and selects `mask`. The replacement text can vary; check that the original values are gone.
+The `sensitive_data_disclosure_rules` entry matches GET `/disclosure`, names `card` and `ssn` in `body.fields`, and selects `mask`. The replacement text can vary; check that the original values are gone.
 
 [Selected-field masking source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/disclosure.json wrap
 ```
 
-**Expected result:** `/sensitive` returns `200` without the selected synthetic values, while unrelated fields remain intact. Compare `/sensitive-control`, which this rule does not select.
+**Expected result:** `/disclosure` returns `200` without the selected synthetic values, while unrelated fields remain intact. Compare `/disclosure-control`, which this rule does not select.
 
 ## Data Guard
 
 > **Visitor response:** Supported credit-card and Social Security numbers are masked.
 
-The `data_guard_rules` entry matches `/sensitive` and selects `apply_data_guard`. The path rule does not define new recognition patterns. Data Guard requires an application firewall attached through the load balancer's `app_firewall` reference.
+The `data_guard_rules` entry matches `/data-guard` and selects `apply_data_guard`. The path rule does not define new recognition patterns. Data Guard requires an application firewall attached through the load balancer's `app_firewall` reference.
 
 [Data Guard path selection source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -41,4 +41,4 @@ Firewall attachment:
 ```json file=../_data/data-guard-attach.json wrap
 ```
 
-**Expected result:** `/sensitive` returns `200` with supported synthetic values masked and other content intact. Compare `/sensitive-control`. Test Data Guard separately from selected-field masking to confirm which rule changed the response.
+**Expected result:** `/data-guard` returns `200` with supported synthetic values masked and other content intact. Compare `/data-guard-control`. Both rules share the JSON WAF load balancer but select separate paths. Compare each path with its matching control to identify the rule that changed the response.

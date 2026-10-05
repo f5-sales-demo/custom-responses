@@ -11,17 +11,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BODY_EXAMPLES = {
-    "errors-class",
-    "errors-exact",
-    "errors-404",
+    "errors",
     "maintenance",
     "acknowledgement",
     "waf-html",
     "waf-json",
     "js",
     "captcha",
-    "policy-js",
-    "policy-captcha",
+    "policy",
     "ddos-js",
     "bot-block",
 }
@@ -80,7 +77,7 @@ class DocumentationTests(unittest.TestCase):
                 (root / source).write_bytes((ROOT / source).read_bytes())
             tf_path = root / "terraform/scenarios.tf.json"
             tf = json.loads(tf_path.read_text())
-            tf["resource"]["xcsh_http_loadbalancer"]["redirect"]["routes"][0][
+            tf["resource"]["xcsh_http_loadbalancer"]["actions"]["routes"][2][
                 "redirect_route"
             ][0]["route_redirect"][0]["response_code"] = 307
             tf_path.write_text(json.dumps(tf))
@@ -93,9 +90,7 @@ class DocumentationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp)
             bad = dict(self.prepare.SELECTIONS[0], pointer="/missing")
-            collision = dict(
-                self.prepare.SELECTIONS[0], output="errors-class-encoded.json"
-            )
+            collision = dict(self.prepare.SELECTIONS[0], output="errors-encoded.json")
             for selections in [
                 [bad],
                 [self.prepare.SELECTIONS[0]] * 2,
@@ -126,9 +121,9 @@ class DocumentationTests(unittest.TestCase):
                 (root / source).write_bytes((ROOT / source).read_bytes())
             tf_path = root / "terraform/scenarios.tf.json"
             tf = json.loads(tf_path.read_text())
-            mapping = tf["resource"]["xcsh_http_loadbalancer"]["errors-3"][
-                "more_option"
-            ][0]["custom_errors"]
+            mapping = tf["resource"]["xcsh_http_loadbalancer"]["errors"]["more_option"][
+                0
+            ]["custom_errors"]
             mapping["3"] = "string:///!"
             tf_path.write_text(json.dumps(tf))
             with self.assertRaises(ValueError):
@@ -150,7 +145,7 @@ class DocumentationTests(unittest.TestCase):
                 ],
                 "<ENCODED_RESPONSE_BODY>",
             )
-            policy = json.loads((output / "policy-js.json").read_text())["spec"][
+            policy = json.loads((output / "policy.json").read_text())["spec"][
                 "policy_based_challenge"
             ]
             self.assertIsInstance(policy, dict)
@@ -211,6 +206,17 @@ class DocumentationTests(unittest.TestCase):
             self.assertTrue(source["url"].startswith("https://docs.cloud.f5.com/"))
         for schema in contract["definitions"].values():
             self.assertIn("type", schema)
+
+    def test_selector_ledger_tracks_current_sources(self):
+        ledger = (ROOT / "operator/snippet-provenance.md").read_text()
+        for item in self.prepare.SELECTIONS:
+            row = f"| `{item['output']}` | `{item['source']}` | `{item['pointer']}` |"
+            self.assertIn(row, ledger)
+        self.assertEqual(
+            ledger.count(" | `terraform/scenarios.tf.json` | ")
+            + ledger.count(" | `examples/bot-defense.json` | "),
+            len(self.prepare.SELECTIONS),
+        )
 
     def test_all_scenarios_have_one_disposition(self):
         coverage = json.loads((ROOT / "operator/scenario-coverage.json").read_text())

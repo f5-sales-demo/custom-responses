@@ -9,7 +9,7 @@ Git. Infrastructure applies require explicit approval of the exact saved plan.
 Documentation and branding delivery uses the governed Starlight pipeline and shared theme. The user accepted the desktop/mobile visual previews. `operator/branding.md` records the published theme and immutable builder release; `/api/revision.json` identifies the deployed source and image.
 
 Infrastructure remains partially deployed. The WAF HTML LB has a valid automatic certificate and measured benign
-`200` / custom blocked `403` responses; full scenario acceptance is incomplete. Public virtual-host capacity is deferred.
+`200` / custom blocked `403` responses; full scenario acceptance is incomplete. The source now groups compatible examples on eight load balancers. Check public virtual-host capacity and create-rate behavior against the live tenant before each deployment wave.
 Bot entries are configuration-only and excluded from deployment and required live proof. Preserve private local state
 and captures. A changed recovery plan requires explicit approval before apply. Documentation publication does not
 qualify full live acceptance, teardown/rebuild or zero drift.

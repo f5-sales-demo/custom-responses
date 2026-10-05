@@ -39,11 +39,16 @@ class FixtureTests(unittest.TestCase):
 
     def test_unmasked_control_is_identical_at_origin(self):
         bodies = []
-        for path in ["/sensitive", "/sensitive-control"]:
+        for path in [
+            "/disclosure",
+            "/disclosure-control",
+            "/data-guard",
+            "/data-guard-control",
+        ]:
             with urllib.request.urlopen(self.base + path, timeout=2) as response:
                 self.assertEqual(response.headers["Content-Type"], "application/json")
                 bodies.append(response.read())
-        self.assertEqual(bodies[0], bodies[1])
+        self.assertTrue(all(body == bodies[0] for body in bodies[1:]))
         self.assertIn(b"4111111111111111", bodies[0])
         self.assertIn(b"example-ssn", bodies[0])
 

@@ -6,15 +6,44 @@
   "origin_health": "fixture and pinned httpbin responding on VM",
   "created_scenario_lbs": ["cr-waf-html"],
   "live_acceptance_complete": false,
-  "deferred_prerequisites": ["public virtual-host capacity"],
-  "certificate_state": "DomainChallengePending",
+  "deferred_prerequisites": [
+    "effective virtual_host.public capacity",
+    "exact saved-plan approval",
+    "independent response-owner evidence"
+  ],
+  "certificate_state": "cr-waf-html TLS verified 2026-10-05; other hosts unverified",
   "teardown_rebuild_complete": false,
   "zero_change_plan": false,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
   "recovery_plan_sha256": "b6f72ba58b4e49f209b0af71901265668071d8e8b0d39a368b129be03ff93b8b",
   "recovery_plan_applied": false,
   "recovery_requires_review": "Origin VM replacement because custom_data changed; plus remaining LB creates",
-  "source_tests": "9 passed; Terraform validate; documentation lint; secret history scan",
+  "source_tests": "Python unittest suite; 7 managed shell test files; Terraform validate; Ruff; pre-commit; staged PII enforcement and audit",
   "configuration_only_scenarios": ["bot-block", "bot-redirect"],
-  "bot_live_proof_required": false
+  "bot_live_proof_required": false,
+  "source_load_balancer_count": 8,
+  "source_scenario_count": 26,
+  "live_proof_required_count": 24,
+  "verified_live_scenarios": [],
+  "unverified_scenarios_are_examples": true,
+  "quota_snapshot": {
+    "checked_at_utc": "2026-10-05T15:23:50Z",
+    "namespace": "system",
+    "virtual_host": {
+      "limit": 200,
+      "used": 63
+    },
+    "virtual_host_public": {
+      "limit": 35,
+      "used": 35
+    }
+  },
+  "recovery_plan_superseded": true,
+  "full_plan_sha256": "85188aee4a0ccdc879bf9ab310b8ab79e3668644da6be01f592012b2237c7a7d",
+  "full_plan_has_origin_replacement": true,
+  "first_wave_plan_sha256": "da53539da0aebc1bc02a47f1cb3fe4fde3bb37fa969a9e63c5c2d73472107321",
+  "first_wave_plan_changes": ["create xcsh_http_loadbalancer.errors"],
+  "first_wave_plan_approved": false,
+  "first_wave_plan_applied": false,
+  "origin_fixture_legacy_links": "Preexisting live fixture still links unverified examples; replacement requires separate saved-plan approval."
 }

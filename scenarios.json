@@ -1,7 +1,7 @@
 [
   {
     "id": "control",
-    "hostname": "cr-control.f5-sales-demo.com",
+    "hostname": "custom-responses.f5-sales-demo.com",
     "group": "control",
     "owner": "origin",
     "trigger": "/",
@@ -16,7 +16,8 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "index",
@@ -35,11 +36,12 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "errors-3",
-    "hostname": "cr-errors-3.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "origin; XC mapping applicability must be measured",
     "trigger": "/status/302",
@@ -55,11 +57,12 @@
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
     "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate.",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "errors-4",
-    "hostname": "cr-errors-4.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "origin; XC mapping applicability must be measured",
     "trigger": "/status/418",
@@ -75,11 +78,12 @@
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
     "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate.",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "errors-5",
-    "hostname": "cr-errors-5.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "origin; XC mapping applicability must be measured",
     "trigger": "/status/500",
@@ -95,11 +99,12 @@
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
     "expected_owner_evidence": "Correlate private origin record and edge request record; origin body replacement is a live gate.",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "exact-404",
-    "hostname": "cr-exact-404.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "origin; XC exact mapping applicability must be measured",
     "trigger": "/status/404",
@@ -114,11 +119,12 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "exact-503",
-    "hostname": "cr-exact-503.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "origin; XC exact mapping applicability must be measured",
     "trigger": "/status/503",
@@ -133,14 +139,15 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "fault-500",
-    "hostname": "cr-fault-500.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "origin",
-    "trigger": "/",
+    "trigger": "/fault/500",
     "expected": {
       "status": 500,
       "body_contains": "Class 5"
@@ -152,14 +159,15 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "fault-502",
-    "hostname": "cr-fault-502.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "XC upstream fault response",
-    "trigger": "/",
+    "trigger": "/fault/502",
     "expected": {
       "status": 502,
       "body_contains": "Class 5"
@@ -171,17 +179,18 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "fault-503",
-    "hostname": "cr-fault-503.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
-    "owner": "XC upstream fault response",
-    "trigger": "/",
+    "owner": "XC upstream fault response; exact 503 mapping takes precedence",
+    "trigger": "/fault/503",
     "expected": {
       "status": 503,
-      "body_contains": "Class 5"
+      "body_contains": "Exact 503"
     },
     "negative_control": {
       "path": "/healthy",
@@ -190,14 +199,15 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "fault-504",
-    "hostname": "cr-fault-504.f5-sales-demo.com",
+    "hostname": "cr-errors.f5-sales-demo.com",
     "group": "errors",
     "owner": "XC upstream fault response",
-    "trigger": "/",
+    "trigger": "/fault/504",
     "expected": {
       "status": 504,
       "body_contains": "Class 5"
@@ -209,11 +219,12 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "maintenance",
-    "hostname": "cr-maintenance.f5-sales-demo.com",
+    "hostname": "custom-responses.f5-sales-demo.com",
     "group": "direct",
     "owner": "XC direct route",
     "trigger": "/maintenance",
@@ -228,11 +239,12 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "acknowledgement",
-    "hostname": "cr-acknowledgement.f5-sales-demo.com",
+    "hostname": "custom-responses.f5-sales-demo.com",
     "group": "direct",
     "owner": "XC direct route",
     "trigger": "/acknowledgement",
@@ -247,7 +259,8 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "waf-html",
@@ -266,7 +279,8 @@
     },
     "prerequisites": ["Enforced WAF signature", "matching private WAF event", "DNS", "automatic certificate"],
     "verification": "waf-event",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "waf-json",
@@ -285,7 +299,8 @@
     },
     "prerequisites": ["Enforced WAF signature", "matching private WAF event", "DNS", "automatic certificate"],
     "verification": "waf-event",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "js",
@@ -309,7 +324,8 @@
       "JS-capable browser"
     ],
     "verification": "browser-js",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "captcha",
@@ -333,14 +349,15 @@
       "human participant for CAPTCHA"
     ],
     "verification": "human-captcha",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "policy-js",
-    "hostname": "cr-policy-js.f5-sales-demo.com",
+    "hostname": "cr-policy.f5-sales-demo.com",
     "group": "conditional",
     "owner": "XC policy-js challenge",
-    "trigger": "/challenge",
+    "trigger": "/policy-js",
     "expected": {
       "status": null,
       "body_contains": "Please wait while your browser is verified."
@@ -357,14 +374,15 @@
       "JS-capable browser"
     ],
     "verification": "browser-js",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "policy-captcha",
-    "hostname": "cr-policy-captcha.f5-sales-demo.com",
+    "hostname": "cr-policy.f5-sales-demo.com",
     "group": "conditional",
     "owner": "XC policy-captcha challenge",
-    "trigger": "/challenge",
+    "trigger": "/policy-captcha",
     "expected": {
       "status": null,
       "body_contains": "Please complete the verification to continue."
@@ -381,7 +399,8 @@
       "human participant for CAPTCHA"
     ],
     "verification": "human-captcha",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "ddos-js",
@@ -406,7 +425,8 @@
       "Approved bounded actual mitigation trigger; no fabricated flood"
     ],
     "verification": "ddos-mitigation-and-browser",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "bot-block",
@@ -466,7 +486,7 @@
   },
   {
     "id": "redirect",
-    "hostname": "cr-redirect.f5-sales-demo.com",
+    "hostname": "custom-responses.f5-sales-demo.com",
     "group": "redirect",
     "owner": "XC redirect route",
     "trigger": "/old",
@@ -481,12 +501,13 @@
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "http",
-    "expected_location": "https://cr-redirect.f5-sales-demo.com/new",
-    "live_proof_required": true
+    "expected_location": "https://custom-responses.f5-sales-demo.com/new",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "metadata",
-    "hostname": "cr-metadata.f5-sales-demo.com",
+    "hostname": "custom-responses.f5-sales-demo.com",
     "group": "metadata",
     "owner": "XC response metadata; origin body",
     "trigger": "/",
@@ -497,44 +518,47 @@
     "negative_control": {
       "path": "/",
       "status": 200,
-      "body_contains": "Custom responses origin"
+      "body_contains": "Custom responses origin",
+      "hostname": "cr-errors.f5-sales-demo.com"
     },
     "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
     "verification": "headers-cookies-and-origin",
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "disclosure",
-    "hostname": "cr-disclosure.f5-sales-demo.com",
+    "hostname": "cr-waf-json.f5-sales-demo.com",
     "group": "masking",
     "owner": "XC response masking",
-    "trigger": "/sensitive",
+    "trigger": "/disclosure",
     "expected": {
       "status": 200,
       "body_contains": null
     },
     "negative_control": {
-      "path": "/sensitive-control",
+      "path": "/disclosure-control",
       "status": 200,
       "body_contains": "Custom responses origin"
     },
     "prerequisites": ["Synthetic data", "unmasked control", "origin unchanged", "measured masking"],
     "verification": "masked-versus-unmasked",
     "synthetic_fields": ["card", "ssn"],
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   },
   {
     "id": "data-guard",
-    "hostname": "cr-data-guard.f5-sales-demo.com",
+    "hostname": "cr-waf-json.f5-sales-demo.com",
     "group": "masking",
     "owner": "XC response masking",
-    "trigger": "/sensitive",
+    "trigger": "/data-guard",
     "expected": {
       "status": 200,
       "body_contains": null
     },
     "negative_control": {
-      "path": "/sensitive-control",
+      "path": "/data-guard-control",
       "status": 200,
       "body_contains": "Custom responses origin"
     },
@@ -547,6 +571,7 @@
     ],
     "verification": "masked-versus-unmasked",
     "synthetic_fields": ["card"],
-    "live_proof_required": true
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
   }
 ]

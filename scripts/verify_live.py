@@ -22,7 +22,11 @@ def capture(
     if curl is None:
         message = "curl"
         raise FileNotFoundError(message)
-    stem = item["id"] + "-" + hashlib.sha256((method + path).encode()).hexdigest()[:12]
+    stem = (
+        item["id"]
+        + "-"
+        + hashlib.sha256((item["hostname"] + method + path).encode()).hexdigest()[:12]
+    )
     headers, body = directory / (stem + ".headers"), directory / (stem + ".body")
     result = subprocess.run(  # noqa: S603 -- executable and argv validated; no shell
         [
@@ -69,6 +73,79 @@ def check_expected(expected: dict[str, Any], response: dict[str, Any]) -> list[s
     return failures
 
 
+def check_metadata(positive: dict[str, Any], control: dict[str, Any]) -> list[str]:
+    """Require transformed metadata on the action host and original fields on control."""
+    failures = []
+    headers = positive["headers"].lower()
+    if (
+        "x-showcase: custom-responses" not in headers
+        or "set-cookie: showcase=custom-responses" not in headers
+    ):
+        failures.append("added header/cookie absent")
+    if "x-origin-remove:" in headers or "set-cookie: origin-remove=" in headers:
+        failures.append("removed header/cookie retained")
+    control_headers = control["headers"].lower()
+    if (
+        "x-showcase:" in control_headers
+        or "set-cookie: showcase=" in control_headers
+        or "x-origin-remove:" not in control_headers
+        or "set-cookie: origin-remove=" not in control_headers
+    ):
+        failures.append("untransformed host control failed")
+    return failures
+
+
+def check_redirect(
+    item: dict[str, Any], response: dict[str, Any], directory: Path
+) -> list[str]:
+    """Check the redirect destination without following the first response."""
+    failures = []
+    if ("location: " + item["expected_location"]).lower() not in response[
+        "headers"
+    ].lower():
+        failures.append("Location mismatch")
+    destination = capture(item, "/new", directory)
+    failures += check_expected(
+        {"status": 200, "body_contains": "Custom responses origin"}, destination
+    )
+    return failures
+
+
+def check_masking(
+    scenario_id: str, positive: dict[str, Any], control: dict[str, Any]
+) -> list[str]:
+    """Require selected values to disappear only from the selected response."""
+    values = [b"4111111111111111"]
+    if scenario_id == "disclosure":
+        values.append(b"example-ssn")
+    return [
+        "masking or unmasked control failed"
+        for value in values
+        if value in positive["body"] or value not in control["body"]
+    ]
+
+
+def required_proof_keys(item: dict[str, Any]) -> list[str]:
+    """Keep independent evidence requirements tied to each scenario type."""
+    keys = [
+        "config_digest",
+        "origin_evidence_digest",
+        "response_owner",
+        "source_commit",
+        "provider_digest",
+        "plan_digest",
+    ]
+    if item["verification"] not in [
+        "http",
+        "headers-cookies-and-origin",
+        "masked-versus-unmasked",
+    ]:
+        keys += ["trigger_evidence_digest", "negative_control_verified"]
+    if item["group"] in ["challenge", "conditional", "bot"]:
+        keys += ["browser_completion_verified", "origin_after_completion_digest"]
+    return keys
+
+
 # pylint: disable-next=too-many-branches
 def main() -> int:
     """Capture every scenario and leave incomplete evidence failing."""
@@ -106,61 +183,25 @@ def main() -> int:
             positive = capture(
                 item, item["trigger"], args.captures, item.get("method", "GET")
             )
-            control = capture(item, item["negative_control"]["path"], args.captures)
+            control_item = {
+                **item,
+                "hostname": item["negative_control"].get("hostname", item["hostname"]),
+            }
+            control = capture(
+                control_item, item["negative_control"]["path"], args.captures
+            )
             failures += check_expected(item["expected"], positive)
             # Fresh challenge controls need browser and origin evidence instead of a curl 200.
             if item["group"] not in ["challenge", "conditional", "masking"]:
                 failures += check_expected(item["negative_control"], control)
             if item["id"] == "redirect":
-                if ("location: " + item["expected_location"]).lower() not in positive[
-                    "headers"
-                ].lower():
-                    failures.append("Location mismatch")
-                destination = capture(item, "/new", args.captures)
-                failures += check_expected(
-                    {"status": 200, "body_contains": "Custom responses origin"},
-                    destination,
-                )
+                failures += check_redirect(item, positive, args.captures)
             if item["id"] == "metadata":
-                headers = positive["headers"].lower()
-                if (
-                    "x-showcase: custom-responses" not in headers
-                    or "set-cookie: showcase=custom-responses" not in headers
-                ):
-                    failures.append("added header/cookie absent")
-                if (
-                    "x-origin-remove:" in headers
-                    or "set-cookie: origin-remove=" in headers
-                ):
-                    failures.append("removed header/cookie retained")
+                failures += check_metadata(positive, control)
             if item["group"] == "masking":
-                values = [b"4111111111111111"]
-                if item["id"] == "disclosure":
-                    values.append(b"example-ssn")
-                for value in values:
-                    if value in positive["body"] or value not in control["body"]:
-                        failures.append("masking or unmasked control failed")
+                failures += check_masking(item["id"], positive, control)
             proof = evidence.get(item["id"], {})
-            required = [
-                "config_digest",
-                "origin_evidence_digest",
-                "response_owner",
-                "source_commit",
-                "provider_digest",
-                "plan_digest",
-            ]
-            if item["verification"] not in [
-                "http",
-                "headers-cookies-and-origin",
-                "masked-versus-unmasked",
-            ]:
-                required += ["trigger_evidence_digest", "negative_control_verified"]
-            if item["group"] in ["challenge", "conditional", "bot"]:
-                required += [
-                    "browser_completion_verified",
-                    "origin_after_completion_digest",
-                ]
-            if not all(proof.get(k) for k in required):
+            if not all(proof.get(k) for k in required_proof_keys(item)):
                 failures.append(
                     "independent configuration, owner, trigger or browser evidence missing"
                 )

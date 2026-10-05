@@ -1,11 +1,11 @@
 ---
 title: Data masking
-description: Data masking hides selected JSON fields or supported sensitive values in responses.
+description: Data masking hides selected fields or recognized sensitive values before a response reaches the client.
 sidebar:
   order: 12
 ---
 
-Masking reduces unintended disclosure without replacing the whole response. Selected-field rules target known JSON fields; Data Guard recognizes supported sensitive values. Use synthetic test data when checking either mechanism.
+Masking hides sensitive values without replacing the entire response. For known JavaScript Object Notation (JSON) fields, name the fields to hide. Data Guard detects supported credit card and Social Security number formats. Use synthetic data to test either mechanism.
 
 | Mechanism | Selection | Expected change |
 | --- | --- | --- |
@@ -14,22 +14,22 @@ Masking reduces unintended disclosure without replacing the whole response. Sele
 
 ## Selected JSON fields
 
-> **Visitor response:** The usual JSON structure, with values in `card` and `ssn` hidden.
+> **Visitor response:** The JSON response keeps its structure but hides the values of `card` and `ssn`.
 
-`sensitive_data_disclosure_rules` selects GET `/sensitive`, names the fields in `body.fields`, and chooses `mask`. Measure the replacement text rather than assuming a particular string.
+The `sensitive_data_disclosure_rules` entry matches GET `/sensitive`, names `card` and `ssn` in `body.fields`, and selects `mask`. The replacement text can vary; check that the original values are gone.
 
 [Selected-field masking source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/disclosure.json wrap
 ```
 
-**Expected result:** `/sensitive` returns `200` with the selected synthetic values absent and unrelated fields intact. Compare `/sensitive-control` to attribute the change to this rule.
+**Expected result:** `/sensitive` returns `200` without the selected synthetic values, while unrelated fields remain intact. Compare `/sensitive-control`, which this rule does not select.
 
 ## Data Guard
 
 > **Visitor response:** Supported credit-card and Social Security numbers are masked.
 
-A `data_guard_rules` path rule selects `/sensitive` and `apply_data_guard`. Recognition is supplied by Data Guard; the path rule does not define new patterns. This mechanism requires an application firewall attached through the load balancer's `app_firewall` reference.
+The `data_guard_rules` entry matches `/sensitive` and selects `apply_data_guard`. The path rule does not define new recognition patterns. Data Guard requires an application firewall attached through the load balancer's `app_firewall` reference.
 
 [Data Guard path selection source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -41,4 +41,4 @@ Firewall attachment:
 ```json file=../_data/data-guard-attach.json wrap
 ```
 
-**Expected result:** `/sensitive` returns `200` with supported synthetic values masked and remaining content usable. Compare `/sensitive-control`, and test this mechanism separately from selected-field masking so the result is attributable.
+**Expected result:** `/sensitive` returns `200` with supported synthetic values masked and other content intact. Compare `/sensitive-control`. Test Data Guard separately from selected-field masking to confirm which rule changed the response.

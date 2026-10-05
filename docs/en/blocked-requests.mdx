@@ -1,11 +1,13 @@
 ---
 title: WAF blocking
-description: WAF blocking provides an HTML or JSON message when the application firewall blocks a request.
+description: WAF blocking shows a browser page or structured message when the application firewall rejects a request.
 sidebar:
   order: 5
 ---
 
-A web application firewall (WAF) supplies the blocking body after it decides to reject a request. Its application-firewall resource owns `blocking_page`; the load balancer references that firewall through `app_firewall`. The examples require a firewall in blocking mode and an authorized request that triggers its rule.
+A web application firewall (WAF) decides when to block a request. Configure `blocking_page` on the application firewall, then attach that firewall to the load balancer through `app_firewall`. Use a firewall in blocking mode and an authorized test request that triggers a rule.
+
+Use Hypertext Markup Language (HTML) for browser pages or JavaScript Object Notation (JSON) for application clients.
 
 The encoded `blocking_page` value has a 4,096-character limit including the prefix. See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
 
@@ -13,7 +15,7 @@ The encoded `blocking_page` value has a 4,096-character limit including the pref
 
 > **Visitor message:** Request not accepted
 
-The firewall's `blocking_page.response_code` is `Forbidden`. Its `blocking_page.blocking_page` supplies the HTML body.
+Set `blocking_page.response_code` to `Forbidden` and put the HTML message in `blocking_page.blocking_page`.
 
 [HTML blocking page source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -33,12 +35,12 @@ Decoded body (displayed as code):
 
 </details>
 
-The load balancer attaches that firewall by name and namespace:
+Attach the configured firewall to the load balancer by name and namespace:
 
 ```json file=../_data/waf-attach.json wrap
 ```
 
-**Expected result:** A blocked request returns `403` with the readable page, and the firewall records a blocking decision. A benign request still reaches the origin. A fixed `403` from a route does not establish that the WAF blocked it.
+**Expected result:** A blocked request returns `403` with the readable page; a benign request still reaches the origin. Check the firewall event: a `403` response alone does not prove the WAF made the block decision.
 
 ## JSON blocking message
 
@@ -47,7 +49,7 @@ Visitor response:
 ```json file=../_data/waf-json-body.json wrap
 ```
 
-The alternative firewall configuration uses the same `Forbidden` code and a JSON body:
+For application clients, use the same `Forbidden` code with the JSON body shown above:
 
 [JSON blocking page source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -62,4 +64,4 @@ The alternative firewall configuration uses the same `Forbidden` code and a JSON
 
 </details>
 
-**Expected result:** A blocked request returns `403` and JSON that the client can parse; the firewall records its decision. A JSON body alone does not establish `Content-Type`, so inspect the actual header and compare a benign request.
+**Expected result:** A blocked request returns `403` with parseable JSON, and the firewall event confirms the block. Inspect `Content-Type` because a JSON body does not set that header by itself. Compare a benign request with the normal origin response.

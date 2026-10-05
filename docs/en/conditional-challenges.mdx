@@ -1,11 +1,11 @@
 ---
 title: Conditional challenges
-description: Conditional challenges select verification through a policy rule or DDoS mitigation.
+description: Conditional challenges use policy rules or DDoS mitigation to select verification.
 sidebar:
   order: 8
 ---
 
-A policy can select browser or human verification for a sensitive path. Application-layer distributed denial-of-service (DDoS) mitigation can select JavaScript verification during an active mitigation event. These are separate alternatives.
+A policy rule can select JavaScript or human verification for a sensitive path. The human-verification option is a CAPTCHA, short for “Completely Automated Public Turing test to tell Computers and Humans Apart.” Application-layer distributed denial-of-service (DDoS) mitigation can also select JavaScript verification during an event.
 
 | Alternative | Selector | Comparison |
 | --- | --- | --- |
@@ -13,13 +13,13 @@ A policy can select browser or human verification for a sensitive path. Applicat
 | Policy CAPTCHA | Exact `/challenge` rule | `/` bypasses verification. |
 | DDoS JavaScript | Active application-layer mitigation | Normal traffic outside the event. |
 
-See [response-body encoding](../configuration-reference/#response-body-encoding) for the custom-page placeholder. Preserve platform-controlled challenge scripts and interactions.
+See [response-body encoding](../configuration-reference/#response-body-encoding) for the custom-page placeholder. Keep the JavaScript verification script or CAPTCHA controls usable when customizing a challenge message.
 
 ## Policy-selected JavaScript challenge
 
 > **Visitor message:** Please wait while your browser is verified.
 
-`policy_based_challenge.js_challenge_parameters` supplies the page and parameters. A rule matching exactly `/challenge` selects `enable_javascript_challenge`; `no_challenge` is the default. Cookie expiry affects repeat visits.
+`policy_based_challenge.js_challenge_parameters` supplies the page and parameters. A rule matching exactly `/challenge` selects `enable_javascript_challenge`; `no_challenge` is the default. A valid verification cookie can let a returning visitor continue without repeating the challenge.
 
 [Policy JavaScript source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -65,7 +65,7 @@ Decoded body (displayed as code):
 
 </details>
 
-**Expected result:** A fresh visit to `/challenge` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Verify the selecting rule independently of the JavaScript alternative.
+**Expected result:** A fresh visit to `/challenge` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Confirm the CAPTCHA policy rule selected the request.
 
 ## DDoS-selected JavaScript challenge
 
@@ -91,4 +91,4 @@ Decoded body (displayed as code):
 
 </details>
 
-**Expected result:** During an authorized mitigation exercise, the challenge correlates with the actual mitigation event and browser completion reaches the application. Compare normal traffic outside the event; custom wording alone does not prove mitigation activated.
+**Expected result:** During an authorized mitigation exercise, confirm that the mitigation event selected the challenge and that visitors can complete it. Compare normal traffic outside the event; custom wording alone does not prove mitigation activated.

@@ -1,19 +1,19 @@
 ---
 title: Headers and cookies
-description: Headers and cookies adjust response metadata while preserving the application body.
+description: Headers and cookies add or remove response metadata without changing the application body.
 sidebar:
   order: 11
 ---
 
-Response transformations can add useful metadata and remove origin values that callers should not receive.
+The load balancer can add headers and cookies to an application response and remove unwanted values before returning it to the client.
 
 > **Visitor response:** `x-showcase: custom-responses` and a `showcase=custom-responses` cookie, without `x-origin-remove` or `origin-remove`.
 
-The load balancer's `more_option` owns the add and remove lists. The added header uses `append: false`. The cookie has path `/`, Secure, HttpOnly, SameSite Lax, and `overwrite: true`. Check name collisions before overwriting origin values. A transformed cookie does not create an authenticated application session.
+Configure the add and remove lists under the load balancer's `more_option` field. The added header uses `append: false`. The cookie has path `/`, Secure, HttpOnly, SameSite Lax, and `overwrite: true`. Check name collisions before overwriting origin values. Adding a cookie here does not sign a user in.
 
 [Response transformations source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/metadata.json wrap
 ```
 
-**Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the origin body. Compare with an untransformed control host: these settings affect the load balancer rather than a dedicated path.
+**Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the application body. Compare with an untransformed control host because these settings apply to the load balancer, not just one path.

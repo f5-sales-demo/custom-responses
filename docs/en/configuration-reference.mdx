@@ -1,28 +1,26 @@
 ---
 title: Configuration reference
-description: Configuration reference explains resource fragments, placeholders, and encoded response bodies.
+description: Configuration reference explains how to use resource fragments, placeholders, and encoded bodies.
 sidebar:
   order: 13
 ---
 
-The outcome pages show the fields relevant to each response. Their source-derived examples are resource fragments, not complete create or replacement requests.
+Each example shows only the fields needed for its outcome. Add those fields to an existing resource; the example is not a complete configuration.
 
 ## Resource fragments
 
-Examples use JSON under `spec` with object and array types from the F5 resource schemas. Apply the illustrated fields to the existing resource while preserving its other settings. Routes and rules remain arrays; add entries without replacing unrelated entries. Choose the appropriate mutually exclusive response mechanism.
+The JavaScript Object Notation (JSON) snippets show fields under `spec`. Keep their object and array structure when you add them to a resource. Add routes and rules to existing lists without overwriting unrelated entries. Where the schema offers alternative response choices, select only one.
 
 Replace `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>`, and `<XC_NAMESPACE>` with resource names and the namespace in your environment.
 
 ## Response-body encoding
 
-`<ENCODED_RESPONSE_BODY>` marks a body field in a readable example. Replace it with `string:///` followed by canonical padded Base64 encoding of the UTF-8 body. The prefix counts toward the field's length limit. Body examples retain exact encoded values in expanded details. Decoded previews appear as escaped code, so their HTML is not executed or changed.
+`<ENCODED_RESPONSE_BODY>` marks a body field in a readable example. Encode the message as UTF-8 (8-bit Unicode Transformation Format), convert those bytes to Base64 with `=` padding, then prepend `string:///`. The prefix counts toward the field's length limit. Expanded details retain exact encoded values; decoded previews display markup as code without executing it.
 
-Preserve platform-controlled scripts and interactive elements in challenge bodies. The error-body `request_id` template is part of the source body.
+When customizing a challenge page, keep F5's verification script or CAPTCHA controls in place so visitors can complete it. The `request_id` template is part of the example error body.
 
 ## Complete configuration sources
 
-- [Load-balancer and application-firewall examples](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) contain the demonstration settings.
-- [Inactive Bot Defense examples](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) contain configuration-only alternatives.
-- [Provider requirements](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/versions.tf) describe the complete Terraform configuration.
-
-Maintainer provenance for selectors and schema sources is recorded in the [repository operator notes](https://github.com/f5-sales-demo/custom-responses/blob/main/operator/snippet-provenance.md).
+- [Load-balancer and application-firewall examples](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) show complete Terraform resources.
+- [Inactive Bot Defense examples](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) show the block and redirect alternatives.
+- [Provider requirements](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/versions.tf) list the required provider versions.

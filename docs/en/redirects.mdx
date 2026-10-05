@@ -1,15 +1,15 @@
 ---
 title: Redirects
-description: Redirects send a selected request path to a new location.
+description: Redirects send visitors from a selected path to its new location.
 sidebar:
   order: 10
 ---
 
-A route redirect sends visitors from `/old` to `/new` over HTTPS. The destination application supplies the page.
+A route redirect sends requests for `/old` to `/new` using `https`. The destination application serves the page.
 
 > **Visitor response:** `302` with a `Location` ending in `/new`.
 
-The `redirect_route` selects `/old`. Its `route_redirect` chooses the protocol, path, and `302` status, which describes temporary movement. Check client behavior if preserving the request method matters, and ensure the destination does not redirect back to `/old`.
+The `redirect_route` matches `/old`. Its `route_redirect` sets the protocol to `https`, the path to `/new`, and the status to `302` for temporary movement. Check how your clients handle request methods, and avoid a loop back to `/old`.
 
 [Redirect route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 

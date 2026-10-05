@@ -1,13 +1,26 @@
 # ruff: noqa: PT009 -- standard-library unittest keeps tests runnable without extra packages
 """Check shared-host metadata against an independent untransformed control."""
 
+import importlib.util
 import unittest
+from pathlib import Path
 
-from scripts.verify_live import check_metadata
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location(
+    "verify_live_test", ROOT / "scripts/verify_live.py"
+)
+assert spec is not None
+assert spec.loader is not None
+verify = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(verify)
+check_metadata = verify.check_metadata
 
 
 class MetadataControlTests(unittest.TestCase):
+    """Require an untransformed host when checking shared metadata."""
+
     def test_transformation_requires_distinct_untransformed_control(self):
+        """Reject transformed fields on the independent control host."""
         positive = {
             "headers": (
                 "Content-Type: text/html\n"

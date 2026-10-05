@@ -1,15 +1,15 @@
 ---
 title: Maintenance
-description: Maintenance shows a fixed message on a selected path while an application is unavailable.
+description: Maintenance tells visitors when an application is temporarily unavailable.
 sidebar:
   order: 3
 ---
 
-A direct response route can show a maintenance page without waiting for the origin. This example matches `/maintenance` and returns status `503`.
+A direct response route serves a fixed message at `/maintenance` without forwarding the request to the application. This example returns status `503`.
 
 > **Visitor message:** Scheduled maintenance
 
-The `direct_response_route` selects `/maintenance`; `route_direct_response` supplies the status and body. The route affects matching requests only. See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
+In the load balancer's `routes` list, `direct_response_route` matches `/maintenance` and `route_direct_response` defines the status and body. Other paths continue to the application. See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
 
 [Maintenance route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -29,4 +29,4 @@ Decoded body (displayed as code):
 
 </details>
 
-**Expected result:** `/maintenance` returns `503` with “Scheduled maintenance”; `/` still reaches the normal application. Check any other path intended for maintenance because this route does not intercept the whole site.
+**Expected result:** `/maintenance` returns `503` with “Scheduled maintenance”; `/` returns the normal application response. The route covers only paths it matches.

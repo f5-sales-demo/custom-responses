@@ -1,6 +1,6 @@
 ---
 title: Custom Responses
-description: Custom Responses explains the visitor experiences available through F5 Distributed Cloud.
+description: Custom Responses helps you explain application errors, security checks, and route changes.
 sidebar:
   order: 1
 ---
@@ -9,19 +9,36 @@ import { CardGrid, LinkCard } from "@astrojs/starlight/components";
 
 ![Cloud traffic passing through a gateway into clear application and security responses](../assets/custom-responses-hero.webp)
 
-Give visitors a useful explanation when an application fails, a security rule intervenes, or a resource moves. Choose the response you want to show, then inspect its resource example and expected result.
+Choose what visitors see when an application fails, a security rule blocks or challenges a request, or a resource moves. Each guide shows the message, the resource that produces it, and the expected result.
+
+## Application messages
 
 <CardGrid>
-  <LinkCard title="Error responses" description="Error responses replace eligible error bodies while retaining status." href="./error-responses/" />
-  <LinkCard title="Maintenance" description="Maintenance shows a fixed page on a selected path." href="./maintenance/" />
-  <LinkCard title="Static acknowledgement" description="Static acknowledgement returns a fixed receipt message." href="./acknowledgement/" />
-  <LinkCard title="WAF blocking" description="WAF blocking gives browsers or clients a clear security message." href="./blocked-requests/" />
-  <LinkCard title="JavaScript challenge" description="JavaScript challenge explains browser verification." href="./browser-verification/" />
-  <LinkCard title="CAPTCHA" description="CAPTCHA explains human verification." href="./captcha-verification/" />
-  <LinkCard title="Conditional challenges" description="Conditional challenges use a policy or mitigation decision." href="./conditional-challenges/" />
-  <LinkCard title="Bot Defense" description="Bot Defense shows configuration-only block and redirect alternatives." href="./bot-configuration/" />
-  <LinkCard title="Redirects" description="Redirects send a selected path to a new location." href="./redirects/" />
-  <LinkCard title="Headers and cookies" description="Headers and cookies adjust response metadata." href="./headers-cookies/" />
-  <LinkCard title="Data masking" description="Data masking hides selected fields or recognized values." href="./masking/" />
-  <LinkCard title="Configuration reference" description="Configuration reference explains fragments and body encoding." href="./configuration-reference/" />
+  <LinkCard title="Error responses" description="Explain failures without changing their status codes." href="./error-responses/" />
+  <LinkCard title="Maintenance" description="Tell visitors when an application is temporarily unavailable." href="./maintenance/" />
+  <LinkCard title="Static acknowledgement" description="Return a fixed receipt on a selected path." href="./acknowledgement/" />
+</CardGrid>
+
+## Security checks and blocks
+
+<CardGrid>
+  <LinkCard title="WAF blocking" description="Explain why a security rule rejected a request." href="./blocked-requests/" />
+  <LinkCard title="JavaScript challenge" description="Tell visitors why their browser is being checked." href="./browser-verification/" />
+  <LinkCard title="CAPTCHA" description="Guide visitors through a human-verification prompt." href="./captcha-verification/" />
+  <LinkCard title="Conditional challenges" description="Challenge selected traffic through policy or mitigation." href="./conditional-challenges/" />
+  <LinkCard title="Bot Defense" description="Compare inactive block and redirect settings." href="./bot-configuration/" />
+</CardGrid>
+
+## Routes and response data
+
+<CardGrid>
+  <LinkCard title="Redirects" description="Send a selected path to its new location." href="./redirects/" />
+  <LinkCard title="Headers and cookies" description="Add or remove response metadata." href="./headers-cookies/" />
+  <LinkCard title="Data masking" description="Hide selected fields or recognized sensitive values." href="./masking/" />
+</CardGrid>
+
+## Use a resource example
+
+<CardGrid>
+  <LinkCard title="Configuration reference" description="Understand resource fragments and body encoding." href="./configuration-reference/" />
 </CardGrid>

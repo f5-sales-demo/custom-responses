@@ -293,8 +293,8 @@ class DocumentationTests(unittest.TestCase):
             [(slug, title) for title, _, slug in cards],
             pages[1:],
         )
-        for title, description, _ in cards:
-            self.assertTrue(description.startswith(title), description)
+        for _, description, _ in cards:
+            self.assertTrue(description.endswith("."), description)
 
 
 if __name__ == "__main__":

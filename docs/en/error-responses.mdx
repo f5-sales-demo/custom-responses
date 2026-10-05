@@ -1,25 +1,25 @@
 ---
 title: Error responses
-description: Error responses replace eligible error bodies while preserving their status codes.
+description: Error responses explain failed requests without changing their status codes.
 sidebar:
   order: 2
 ---
 
-An error map gives visitors a recognizable explanation when a request fails. The load balancer selects a body by status class or exact status and keeps the original response status.
+Custom error mappings show a message for a status family or an exact code. The load balancer replaces the response body without changing the status.
 
 | Mapping | Visitor message | Result |
 | --- | --- | --- |
-| Class `3`, `4`, or `5` | “Class 3”, “Class 4”, or “Class 5” | Fallback for the status family. |
+| `3xx`, `4xx`, or `5xx` (keys `3`, `4`, `5`) | “Class 3”, “Class 4”, or “Class 5” | Fallback for the status family. |
 | Exact `503` | “Exact 503” | Overrides class `5` for `503`. |
 | Exact `404` | “Exact 404” | Overrides class `4` for `404`. |
 
-Class `3` replaces an eligible body; it does not create a redirect or change its destination. Each encoded error body has a 65,536-character limit including the prefix. See [response-body encoding](../configuration-reference/#response-body-encoding) for the placeholder.
+A mapping for key `3` can change the body of a `3xx` response; it does not create a redirect or change its `Location` header. Each encoded error body has a 65,536-character limit including the prefix. See [response-body encoding](../configuration-reference/#response-body-encoding) for the placeholder.
 
 ## Status-class fallback
 
 > **Visitor message:** Class 3, Class 4, or Class 5
 
-The `more_option.custom_errors` map uses `3`, `4`, and `5` as fallback keys. The resource fragment illustrates class `3`; the decoded preview shows the separate class `5` source body.
+Keys `3`, `4`, and `5` in `more_option.custom_errors` provide family-wide messages. The fragment shows key `3`; the expanded preview also shows the separate class `5` message.
 
 [Class mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -27,7 +27,7 @@ The `more_option.custom_errors` map uses `3`, `4`, and `5` as fallback keys. The
 ```
 
 <details>
-<summary>Exact encoded class 3 mapping and decoded class 5 preview</summary>
+<summary>Encoded class 3 mapping and decoded class 5 message</summary>
 
 ```json file=../_data/errors-class-encoded.json wrap
 ```
@@ -39,13 +39,13 @@ Class `5` body (displayed as code):
 
 </details>
 
-**Expected result:** A matching status retains its code and uses the class message when no exact mapping exists.
+**Expected result:** The status code stays the same. The family message appears unless that exact code has its own mapping.
 
 ## Exact status
 
 > **Visitor message:** Exact 503 or Exact 404
 
-Keys `503` and `404` select messages for those statuses. Keep class keys for other errors in each family.
+A `503` mapping overrides key `5`, and a `404` mapping overrides key `4`. Other codes still use their family mapping.
 
 [Exact 503 mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -82,7 +82,7 @@ Decoded body (displayed as code):
 
 ## Edge failures
 
-A connection reset, unavailable upstream, or timeout can follow a different path from an origin error. Check the failure you depend on; the edge examples expect `500`, `502`, `503`, or `504` with “Class 5,” according to the status produced. The comparison route uses a healthy origin pool for `/healthy`.
+An upstream connection reset or timeout may produce a different status from an origin error. Check the actual status before expecting a mapped body: these examples can return `500`, `502`, `503`, or `504`. When the mapping applies, each uses “Class 5.” The `/healthy` route reaches a healthy origin pool for comparison.
 
 [Healthy comparison route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 

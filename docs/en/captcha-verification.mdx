@@ -1,17 +1,17 @@
 ---
 title: CAPTCHA
-description: CAPTCHA explains the human-verification step before a visitor reaches the application.
+description: CAPTCHA guides visitors through the human-verification step.
 sidebar:
   order: 7
 ---
 
-A CAPTCHA asks a visitor to complete a human-verification interaction before reaching the application. The custom page explains what to do.
+A human-verification challenge asks visitors to complete a task before reaching the application. CAPTCHA stands for “Completely Automated Public Turing test to tell Computers and Humans Apart.” Use the custom page to explain what to do.
 
 > **Visitor message:** Please complete the verification to continue.
 
-The load balancer's `captcha_challenge.custom_page` supplies the wording; `cookie_expiry` is `300` seconds in this example. Keep the platform-controlled interaction working when changing the page. An accepted cookie changes the returning visitor's experience.
+The load balancer's `captcha_challenge.custom_page` supplies the wording; `cookie_expiry` is `300` seconds in this example. Keep the CAPTCHA controls usable when customizing the page. A returning visitor with an accepted cookie may not see the challenge again.
 
-This challenge choice is unconditional: `/challenge` is a test path, not a selector. For a selected path, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
+This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
 
 [CAPTCHA challenge source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -31,4 +31,4 @@ Decoded body (displayed as code):
 
 </details>
 
-**Expected result:** In a fresh browser session, the message and usable CAPTCHA appear; completion reaches the application. The accepted cookie allows a normal application response. Clear it to repeat the first-visit experience.
+**Expected result:** In a fresh browser session, the visitor sees the message, completes a usable CAPTCHA, and reaches the application. With an accepted cookie, a repeat request normally reaches the application without another challenge. Clear the cookie to test the first visit again.

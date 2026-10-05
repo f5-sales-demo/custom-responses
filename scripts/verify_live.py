@@ -22,7 +22,11 @@ def capture(
     if curl is None:
         message = "curl"
         raise FileNotFoundError(message)
-    stem = item["id"] + "-" + hashlib.sha256((method + path).encode()).hexdigest()[:12]
+    stem = (
+        item["id"]
+        + "-"
+        + hashlib.sha256((item["hostname"] + method + path).encode()).hexdigest()[:12]
+    )
     headers, body = directory / (stem + ".headers"), directory / (stem + ".body")
     result = subprocess.run(  # noqa: S603 -- executable and argv validated; no shell
         [
@@ -106,7 +110,13 @@ def main() -> int:
             positive = capture(
                 item, item["trigger"], args.captures, item.get("method", "GET")
             )
-            control = capture(item, item["negative_control"]["path"], args.captures)
+            control_item = {
+                **item,
+                "hostname": item["negative_control"].get("hostname", item["hostname"]),
+            }
+            control = capture(
+                control_item, item["negative_control"]["path"], args.captures
+            )
             failures += check_expected(item["expected"], positive)
             # Fresh challenge controls need browser and origin evidence instead of a curl 200.
             if item["group"] not in ["challenge", "conditional", "masking"]:
@@ -133,6 +143,14 @@ def main() -> int:
                     or "set-cookie: origin-remove=" in headers
                 ):
                     failures.append("removed header/cookie retained")
+                control_headers = control["headers"].lower()
+                if (
+                    "x-showcase:" in control_headers
+                    or "set-cookie: showcase=" in control_headers
+                    or "x-origin-remove:" not in control_headers
+                    or "set-cookie: origin-remove=" not in control_headers
+                ):
+                    failures.append("untransformed host control failed")
             if item["group"] == "masking":
                 values = [b"4111111111111111"]
                 if item["id"] == "disclosure":

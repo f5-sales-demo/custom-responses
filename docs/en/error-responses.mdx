@@ -19,11 +19,11 @@ A mapping for key `3` can change the body of a `3xx` response; it does not creat
 
 > **Visitor message:** Class 3, Class 4, or Class 5
 
-Keys `3`, `4`, and `5` in `more_option.custom_errors` provide family-wide messages. The JSON example shows key `3`. The decoded preview below comes from the separate key `5` mapping.
+Keys `3`, `4`, and `5` in `more_option.custom_errors` provide family-wide messages. The source-derived JSON shows all five mappings on the shared error load balancer. The decoded preview below comes from key `5`.
 
 [Class mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/errors-class-encoded.json wrap
+```json file=../_data/errors-encoded.json wrap
 ```
 
 **Class 5 decoded preview (a separate mapping):**
@@ -39,30 +39,24 @@ Keys `3`, `4`, and `5` in `more_option.custom_errors` provide family-wide messag
 
 A `503` mapping overrides key `5`, and a `404` mapping overrides key `4`. Other codes still use their family mapping.
 
-[Exact 503 mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/errors-exact-encoded.json wrap
-```
+The shared mapping source above contains both exact keys.
 
 **Decoded preview (escaped):**
 
 ```html file=../_data/errors-exact.html wrap
 ```
 
-[Exact 404 mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/errors-404-encoded.json wrap
-```
-
 **Expected result:** `/status/503` returns `503` with “Exact 503” instead of “Class 5”; `/status/500` uses the class fallback. Check `404` against class `4` separately, and compare `/` with a healthy `200` response.
 
 ## Edge failures
 
-An upstream connection reset or timeout may produce a different status from an origin error. Check the actual status before expecting a mapped body: these examples can return `500`, `502`, `503`, or `504`. When the mapping applies, each uses “Class 5.” The `/healthy` route reaches a healthy origin pool for comparison.
+An upstream connection reset or timeout may produce a different status from an origin error. Check the actual status before expecting a mapped body: these examples can return `500`, `502`, `503`, or `504`.
 
-[Healthy comparison route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+The shared host routes `/fault/500`, `/fault/502`, `/fault/503`, and `/fault/504` to distinct test pools. Exact `503` takes precedence over class `5`; the other faults use “Class 5” when mapping applies. The `/` path reaches the healthy origin pool for comparison.
+
+[Fault routing source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/errors-fault.json wrap
 ```
 
-**Expected result:** The failing route shows its actual error status and mapped body; `/healthy` reaches the healthy origin pool.
+**Expected result:** Each failing path shows its actual status and applicable mapped body; `/` reaches the healthy origin pool. Compare the source and edge records before attributing the response.

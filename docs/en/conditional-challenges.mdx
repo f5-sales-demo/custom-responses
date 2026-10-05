@@ -9,8 +9,8 @@ A policy rule can select JavaScript or human verification for a sensitive path. 
 
 | Alternative | Selector | Comparison |
 | --- | --- | --- |
-| Policy JavaScript | Exact `/challenge` rule | `/` bypasses verification. |
-| Policy CAPTCHA | Exact `/challenge` rule | `/` bypasses verification. |
+| Policy JavaScript | Exact `/policy-js` rule | `/` bypasses verification. |
+| Policy CAPTCHA | Exact `/policy-captcha` rule | `/` bypasses verification. |
 | DDoS JavaScript | Active application-layer mitigation | Normal traffic outside the event. |
 
 See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message. Keep the JavaScript verification script or CAPTCHA controls usable when customizing a challenge message.
@@ -19,11 +19,11 @@ See [response-body encoding](../configuration-reference/#response-body-encoding)
 
 > **Visitor message:** Please wait while your browser is verified.
 
-`policy_based_challenge.js_challenge_parameters` supplies the page and parameters. A rule matching exactly `/challenge` selects `enable_javascript_challenge`; `no_challenge` is the default. A valid verification cookie can let a returning visitor continue without repeating the challenge.
+`policy_based_challenge.js_challenge_parameters` supplies the page and parameters. A rule matching exactly `/policy-js` selects `enable_javascript_challenge`; `no_challenge` is the default. A valid verification cookie can let a returning visitor continue without repeating the challenge.
 
-[Policy JavaScript source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+[Shared policy source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/policy-js-encoded.json wrap
+```json file=../_data/policy-encoded.json wrap
 ```
 
 **Decoded preview (escaped):**
@@ -31,25 +31,22 @@ See [response-body encoding](../configuration-reference/#response-body-encoding)
 ```html file=../_data/policy-js.html wrap
 ```
 
-**Expected result:** A fresh visit to `/challenge` shows the selected message and working browser check; completion reaches the application. `/` bypasses the challenge, and the policy rule matches the challenged request.
+**Expected result:** A fresh visit to `/policy-js` shows the selected message and working browser check; completion reaches the application. `/` bypasses the challenge, and the policy rule matches the challenged request.
 
 ## Policy-selected CAPTCHA
 
 > **Visitor message:** Please complete the verification to continue.
 
-`policy_based_challenge.captcha_challenge_parameters` supplies the page and cookie lifetime. An exact `/challenge` rule selects `enable_captcha_challenge`, with `no_challenge` as the default.
+`policy_based_challenge.captcha_challenge_parameters` supplies the page and cookie lifetime. An exact `/policy-captcha` rule selects `enable_captcha_challenge`, with `no_challenge` as the default.
 
-[Policy CAPTCHA source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/policy-captcha-encoded.json wrap
-```
+The shared policy source above contains this rule alongside the JavaScript rule.
 
 **Decoded preview (escaped):**
 
 ```html file=../_data/policy-captcha.html wrap
 ```
 
-**Expected result:** A fresh visit to `/challenge` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Confirm the CAPTCHA policy rule selected the request.
+**Expected result:** A fresh visit to `/policy-captcha` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Confirm the CAPTCHA policy rule selected the request.
 
 ## DDoS-selected JavaScript challenge
 

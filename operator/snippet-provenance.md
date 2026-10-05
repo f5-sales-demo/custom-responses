@@ -1,7 +1,7 @@
 # Snippet projection provenance
 
 The response examples are partial F5 resource specifications, not complete create or replacement requests. The authoritative Terraform and inactive Bot files
-are unchanged. Preparation selects one top-level spec field, resolves pinned schema types, unwraps exactly one provider block for an object, and preserves real
+are the only snippet sources. Preparation selects one top-level spec field or one route within `routes`, resolves pinned schema types, unwraps exactly one provider block for an object, and preserves real
 arrays. Encoded values remain exact in details; primary examples use a labelled placeholder. Decoded output preserves exact UTF-8 bytes and is displayed as
 escaped code, never executed.
 
@@ -26,16 +26,14 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 
 | Output | Source | Selector |
 | --- | --- | --- |
-| `errors-class.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors-3/more_option` |
-| `errors-exact.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/exact-503/more_option` |
-| `errors-404.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/exact-404/more_option` |
-| `errors-class.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors-5/more_option/0/custom_errors/5` |
-| `errors-exact.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/exact-503/more_option/0/custom_errors/503` |
-| `errors-fault.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/fault-502/routes` |
-| `maintenance.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/maintenance/routes` |
-| `maintenance.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/maintenance/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded` |
-| `acknowledgement.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/acknowledgement/routes` |
-| `acknowledgement.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/acknowledgement/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded` |
+| `errors.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors/more_option` |
+| `errors-class.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors/more_option/0/custom_errors/5` |
+| `errors-exact.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors/more_option/0/custom_errors/503` |
+| `errors-fault.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors/routes` |
+| `maintenance.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/0` |
+| `maintenance.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded` |
+| `acknowledgement.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/1` |
+| `acknowledgement.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/1/direct_response_route/0/route_direct_response/0/response_body_encoded` |
 | `waf-html.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_app_firewall/waf-html/blocking_page` |
 | `waf-json.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_app_firewall/waf-json/blocking_page` |
 | `waf-attach.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-html/app_firewall` |
@@ -45,20 +43,19 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 | `js.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/js/js_challenge/0/custom_page` |
 | `captcha.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/captcha/captcha_challenge` |
 | `captcha.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/captcha/captcha_challenge/0/custom_page` |
-| `policy-js.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy-js/policy_based_challenge` |
-| `policy-captcha.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy-captcha/policy_based_challenge` |
+| `policy.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy/policy_based_challenge` |
 | `ddos-js.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/ddos-js/l7_ddos_action_js_challenge` |
-| `policy-js.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy-js/policy_based_challenge/0/js_challenge_parameters/0/custom_page` |
-| `policy-captcha.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy-captcha/policy_based_challenge/0/captcha_challenge_parameters/0/custom_page` |
+| `policy-js.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy/policy_based_challenge/0/js_challenge_parameters/0/custom_page` |
+| `policy-captcha.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/policy/policy_based_challenge/0/captcha_challenge_parameters/0/custom_page` |
 | `ddos-js.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/ddos-js/l7_ddos_action_js_challenge/0/custom_page` |
-| `data-guard-attach.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/data-guard/app_firewall` |
+| `data-guard-attach.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-json/app_firewall` |
 | `bot-block.json` | `examples/bot-defense.json` | `/bot-block/bot_defense` |
 | `bot-redirect.json` | `examples/bot-defense.json` | `/bot-redirect/bot_defense` |
 | `bot-block.html` | `examples/bot-defense.json` | `/bot-block/bot_defense/0/policy/0/protected_app_endpoints/0/mitigation/0/block/0/body` |
-| `redirect.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/redirect/routes` |
-| `metadata.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/metadata/more_option` |
-| `disclosure.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/disclosure/sensitive_data_disclosure_rules` |
-| `data-guard.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/data-guard/data_guard_rules` |
+| `redirect.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/2` |
+| `metadata.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/more_option` |
+| `disclosure.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-json/sensitive_data_disclosure_rules` |
+| `data-guard.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-json/data_guard_rules` |
 
 ## Editorial guidance
 

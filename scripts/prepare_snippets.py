@@ -46,32 +46,30 @@ def selection(
 
 
 SELECTIONS = [
-    selection("errors-class.json", LB + "errors-3/more_option"),
-    selection("errors-exact.json", LB + "exact-503/more_option"),
-    selection("errors-404.json", LB + "exact-404/more_option"),
+    selection("errors.json", LB + "errors/more_option"),
     selection(
         "errors-class.html",
-        LB + "errors-5/more_option/0/custom_errors/5",
+        LB + "errors/more_option/0/custom_errors/5",
         decode_body=True,
     ),
     selection(
         "errors-exact.html",
-        LB + "exact-503/more_option/0/custom_errors/503",
+        LB + "errors/more_option/0/custom_errors/503",
         decode_body=True,
     ),
-    selection("errors-fault.json", LB + "fault-502/routes"),
-    selection("maintenance.json", LB + "maintenance/routes"),
+    selection("errors-fault.json", LB + "errors/routes"),
+    selection("maintenance.json", LB + "actions/routes/0"),
     selection(
         "maintenance.html",
         LB
-        + "maintenance/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded",
+        + "actions/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded",
         decode_body=True,
     ),
-    selection("acknowledgement.json", LB + "acknowledgement/routes"),
+    selection("acknowledgement.json", LB + "actions/routes/1"),
     selection(
         "acknowledgement.html",
         LB
-        + "acknowledgement/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded",
+        + "actions/routes/1/direct_response_route/0/route_direct_response/0/response_body_encoded",
         decode_body=True,
     ),
     selection("waf-html.json", WAF + "waf-html/blocking_page"),
@@ -93,18 +91,17 @@ SELECTIONS = [
     selection(
         "captcha.html", LB + "captcha/captcha_challenge/0/custom_page", decode_body=True
     ),
-    selection("policy-js.json", LB + "policy-js/policy_based_challenge"),
-    selection("policy-captcha.json", LB + "policy-captcha/policy_based_challenge"),
+    selection("policy.json", LB + "policy/policy_based_challenge"),
     selection("ddos-js.json", LB + "ddos-js/l7_ddos_action_js_challenge"),
     selection(
         "policy-js.html",
-        LB + "policy-js/policy_based_challenge/0/js_challenge_parameters/0/custom_page",
+        LB + "policy/policy_based_challenge/0/js_challenge_parameters/0/custom_page",
         decode_body=True,
     ),
     selection(
         "policy-captcha.html",
         LB
-        + "policy-captcha/policy_based_challenge/0/captcha_challenge_parameters/0/custom_page",
+        + "policy/policy_based_challenge/0/captcha_challenge_parameters/0/custom_page",
         decode_body=True,
     ),
     selection(
@@ -112,7 +109,7 @@ SELECTIONS = [
         LB + "ddos-js/l7_ddos_action_js_challenge/0/custom_page",
         decode_body=True,
     ),
-    selection("data-guard-attach.json", LB + "data-guard/app_firewall"),
+    selection("data-guard-attach.json", LB + "waf-json/app_firewall"),
     selection("bot-block.json", "/bot-block/bot_defense", BOT),
     selection(
         "bot-redirect.json",
@@ -125,10 +122,10 @@ SELECTIONS = [
         BOT,
         decode_body=True,
     ),
-    selection("redirect.json", LB + "redirect/routes"),
-    selection("metadata.json", LB + "metadata/more_option"),
-    selection("disclosure.json", LB + "disclosure/sensitive_data_disclosure_rules"),
-    selection("data-guard.json", LB + "data-guard/data_guard_rules"),
+    selection("redirect.json", LB + "actions/routes/2"),
+    selection("metadata.json", LB + "actions/more_option"),
+    selection("disclosure.json", LB + "waf-json/sensitive_data_disclosure_rules"),
+    selection("data-guard.json", LB + "waf-json/data_guard_rules"),
 ]
 
 
@@ -303,8 +300,15 @@ def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> Json
     if item["source"] == TF:
         resource = parts[1].removeprefix("xcsh_")
         field = parts[3]
-        if len(parts) != TF_SPEC_SELECTOR_PARTS:
-            message = "Resource fragment must select a top-level spec field"
+        if len(parts) == TF_SPEC_SELECTOR_PARTS + 1 and field == "routes":
+            if not re.fullmatch(r"0|[1-9][0-9]*", parts[4]):
+                message = "Route selector must use a canonical array index"
+                raise ValueError(message)
+            value = [value]
+        elif len(parts) != TF_SPEC_SELECTOR_PARTS:
+            message = (
+                "Resource fragment must select a top-level spec field or one route"
+            )
             raise ValueError(message)
     else:
         resource, field = "http_loadbalancer", parts[1]

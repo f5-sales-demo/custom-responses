@@ -16,15 +16,14 @@ selection. Missing evidence leaves the receipt incomplete.
 
 For each [inventory entry](../scenarios.json), verify DNS, certificate chain and hostname, accepted exact configuration,
 Content-Type, body, status and negative control. Do not use insecure TLS. Correlate origin and XC records to establish
-the response owner. `500`, `502`, `503` and `504` expectations are independent assertions, not labels on a returned
-page. Keep error classes and exact-status precedence configuration separate from proof of applicable runtime
+the response owner. `500`, `502`, `503` and `504` expectations are independent assertions on separate `/fault/` paths. On the shared error host, exact `503` overrides class `5` for both the origin status and the upstream fault. They are not labels on a returned page. Keep error classes and exact-status precedence configuration separate from proof of applicable runtime
 replacement.
 
 ## Browser and security checks
 
 Use fresh browser contexts for JS and CAPTCHA. Capture the custom wording, actual platform completion and subsequent
 origin access. A CAPTCHA needs a human participant. Prove unsolved access does not reach the protected origin. For
-policy challenges, record the matching `challenge-selected-path` rule. For DDoS, use an approved bounded mitigation
+policy challenges, record the matching `challenge-js-path` or `challenge-captcha-path` rule. For DDoS, use an approved bounded mitigation
 trigger and retain the actual event; ordinary traffic is the negative control.
 
 WAF acceptance requires a genuinely blocked synthetic request and its matching enforced event. Test HTML and JSON body variants independently, and record actual Content-Type.
@@ -36,3 +35,5 @@ Bot entries are [configuration-only](../bot-configuration/). The verifier skips 
 Inspect desktop and mobile documentation, all scenario links, shared mega-menu navigation, search, hero loading and machine-readable endpoints. Verify the published revision matches the merged source and immutable builder image.
 
 Complete one reviewed owned-resource teardown and rebuild. Compare shared DNS zone and unrelated resources before and after. Repeat all live acceptance and finish with `terraform plan -refresh=true -detailed-exitcode`; only exit 0 qualifies zero drift. Leave the rebuilt showcase online.
+
+Unverified inventory entries remain examples, including any load balancer whose create request succeeded but whose response owner is unproven. Publish a live link only after its individual status, body, negative control, DNS, certificate and owner evidence pass. The working WAF HTML response still needs an independent matching WAF event before its link qualifies.

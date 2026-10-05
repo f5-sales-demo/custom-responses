@@ -17,4 +17,4 @@ Configure the add and remove lists under the load balancer's `more_option` field
 ```json file=../_data/metadata.json wrap
 ```
 
-**Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the application body. Compare with an untransformed control host because these settings apply to the load balancer, not just one path.
+**Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the application body. Compare with the untransformed shared error host because these settings apply to the load balancer, not just one path.

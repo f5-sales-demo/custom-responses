@@ -33,31 +33,46 @@ Create ignored `terraform/terraform.tfvars.json` containing `subscription_id`, `
 python3 -m unittest discover -s tests -p 'test_*.py'
 terraform -chdir=terraform fmt -check
 terraform -chdir=terraform validate
-install -d -m 700 .artifacts
-terraform -chdir=terraform plan -out=../.artifacts/showcase.tfplan
-terraform -chdir=terraform show ../.artifacts/showcase.tfplan
-sha256sum .artifacts/showcase.tfplan
+install -d -m 700 "$HOME/.local/state/custom-responses/plans"
+terraform -chdir=terraform plan -parallelism=1 \
+  -out="$HOME/.local/state/custom-responses/plans/full.tfplan"
+terraform -chdir=terraform show "$HOME/.local/state/custom-responses/plans/full.tfplan"
+sha256sum "$HOME/.local/state/custom-responses/plans/full.tfplan"
 ```
 
-The current default configuration contains 40 resources: eight Azure resources, one XC namespace, five origin pools,
-two WAFs and 24 HTTPS load balancers. The originally approved plan contained two additional Bot LBs; it has already
+The current default configuration contains 24 resources: eight Azure resources, one XC namespace, five origin pools,
+two WAFs and eight HTTPS load balancers. The originally approved plan contained two additional Bot LBs; it has already
 been consumed by the partial apply. Generate and review a new plan for the current configuration. Costs include B2s VM hours, a 32-GiB Standard LRS disk,
 static public IP, outbound traffic, and tenant-specific XC feature charges. Automatic certificates and security features
 depend on tenant entitlement. Use Azure's current estimate for the selected subscription and currency; no unverified
 fixed monthly price is implied.
 
-Obtain explicit user confirmation of the **exact saved plan** before apply. A changed plan requires another review. After approval:
+The full plan may replace the origin VM because `custom_data` changed. Review that replacement explicitly. For the first serial wave, save a separate plan targeted only at `xcsh_http_loadbalancer.errors` and inspect its exact actions:
 
 ```bash
-terraform -chdir=terraform apply ../.artifacts/showcase.tfplan
-terraform -chdir=terraform output
+terraform -chdir=terraform plan -parallelism=1 \
+  -target=xcsh_http_loadbalancer.errors \
+  -out="$HOME/.local/state/custom-responses/plans/errors.tfplan"
+terraform -chdir=terraform show "$HOME/.local/state/custom-responses/plans/errors.tfplan"
+sha256sum "$HOME/.local/state/custom-responses/plans/errors.tfplan"
 ```
 
-Wait for cloud-init, origin health, LB acceptance, DNS and all automatic certificates before traffic acceptance. Use [verification](./verification.md) to qualify the deployment.
+Obtain explicit user approval of the **exact saved wave plan** before applying it. A changed plan needs another review. Check the effective `virtual_host.public` limit and usage, as well as the broader Virtual Host limit and usage, in the same XC tenant. If public capacity is full, stop and address that concrete limit before creating a load balancer. After approval and available capacity:
+
+```bash
+terraform -chdir=terraform apply -parallelism=1 \
+  "$HOME/.local/state/custom-responses/plans/errors.tfplan"
+```
+
+Verify DNS, certificate, status, body, negative control and response owner for the shared error host. Plan and review the next serial wave only after that evidence is complete.
+
+A targeted plan excludes unrelated changes in the full plan. Review those changes in later waves. The origin VM replacement needs separate exact-plan approval before apply. Use [verification](./verification.md) to qualify each deployed case.
 
 ## Resume the partial deployment
 
 The initial approved apply created the owned origin resources, namespace, pools, WAFs and one LB. Public virtual-host
-usage updates rejected the remaining LBs, and Bot Standard is now documented as configuration-only. Public-LB capacity remains deferred to the next iteration. The current saved recovery plan also replaces the origin VM because
-cloud-init content changed. Review that replacement and obtain explicit approval of the new plan before applying.
-Preserve private local state; never reapply the consumed initial plan.
+usage updates rejected the remaining LBs, and Bot Standard is now documented as configuration-only. The previous recovery plan is obsolete. The current source shares compatible scenarios across eight load balancers and preserves the working WAF HTML resource.
+
+Back up the protected local state, verify tenant quota and usage, and save a fresh plan. Review every proposed replacement, especially the origin VM because cloud-init content changed, and obtain approval of that exact plan before applying. Preserve private local state; never reapply the consumed initial plan.
+
+On a single-create 429, wait five minutes, review a fresh plan, and retry once only if capacity is available. A second 429 requires a sanitized support case for HTTP load-balancer create rate or `virtual_host.public` usage updates. Request a quota increase only if XC reports a lower effective public-host limit than the broader Virtual Host limit.

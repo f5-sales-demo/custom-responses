@@ -141,56 +141,10 @@
       }
     },
     "xcsh_http_loadbalancer": {
-      "control": {
-        "name": "cr-control",
+      "errors": {
+        "name": "cr-errors",
         "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-control.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ]
-      },
-      "index": {
-        "name": "cr-index",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["custom-responses.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ]
-      },
-      "errors-3": {
-        "name": "cr-errors-3",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-errors-3.f5-sales-demo.com"],
+        "domains": ["cr-errors.f5-sales-demo.com"],
         "advertise_on_public_default_vip": {},
         "https_auto_cert": [
           {
@@ -212,161 +166,11 @@
         "more_option": [
           {
             "custom_errors": {
-              "3": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgMzwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyAzPC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ]
-      },
-      "errors-4": {
-        "name": "cr-errors-4",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-errors-4.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "4": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNDwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA0PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ]
-      },
-      "errors-5": {
-        "name": "cr-errors-5",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-errors-5.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ]
-      },
-      "exact-404": {
-        "name": "cr-exact-404",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-exact-404.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
+              "3": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgMzwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyAzPC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ==",
+              "4": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNDwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA0PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ==",
+              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ==",
               "404": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+RXhhY3QgNDA0PC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPkV4YWN0IDQwNDwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+e3tyZXF1ZXN0X2lkfX0=",
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ==",
-              "4": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNDwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA0PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ]
-      },
-      "exact-503": {
-        "name": "cr-exact-503",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-exact-503.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "503": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+RXhhY3QgNTAzPC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPkV4YWN0IDUwMzwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+e3tyZXF1ZXN0X2lkfX0=",
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ==",
-              "4": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNDwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA0PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ]
-      },
-      "fault-500": {
-        "name": "cr-fault-500",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-fault-500.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.status500.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
+              "503": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+RXhhY3QgNTAzPC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPkV4YWN0IDUwMzwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+e3tyZXF1ZXN0X2lkfX0="
             }
           }
         ],
@@ -376,179 +180,14 @@
               {
                 "path": [
                   {
-                    "path": "/healthy"
+                    "path": "/fault/500"
                   }
                 ],
                 "origin_pools": [
                   {
                     "pool": [
                       {
-                        "name": "${xcsh_origin_pool.healthy.name}",
-                        "namespace": "${xcsh_namespace.showcase.name}"
-                      }
-                    ],
-                    "weight": 1,
-                    "priority": 1
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "fault-502": {
-        "name": "cr-fault-502",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-fault-502.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.reset.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ],
-        "routes": [
-          {
-            "simple_route": [
-              {
-                "path": [
-                  {
-                    "path": "/healthy"
-                  }
-                ],
-                "origin_pools": [
-                  {
-                    "pool": [
-                      {
-                        "name": "${xcsh_origin_pool.healthy.name}",
-                        "namespace": "${xcsh_namespace.showcase.name}"
-                      }
-                    ],
-                    "weight": 1,
-                    "priority": 1
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "fault-503": {
-        "name": "cr-fault-503",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-fault-503.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.closed.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ],
-        "routes": [
-          {
-            "simple_route": [
-              {
-                "path": [
-                  {
-                    "path": "/healthy"
-                  }
-                ],
-                "origin_pools": [
-                  {
-                    "pool": [
-                      {
-                        "name": "${xcsh_origin_pool.healthy.name}",
-                        "namespace": "${xcsh_namespace.showcase.name}"
-                      }
-                    ],
-                    "weight": 1,
-                    "priority": 1
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "fault-504": {
-        "name": "cr-fault-504",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-fault-504.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.delay.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "custom_errors": {
-              "5": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+Q2xhc3MgNTwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5DbGFzcyA1PC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD57e3JlcXVlc3RfaWR9fQ=="
-            }
-          }
-        ],
-        "routes": [
-          {
-            "simple_route": [
-              {
-                "path": [
-                  {
-                    "path": "/healthy"
-                  }
-                ],
-                "origin_pools": [
-                  {
-                    "pool": [
-                      {
-                        "name": "${xcsh_origin_pool.healthy.name}",
+                        "name": "${xcsh_origin_pool.status500.name}",
                         "namespace": "${xcsh_namespace.showcase.name}"
                       }
                     ],
@@ -564,7 +203,53 @@
               {
                 "path": [
                   {
-                    "prefix": "/"
+                    "path": "/fault/502"
+                  }
+                ],
+                "origin_pools": [
+                  {
+                    "pool": [
+                      {
+                        "name": "${xcsh_origin_pool.reset.name}",
+                        "namespace": "${xcsh_namespace.showcase.name}"
+                      }
+                    ],
+                    "weight": 1,
+                    "priority": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "simple_route": [
+              {
+                "path": [
+                  {
+                    "path": "/fault/503"
+                  }
+                ],
+                "origin_pools": [
+                  {
+                    "pool": [
+                      {
+                        "name": "${xcsh_origin_pool.closed.name}",
+                        "namespace": "${xcsh_namespace.showcase.name}"
+                      }
+                    ],
+                    "weight": 1,
+                    "priority": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "simple_route": [
+              {
+                "path": [
+                  {
+                    "path": "/fault/504"
                   }
                 ],
                 "origin_pools": [
@@ -590,10 +275,10 @@
           }
         ]
       },
-      "maintenance": {
-        "name": "cr-maintenance",
+      "actions": {
+        "name": "cr-index",
         "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-maintenance.f5-sales-demo.com"],
+        "domains": ["custom-responses.f5-sales-demo.com"],
         "advertise_on_public_default_vip": {},
         "https_auto_cert": [
           {
@@ -629,32 +314,7 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      "acknowledgement": {
-        "name": "cr-acknowledgement",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-acknowledgement.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "routes": [
+          },
           {
             "direct_response_route": [
               {
@@ -671,6 +331,48 @@
                 ]
               }
             ]
+          },
+          {
+            "redirect_route": [
+              {
+                "path": [
+                  {
+                    "path": "/old"
+                  }
+                ],
+                "route_redirect": [
+                  {
+                    "proto_redirect": "https",
+                    "path_redirect": "/new",
+                    "response_code": 302
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "more_option": [
+          {
+            "response_headers_to_add": [
+              {
+                "name": "x-showcase",
+                "value": "custom-responses",
+                "append": false
+              }
+            ],
+            "response_headers_to_remove": ["x-origin-remove"],
+            "response_cookies_to_add": [
+              {
+                "name": "showcase",
+                "value": "custom-responses",
+                "add_path": "/",
+                "add_secure": {},
+                "add_httponly": {},
+                "samesite_lax": {},
+                "overwrite": true
+              }
+            ],
+            "response_cookies_to_remove": ["origin-remove"]
           }
         ]
       },
@@ -729,6 +431,42 @@
           {
             "name": "${xcsh_app_firewall.waf-json.name}",
             "namespace": "${xcsh_namespace.showcase.name}"
+          }
+        ],
+        "sensitive_data_disclosure_rules": [
+          {
+            "sensitive_data_types_in_response": [
+              {
+                "api_endpoint": [
+                  {
+                    "path": "/disclosure",
+                    "methods": ["GET"]
+                  }
+                ],
+                "body": [
+                  {
+                    "fields": ["card", "ssn"]
+                  }
+                ],
+                "mask": {}
+              }
+            ]
+          }
+        ],
+        "data_guard_rules": [
+          {
+            "metadata": [
+              {
+                "name": "mask-synthetic"
+              }
+            ],
+            "any_domain": {},
+            "path": [
+              {
+                "path": "/data-guard"
+              }
+            ],
+            "apply_data_guard": {}
           }
         ]
       },
@@ -791,10 +529,10 @@
           }
         ]
       },
-      "policy-js": {
-        "name": "cr-policy-js",
+      "policy": {
+        "name": "cr-policy",
         "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-policy-js.f5-sales-demo.com"],
+        "domains": ["cr-policy.f5-sales-demo.com"],
         "advertise_on_public_default_vip": {},
         "https_auto_cert": [
           {
@@ -829,7 +567,7 @@
                   {
                     "metadata": [
                       {
-                        "name": "challenge-selected-path"
+                        "name": "challenge-js-path"
                       }
                     ],
                     "spec": [
@@ -839,57 +577,17 @@
                         "any_asn": {},
                         "path": [
                           {
-                            "exact_values": ["/challenge"]
+                            "exact_values": ["/policy-js"]
                           }
                         ],
                         "enable_javascript_challenge": {}
                       }
                     ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "policy-captcha": {
-        "name": "cr-policy-captcha",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-policy-captcha.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "policy_based_challenge": [
-          {
-            "captcha_challenge_parameters": [
-              {
-                "cookie_expiry": 300,
-                "custom_page": "string:///PHA+UGxlYXNlIGNvbXBsZXRlIHRoZSB2ZXJpZmljYXRpb24gdG8gY29udGludWUuPC9wPg=="
-              }
-            ],
-            "no_challenge": {},
-            "rule_list": [
-              {
-                "rules": [
+                  },
                   {
                     "metadata": [
                       {
-                        "name": "challenge-selected-path"
+                        "name": "challenge-captcha-path"
                       }
                     ],
                     "spec": [
@@ -899,7 +597,7 @@
                         "any_asn": {},
                         "path": [
                           {
-                            "exact_values": ["/challenge"]
+                            "exact_values": ["/policy-captcha"]
                           }
                         ],
                         "enable_captcha_challenge": {}
@@ -907,6 +605,12 @@
                     ]
                   }
                 ]
+              }
+            ],
+            "captcha_challenge_parameters": [
+              {
+                "cookie_expiry": 300,
+                "custom_page": "string:///PHA+UGxlYXNlIGNvbXBsZXRlIHRoZSB2ZXJpZmljYXRpb24gdG8gY29udGludWUuPC9wPg=="
               }
             ]
           }
@@ -939,184 +643,6 @@
             "cookie_expiry": 300,
             "custom_page": "string:///PHA+UGxlYXNlIHdhaXQgd2hpbGUgeW91ciBicm93c2VyIGlzIHZlcmlmaWVkLjwvcD4=",
             "js_script_delay": 1000
-          }
-        ]
-      },
-      "redirect": {
-        "name": "cr-redirect",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-redirect.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "routes": [
-          {
-            "redirect_route": [
-              {
-                "path": [
-                  {
-                    "path": "/old"
-                  }
-                ],
-                "route_redirect": [
-                  {
-                    "proto_redirect": "https",
-                    "path_redirect": "/new",
-                    "response_code": 302
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "metadata": {
-        "name": "cr-metadata",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-metadata.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "more_option": [
-          {
-            "response_headers_to_add": [
-              {
-                "name": "x-showcase",
-                "value": "custom-responses",
-                "append": false
-              }
-            ],
-            "response_headers_to_remove": ["x-origin-remove"],
-            "response_cookies_to_add": [
-              {
-                "name": "showcase",
-                "value": "custom-responses",
-                "add_path": "/",
-                "add_secure": {},
-                "add_httponly": {},
-                "samesite_lax": {},
-                "overwrite": true
-              }
-            ],
-            "response_cookies_to_remove": ["origin-remove"]
-          }
-        ]
-      },
-      "disclosure": {
-        "name": "cr-disclosure",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-disclosure.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "sensitive_data_disclosure_rules": [
-          {
-            "sensitive_data_types_in_response": [
-              {
-                "api_endpoint": [
-                  {
-                    "path": "/sensitive",
-                    "methods": ["GET"]
-                  }
-                ],
-                "body": [
-                  {
-                    "fields": ["card", "ssn"]
-                  }
-                ],
-                "mask": {}
-              }
-            ]
-          }
-        ]
-      },
-      "data-guard": {
-        "name": "cr-data-guard",
-        "namespace": "${xcsh_namespace.showcase.name}",
-        "domains": ["cr-data-guard.f5-sales-demo.com"],
-        "advertise_on_public_default_vip": {},
-        "https_auto_cert": [
-          {
-            "http_redirect": true
-          }
-        ],
-        "default_route_pools": [
-          {
-            "pool": [
-              {
-                "name": "${xcsh_origin_pool.healthy.name}",
-                "namespace": "${xcsh_namespace.showcase.name}"
-              }
-            ],
-            "weight": 1,
-            "priority": 1
-          }
-        ],
-        "data_guard_rules": [
-          {
-            "metadata": [
-              {
-                "name": "mask-synthetic"
-              }
-            ],
-            "any_domain": {},
-            "path": [
-              {
-                "path": "/sensitive"
-              }
-            ],
-            "apply_data_guard": {}
-          }
-        ],
-        "app_firewall": [
-          {
-            "name": "${xcsh_app_firewall.waf-html.name}",
-            "namespace": "${xcsh_namespace.showcase.name}"
           }
         ]
       }

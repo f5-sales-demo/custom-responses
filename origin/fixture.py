@@ -1,7 +1,6 @@
 """Synthetic fixture and isolated fault listeners for the owned showcase."""
 
 import contextlib
-import html
 import json
 import logging
 import os
@@ -13,7 +12,6 @@ import urllib.error
 import urllib.request
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 from typing import cast
 from urllib.parse import urlsplit
 
@@ -74,7 +72,12 @@ class Fixture(BaseHTTPRequestHandler):
         body: str | bytes = (
             '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Custom responses origin</title></head><body><main><h1>Custom responses origin</h1><p>Healthy synthetic fixture.</p>'
         )
-        if path in ["/sensitive", "/sensitive-control"]:
+        if path in [
+            "/disclosure",
+            "/disclosure-control",
+            "/data-guard",
+            "/data-guard-control",
+        ]:
             content_type, body = "application/json", json.dumps(SYNTHETIC)
         elif path.startswith("/status/"):
             try:
@@ -104,21 +107,7 @@ class Fixture(BaseHTTPRequestHandler):
                     e.read(),
                 )
         else:
-            page_body = str(body)
-            inventory = Path(__file__).with_name("scenarios.json")
-            if inventory.exists():
-                for item in json.loads(inventory.read_text()):
-                    if not item.get("live_proof_required", True):
-                        continue
-                    page_body += (
-                        '<p><a href="https://'
-                        + html.escape(item["hostname"])
-                        + html.escape(item["trigger"])
-                        + '">'
-                        + html.escape(item["id"])
-                        + "</a></p>"
-                    )
-            body = page_body + "</main></body></html>"
+            body = str(body) + "</main></body></html>"
         if port == ERROR_PORT:
             status, body = 500, "<h1>Origin status 500</h1>"
         encoded_body = body.encode() if isinstance(body, str) else body

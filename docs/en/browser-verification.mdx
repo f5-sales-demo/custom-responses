@@ -1,6 +1,7 @@
 ---
 title: JavaScript challenge
 description: JavaScript challenge explains why a visitor's browser must be verified before continuing.
+tableOfContents: false
 sidebar:
   order: 6
 ---
@@ -11,24 +12,16 @@ A JavaScript challenge asks the visitor's browser to verify itself before the ap
 
 The load balancer's `js_challenge.custom_page` supplies the message. In this example, `cookie_expiry` is `300` seconds and `js_script_delay` is `1000` milliseconds. Keep F5's verification script intact when customizing the page. A returning visitor with an accepted cookie may not see the challenge again.
 
-This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
+This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
 
 [JavaScript challenge source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/js.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
 
 ```json file=../_data/js-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/js.html wrap
 ```
-
-</details>
 
 **Expected result:** In a fresh browser session, the visitor sees the message, completes verification, and reaches the application. With an accepted cookie, a repeat request normally reaches the application without another challenge. Clear the cookie to test the first visit again.

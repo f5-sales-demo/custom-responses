@@ -13,7 +13,7 @@ The [reader guide](../docs/en/index.mdx) explains response outcomes and configur
 
 Run `python3 scripts/prepare_snippets.py` from the repository root before the governed Pages builder. The script reads JSON pointers from the Terraform source
 and inactive Bot examples, validates canonical padded Base64 and UTF-8, and writes only ignored `docs/_data/` fragments. Body files preserve exact decoded
-bytes; the builder escapes them as code. Literal configuration remains in collapsed details. No infrastructure command runs during preparation.
+bytes; the builder escapes them as code. Exact encoded configuration appears inline with its decoded preview where available. No infrastructure command runs during preparation.
 
 Use `python3 -m unittest discover -s tests -p 'test_*.py'` to check source consistency, inventory scope, deterministic output and editorial boundaries. Follow `DEVELOPING.md` for managed lint, security and PII checks.
 

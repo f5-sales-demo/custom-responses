@@ -1,6 +1,7 @@
 ---
 title: Static acknowledgement
 description: Static acknowledgement returns a fixed receipt without contacting the application.
+tableOfContents: false
 sidebar:
   order: 4
 ---
@@ -11,26 +12,18 @@ A direct response route returns “Request received” at `/acknowledgement` wit
 
 > **Visitor message:** Request received
 
-In the load balancer's `routes` list, `direct_response_route` matches the path and `route_direct_response` defines the status and body. See [response-body encoding](../configuration-reference/#response-body-encoding) for the body placeholder.
+In the load balancer's `routes` list, `direct_response_route` matches the path and `route_direct_response` defines the status and body. See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
 
 This message confirms only that the route responded. It does not validate a submission, save data, or prove backend processing. If callers need a unique receipt or processing status, let the application provide it.
 
 [Acknowledgement route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/acknowledgement.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
-
 ```json file=../_data/acknowledgement-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/acknowledgement.html wrap
 ```
-
-</details>
 
 **Expected result:** `/acknowledgement` returns `200` and “Request received”; `/` returns the normal application response. Compare the bodies because both paths can return `200`.

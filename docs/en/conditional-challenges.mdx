@@ -13,7 +13,7 @@ A policy rule can select JavaScript or human verification for a sensitive path. 
 | Policy CAPTCHA | Exact `/challenge` rule | `/` bypasses verification. |
 | DDoS JavaScript | Active application-layer mitigation | Normal traffic outside the event. |
 
-See [response-body encoding](../configuration-reference/#response-body-encoding) for the custom-page placeholder. Keep the JavaScript verification script or CAPTCHA controls usable when customizing a challenge message.
+See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message. Keep the JavaScript verification script or CAPTCHA controls usable when customizing a challenge message.
 
 ## Policy-selected JavaScript challenge
 
@@ -23,21 +23,13 @@ See [response-body encoding](../configuration-reference/#response-body-encoding)
 
 [Policy JavaScript source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/policy-js.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
-
 ```json file=../_data/policy-js-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/policy-js.html wrap
 ```
-
-</details>
 
 **Expected result:** A fresh visit to `/challenge` shows the selected message and working browser check; completion reaches the application. `/` bypasses the challenge, and the policy rule matches the challenged request.
 
@@ -49,21 +41,13 @@ Decoded body (displayed as code):
 
 [Policy CAPTCHA source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/policy-captcha.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
-
 ```json file=../_data/policy-captcha-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/policy-captcha.html wrap
 ```
-
-</details>
 
 **Expected result:** A fresh visit to `/challenge` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Confirm the CAPTCHA policy rule selected the request.
 
@@ -75,20 +59,12 @@ Decoded body (displayed as code):
 
 [DDoS JavaScript source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
-```json file=../_data/ddos-js.json wrap
-```
-
-<details>
-<summary>Exact encoded body and decoded preview</summary>
-
 ```json file=../_data/ddos-js-encoded.json wrap
 ```
 
-Decoded body (displayed as code):
+**Decoded preview (escaped):**
 
 ```html file=../_data/ddos-js.html wrap
 ```
-
-</details>
 
 **Expected result:** During an authorized mitigation exercise, confirm that the mitigation event selected the challenge and that visitors can complete it. Compare normal traffic outside the event; custom wording alone does not prove mitigation activated.

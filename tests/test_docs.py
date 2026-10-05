@@ -220,6 +220,29 @@ class DocumentationTests(unittest.TestCase):
             ("configuration-reference", "Configuration reference"),
         ]
         outputs = {item["output"] for item in self.prepare.SELECTIONS}
+        body_examples = {
+            "errors-class",
+            "errors-exact",
+            "errors-404",
+            "maintenance",
+            "acknowledgement",
+            "waf-html",
+            "waf-json",
+            "js",
+            "captcha",
+            "policy-js",
+            "policy-captcha",
+            "ddos-js",
+            "bot-block",
+        }
+        no_subsections = {
+            "maintenance",
+            "acknowledgement",
+            "browser-verification",
+            "captcha-verification",
+            "redirects",
+            "headers-cookies",
+        }
         valid_includes = outputs | {
             name.replace(".json", "-encoded.json")
             for name in outputs
@@ -231,6 +254,17 @@ class DocumentationTests(unittest.TestCase):
             self.assertIn(f"title: {title}\n", text, slug)
             self.assertIn(f"description: {title}", text, slug)
             self.assertIn(f"  order: {order}\n", text, slug)
+            self.assertEqual(
+                "tableOfContents: false\n" in text,
+                slug in no_subsections,
+                slug,
+            )
+            if slug in no_subsections:
+                self.assertNotIn("\n## ", text, slug)
+            elif slug != "index":
+                self.assertIn("\n## ", text, slug)
+            self.assertNotIn("<details>", text, slug)
+            self.assertNotIn("<ENCODED_RESPONSE_BODY>", text, slug)
             self.assertNotRegex(
                 text, r"(?m)^## (?:Prerequisites|Configure|Verify|Clean up)$"
             )
@@ -262,26 +296,26 @@ class DocumentationTests(unittest.TestCase):
             {path.stem for path in (ROOT / "docs/en").glob("*.mdx")},
             {slug for slug, _ in pages},
         )
-        self.assertTrue(outputs.issubset(used_includes), outputs - used_includes)
-        body_examples = {
-            "errors-class",
-            "errors-exact",
-            "errors-404",
-            "maintenance",
-            "acknowledgement",
-            "waf-html",
-            "waf-json",
-            "js",
-            "captcha",
-            "policy-js",
-            "policy-captcha",
-            "ddos-js",
-            "bot-block",
-        }
+        expected_includes = {
+            name for name in outputs if name.removesuffix(".json") not in body_examples
+        } | {name + "-encoded.json" for name in body_examples}
+        self.assertEqual(used_includes, expected_includes)
         self.assertEqual(
             {name for name in used_includes if name.endswith("-encoded.json")},
             {name + "-encoded.json" for name in body_examples},
         )
+        for slug in {slug for slug, _ in pages} - {"index", "configuration-reference"}:
+            text = (ROOT / "docs/en" / (slug + ".mdx")).read_text()
+            for name in body_examples:
+                encoded = f"file=../_data/{name}-encoded.json"
+                if encoded not in text:
+                    continue
+                self.assertEqual(text.count(encoded), 1, slug)
+                self.assertNotIn(f"file=../_data/{name}.json", text, slug)
+                preview = f"file=../_data/{name}.html"
+                if preview in text:
+                    self.assertLess(text.index(encoded), text.index(preview), slug)
+                    self.assertIn("decoded preview", text.lower(), slug)
 
         landing = (ROOT / "docs/en/index.mdx").read_text()
         cards = re.findall(
@@ -291,7 +325,19 @@ class DocumentationTests(unittest.TestCase):
         )
         self.assertEqual(
             [(slug, title) for title, _, slug in cards],
-            pages[1:],
+            pages[1:-1],
+        )
+        self.assertEqual(
+            re.findall(r"(?m)^## (.+)$", landing),
+            ["Application messages", "Security checks and blocks", "Routes and response data"],
+        )
+        self.assertEqual(
+            landing.count("[Configuration reference](./configuration-reference/)"), 1
+        )
+        blocking = (ROOT / "docs/en/blocked-requests.mdx").read_text()
+        self.assertLess(
+            blocking.index("file=../_data/waf-json-encoded.json"),
+            blocking.index("file=../_data/waf-json-body.json"),
         )
         for _, description, _ in cards:
             self.assertTrue(description.endswith("."), description)

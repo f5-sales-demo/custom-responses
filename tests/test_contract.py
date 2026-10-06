@@ -237,8 +237,13 @@ class Contract(unittest.TestCase):
             record["live_proof_required_count"],
             sum(item["live_proof_required"] for item in self.items),
         )
-        self.assertEqual(record["created_scenario_lbs"], ["cr-waf-html", "cr-errors"])
-        self.assertEqual(record["verified_live_scenarios"], [])
+        self.assertEqual(
+            record["created_scenario_lbs"], ["cr-waf-html", "cr-errors", "cr-index"]
+        )
+        self.assertEqual(record["verified_live_scenarios"], ["fault-503", "fault-504"])
+        self.assertTrue(record["actions_wave_plan_approved"])
+        self.assertTrue(record["actions_wave_plan_applied"])
+        self.assertTrue(record["actions_wave_plan_apply_complete"])
         self.assertTrue(record["unverified_scenarios_are_examples"])
         self.assertTrue(record["first_wave_plan_approved"])
         self.assertTrue(record["first_wave_plan_applied"])

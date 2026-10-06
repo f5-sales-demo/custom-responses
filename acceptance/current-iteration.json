@@ -4,11 +4,12 @@
   "apply_complete": false,
   "namespace": "${xcsh_namespace.showcase.name}",
   "origin_health": "fixture and pinned httpbin responding on VM",
-  "created_scenario_lbs": ["cr-waf-html", "cr-errors"],
+  "created_scenario_lbs": ["cr-waf-html", "cr-errors", "cr-index"],
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
-    "first-wave response ownership and expected-status remediation",
-    "origin VM replacement exact-plan approval"
+    "origin-status and reset-path examples remain unverified",
+    "actions LB certificate and traffic acceptance",
+    "origin VM replacement exact-plan approval to remove legacy links"
   ],
   "certificate_state": "cr-waf-html and cr-errors VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
   "teardown_rebuild_complete": false,
@@ -23,18 +24,18 @@
   "source_load_balancer_count": 8,
   "source_scenario_count": 26,
   "live_proof_required_count": 24,
-  "verified_live_scenarios": [],
+  "verified_live_scenarios": ["fault-503", "fault-504"],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
-    "checked_at_utc": "2026-10-06T00:49:38Z",
+    "checked_at_utc": "2026-10-06T01:29:01Z",
     "namespace": "system",
     "virtual_host": {
       "limit": 200,
-      "used": 65
+      "used": 66
     },
     "virtual_host_public": {
       "limit": 200,
-      "used": 37
+      "used": 38
     }
   },
   "recovery_plan_superseded": true,
@@ -60,5 +61,14 @@
     "fault_504": "edge 504 with Class 5 body after origin timeout",
     "aggregate_live_acceptance_complete": false
   },
-  "first_wave_targeted_no_change_plan_sha256": "5a546137f212333bec3f066d5bbd6dbae3846dab7cb5b15cb046b92062a0748a"
+  "first_wave_targeted_no_change_plan_sha256": "5a546137f212333bec3f066d5bbd6dbae3846dab7cb5b15cb046b92062a0748a",
+  "first_wave_verified_receipt_sha256": "e022a898de2723d6499a655d59b5f7a0c55b1c7b276f961378f44bca292e5a12",
+  "first_wave_link_repeat_receipt_sha256": "8b86e77263610c4688193228d6c3bfb920519c92104d524abf354633b03a357d",
+  "actions_wave_plan_sha256": "fbfc72e62ad4797065207b16c599f3b880d59738f66c0d5d3931de5dd26e5611",
+  "actions_wave_plan_approved": true,
+  "actions_wave_plan_applied": true,
+  "actions_wave_plan_apply_complete": true,
+  "actions_wave_state_serial": 48,
+  "actions_wave_targeted_no_change_plan_sha256": "ae6f3ead27523d0edf0bb41fd14808ecac547dc13e425757b91eed40595b63fb",
+  "actions_certificate_snapshot": "PreDomainChallengePending / Auto Cert Generation In Progress at 2026-10-06T01:33:11Z"
 }

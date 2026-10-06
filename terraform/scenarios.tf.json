@@ -316,7 +316,8 @@
                     "response_code": 503,
                     "response_body_encoded": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+U2NoZWR1bGVkIG1haW50ZW5hbmNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPlNjaGVkdWxlZCBtYWludGVuYW5jZTwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+"
                   }
-                ]
+                ],
+                "http_method": "ANY"
               }
             ]
           },
@@ -333,7 +334,8 @@
                     "response_code": 200,
                     "response_body_encoded": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+UmVxdWVzdCByZWNlaXZlZDwvdGl0bGU+PC9oZWFkPjxib2R5PjxtYWluPjxoMT5SZXF1ZXN0IHJlY2VpdmVkPC9oMT48cD5GNSBjdXN0b20gcmVzcG9uc2VzIHNob3djYXNlLjwvcD48L21haW4+PC9ib2R5PjwvaHRtbD4="
                   }
-                ]
+                ],
+                "http_method": "ANY"
               }
             ]
           },
@@ -351,7 +353,8 @@
                     "path_redirect": "/new",
                     "response_code": 302
                   }
-                ]
+                ],
+                "http_method": "ANY"
               }
             ]
           }

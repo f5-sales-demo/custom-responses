@@ -130,6 +130,10 @@ class Contract(unittest.TestCase):
             ["direct_response_route", "direct_response_route", "redirect_route"],
         )
         self.assertEqual(
+            [next(iter(route.values()))[0]["http_method"] for route in routes],
+            ["ANY", "ANY", "ANY"],
+        )
+        self.assertEqual(
             [
                 routes[0]["direct_response_route"][0]["path"][0]["path"],
                 routes[1]["direct_response_route"][0]["path"][0]["path"],
@@ -233,11 +237,14 @@ class Contract(unittest.TestCase):
             record["live_proof_required_count"],
             sum(item["live_proof_required"] for item in self.items),
         )
-        self.assertEqual(record["created_scenario_lbs"], ["cr-waf-html"])
+        self.assertEqual(record["created_scenario_lbs"], ["cr-waf-html", "cr-errors"])
         self.assertEqual(record["verified_live_scenarios"], [])
         self.assertTrue(record["unverified_scenarios_are_examples"])
-        self.assertFalse(record["first_wave_plan_approved"])
-        self.assertFalse(record["first_wave_plan_applied"])
+        self.assertTrue(record["first_wave_plan_approved"])
+        self.assertTrue(record["first_wave_plan_applied"])
+        self.assertFalse(record["first_wave_plan_apply_complete"])
+        self.assertTrue(record["first_wave_plan_consumed"])
+        self.assertTrue(record["full_plan_stale_after_first_wave"])
 
     def test_teardown_and_state(self):
         self.assertNotIn("xcsh_dns_zone", self.tf["resource"])

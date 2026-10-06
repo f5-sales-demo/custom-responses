@@ -5,11 +5,11 @@ sidebar:
   order: 2
 ---
 
-Custom error mappings show a message for a status family or an exact code. The load balancer replaces the response body without changing the status.
+Custom error mappings give eligible edge-generated failures a message for a status family or an exact code. They do not rewrite every origin response. In this fixture, origin-generated `302`, `404`, `418`, `500`, and `503` responses kept their origin bodies.
 
 | Mapping | Visitor message | Result |
 | --- | --- | --- |
-| `3xx`, `4xx`, or `5xx` (keys `3`, `4`, `5`) | “Class 3”, “Class 4”, or “Class 5” | Fallback for the status family. |
+| `3xx`, `4xx`, or `5xx` (keys `3`, `4`, `5`) | “Class 3”, “Class 4”, or “Class 5” | Fallback when the edge generates an eligible status. |
 | Exact `503` | “Exact 503” | Overrides class `5` for `503`. |
 | Exact `404` | “Exact 404” | Overrides class `4` for `404`. |
 
@@ -31,13 +31,13 @@ Keys `3`, `4`, and `5` in `more_option.custom_errors` provide family-wide messag
 ```html file=../_data/errors-class.html wrap
 ```
 
-**Expected result:** The status code stays the same. The family message appears unless that exact code has its own mapping.
+**Expected result:** For an eligible edge-generated failure, the status code stays the same and the family message appears unless the exact code has its own mapping. The edge-generated `/fault/504` returned `504` with “Class 5”; origin-generated `/status/500` kept its origin body.
 
 ## Exact status
 
 > **Visitor message:** Exact 503 or Exact 404
 
-A `503` mapping overrides key `5`, and a `404` mapping overrides key `4`. Other codes still use their family mapping.
+For eligible edge-generated failures, a `503` mapping overrides key `5`, and a `404` mapping overrides key `4`. Other eligible codes use their family mapping.
 
 The shared mapping source above contains both exact keys.
 
@@ -46,17 +46,19 @@ The shared mapping source above contains both exact keys.
 ```html file=../_data/errors-exact.html wrap
 ```
 
-**Expected result:** `/status/503` returns `503` with “Exact 503” instead of “Class 5”; `/status/500` uses the class fallback. Check `404` against class `4` separately, and compare `/` with a healthy `200` response.
+**Expected result:** The edge-generated `/fault/503` returned `503` with “Exact 503” instead of “Class 5”. Origin-generated `/status/503` kept its origin body. The exact `404` mapping remains a configuration example until an eligible edge-generated `404` is observed.
 
 ## Edge failures
 
-An upstream connection reset or timeout may produce a different status from an origin error. Check the actual status before expecting a mapped body: these examples can return `500`, `502`, `503`, or `504`.
+An upstream connection reset or timeout can produce a different status from an origin error. Check the measured status and response owner before expecting a mapped body.
 
-The shared host routes `/fault/500`, `/fault/502`, `/fault/503`, and `/fault/504` to distinct test pools. Exact `503` takes precedence over class `5`; the other faults use “Class 5” when mapping applies. The `/` path reaches the healthy origin pool for comparison.
+The shared host routes `/fault/500`, `/fault/502`, `/fault/503`, and `/fault/504` to distinct test pools.
+
+The reset path named `/fault/502` produced `503` with “Exact 503” in this test, so it is not a verified `502` example. The closed-origin path `/fault/503` produced `503` with “Exact 503”; the timeout path `/fault/504` produced `504` with “Class 5”. The `/` path reaches the healthy origin pool for comparison.
 
 [Fault routing source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/errors-fault.json wrap
 ```
 
-**Expected result:** Each failing path shows its actual status and applicable mapped body; `/` reaches the healthy origin pool. Compare the source and edge records before attributing the response.
+**Expected result:** Match the page to the status the edge actually generated. Compare each failure with the healthy `/` control and a direct origin response before attributing the custom page to the edge.

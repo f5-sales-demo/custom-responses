@@ -4,14 +4,13 @@
   "apply_complete": false,
   "namespace": "${xcsh_namespace.showcase.name}",
   "origin_health": "fixture and pinned httpbin responding on VM",
-  "created_scenario_lbs": ["cr-waf-html"],
+  "created_scenario_lbs": ["cr-waf-html", "cr-errors"],
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
-    "effective virtual_host.public capacity",
-    "exact saved-plan approval",
-    "independent response-owner evidence"
+    "first-wave response ownership and expected-status remediation",
+    "origin VM replacement exact-plan approval"
   ],
-  "certificate_state": "cr-waf-html TLS verified 2026-10-05; other hosts unverified",
+  "certificate_state": "cr-waf-html and cr-errors VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
   "teardown_rebuild_complete": false,
   "zero_change_plan": false,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
@@ -27,15 +26,15 @@
   "verified_live_scenarios": [],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
-    "checked_at_utc": "2026-10-05T15:23:50Z",
+    "checked_at_utc": "2026-10-06T00:49:38Z",
     "namespace": "system",
     "virtual_host": {
       "limit": 200,
-      "used": 63
+      "used": 65
     },
     "virtual_host_public": {
-      "limit": 35,
-      "used": 35
+      "limit": 200,
+      "used": 37
     }
   },
   "recovery_plan_superseded": true,
@@ -43,7 +42,23 @@
   "full_plan_has_origin_replacement": true,
   "first_wave_plan_sha256": "da53539da0aebc1bc02a47f1cb3fe4fde3bb37fa969a9e63c5c2d73472107321",
   "first_wave_plan_changes": ["create xcsh_http_loadbalancer.errors"],
-  "first_wave_plan_approved": false,
-  "first_wave_plan_applied": false,
-  "origin_fixture_legacy_links": "Preexisting live fixture still links unverified examples; replacement requires separate saved-plan approval."
+  "first_wave_plan_approved": true,
+  "first_wave_plan_applied": true,
+  "origin_fixture_legacy_links": "Preexisting live fixture still links unverified examples; replacement requires separate saved-plan approval.",
+  "first_wave_plan_apply_complete": false,
+  "first_wave_plan_consumed": true,
+  "first_wave_provider_error": "Provider returned route defaults after a null plan; remote resource and state were created, then the state instance was safely untainted.",
+  "first_wave_state_serial_after_recovery": 46,
+  "full_plan_stale_after_first_wave": true,
+  "first_wave_observed": {
+    "as_of_utc": "2026-10-06T01:01:12Z",
+    "healthy_control": "200 with origin body and X-Response-Owner header",
+    "origin_generated_errors": "302, 404, 418, 500, and 503 retained origin bodies; their configured custom mappings are unverified",
+    "fault_500": "500 with origin body; custom mapping unverified",
+    "fault_502": "reset path returned edge 503 with Exact 503 body, differing from planned 502 / Class 5",
+    "fault_503": "edge 503 with Exact 503 body and no origin response",
+    "fault_504": "edge 504 with Class 5 body after origin timeout",
+    "aggregate_live_acceptance_complete": false
+  },
+  "first_wave_targeted_no_change_plan_sha256": "5a546137f212333bec3f066d5bbd6dbae3846dab7cb5b15cb046b92062a0748a"
 }

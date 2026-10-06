@@ -70,8 +70,9 @@ A targeted plan excludes unrelated changes in the full plan. Review those change
 
 ## Current serial state
 
-The dated [acceptance snapshot](../acceptance/current-iteration.json) records five created load balancers, the approved origin VM replacement, current quota evidence, and the remaining unverified examples.
-The JavaScript challenge host passed certificate, browser completion, negative-control and origin ownership checks, with zero targeted drift. Three challenge load balancers remain undeployed. The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for each remaining challenge load balancer; retain `-parallelism=1` and the exact-plan approval gate.
+The dated [acceptance snapshot](../acceptance/current-iteration.json) records six created load balancers, the approved origin VM replacement, current quota evidence, and the remaining unverified examples.
+The JavaScript challenge host passed certificate, browser completion, negative-control and origin ownership checks, with zero targeted drift. Two challenge load balancers remain undeployed. The CAPTCHA host has zero targeted drift but remains an unverified example while its certificate and human completion are pending.
+The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for each remaining challenge load balancer; retain `-parallelism=1` and the exact-plan approval gate.
 
 ## Resume the partial deployment
 

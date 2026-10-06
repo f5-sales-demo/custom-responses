@@ -252,6 +252,8 @@ class Contract(unittest.TestCase):
                 "cr-waf-json",
                 "cr-js",
                 "cr-captcha",
+                "cr-policy",
+                "cr-ddos-js",
             ],
         )
         self.assertEqual(
@@ -268,6 +270,7 @@ class Contract(unittest.TestCase):
                 "disclosure",
                 "data-guard",
                 "js",
+                "policy-js",
             ],
         )
         self.assertEqual(
@@ -284,8 +287,16 @@ class Contract(unittest.TestCase):
                 "disclosure",
                 "data-guard",
                 "js",
+                "policy-js",
             ],
         )
+        self.assertTrue(record["policy_wave_applied"])
+        self.assertFalse(record["policy_wave_complete"])
+        self.assertTrue(record["policy_js_verified"])
+        self.assertFalse(record["policy_captcha_verified"])
+        self.assertTrue(record["ddos_wave_applied"])
+        self.assertFalse(record["ddos_wave_complete"])
+        self.assertNotIn("policy-captcha", record["published_live_scenarios"])
         self.assertTrue(record["captcha_wave_applied"])
         self.assertFalse(record["captcha_wave_complete"])
         self.assertFalse(record["captcha_wave_human_complete"])

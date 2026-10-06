@@ -43,3 +43,7 @@ The CAPTCHA host has a valid certificate and serves the custom challenge page. A
 In a fresh headed Chrome session, the reCAPTCHA iframe showed an Enterprise free-quota warning; clicking opened an image challenge, but it expired before completion and the browser never reached the origin. Keep CAPTCHA unverified and unpublished until actual completion is proven.
 
 Both published WAF block links have matching enforced events in protected evidence. The JSON WAF body is served with `text/html; charset=UTF-8`; verify client handling of that media type. Future requests need their own status, owner, and negative-control checks.
+
+The shared policy host selects JavaScript on `/policy-js`, CAPTCHA on `/policy-captcha`, and no challenge on `/`. Fresh Chrome completed JavaScript verification and reached the
+origin; repeat access succeeded. Origin logs showed zero selected-path requests before browser completion, two JavaScript requests afterward, and zero unsolved CAPTCHA requests.
+Policy CAPTCHA completion remains unverified.

@@ -70,9 +70,11 @@ A targeted plan excludes unrelated changes in the full plan. Review those change
 
 ## Current serial state
 
-The dated [acceptance snapshot](../acceptance/current-iteration.json) records six created load balancers, the approved origin VM replacement, current quota evidence, and the remaining unverified examples.
-The JavaScript challenge host passed certificate, browser completion, negative-control and origin ownership checks, with zero targeted drift. Two challenge load balancers remain undeployed. The CAPTCHA host has zero targeted drift, trusted TLS, a custom challenge page, and an unsolved negative control. Human completion remains unverified after a Google quota warning and an expired challenge.
-The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for each remaining challenge load balancer; retain `-parallelism=1` and the exact-plan approval gate.
+The dated [acceptance snapshot](../acceptance/current-iteration.json) records eight created load balancers, the approved origin VM replacement, current quota evidence, and the remaining unverified examples.
+The JavaScript challenge host passed certificate, browser completion, negative-control and origin ownership checks, with zero targeted drift. All challenge load balancers are
+deployed. Policy JavaScript completion passed; policy CAPTCHA completion and the DDoS trigger remain unverified. The CAPTCHA host has zero targeted drift, trusted TLS, a custom
+challenge page, and an unsolved negative control. Human completion remains unverified after a Google quota warning and an expired challenge.
+The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for any subsequent infrastructure change; retain `-parallelism=1` and the exact-plan approval gate.
 
 ## Resume the partial deployment
 
@@ -82,3 +84,5 @@ usage updates rejected the remaining LBs, and Bot Standard is now documented as 
 Back up the protected local state, verify tenant quota and usage, and save a fresh plan. Review every proposed replacement, especially the origin VM because cloud-init content changed, and obtain approval of that exact plan before applying. Preserve private local state; never reapply the consumed initial plan.
 
 On a single-create 429, wait five minutes, review a fresh plan, and retry once only if capacity is available. A second 429 requires a sanitized support case for HTTP load-balancer create rate or `virtual_host.public` usage updates. Request a quota increase only if XC reports a lower effective public-host limit than the broader Virtual Host limit.
+
+The approved output-only update refreshed `scenario_hosts` to the eight shared hosts. The full refresh then returned zero changes at state serial 64; its saved-plan and backup digests are in the acceptance snapshot. Runtime completion and reviewed teardown/rebuild remain separate acceptance requirements.

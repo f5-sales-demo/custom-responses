@@ -1,21 +1,31 @@
 {
   "approved_plan_sha256": "00f9b02a336ad291831ecf7f3ad4c3ca7eb8e33cec9dfac997267031731f6072",
   "applied": true,
-  "apply_complete": false,
+  "apply_complete": true,
   "namespace": "${xcsh_namespace.showcase.name}",
   "origin_health": "fixture and pinned httpbin responding on VM",
-  "created_scenario_lbs": ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json", "cr-js", "cr-captcha"],
+  "created_scenario_lbs": [
+    "cr-waf-html",
+    "cr-errors",
+    "cr-index",
+    "cr-waf-json",
+    "cr-js",
+    "cr-captcha",
+    "cr-policy",
+    "cr-ddos-js"
+  ],
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
     "origin-status and reset-path examples remain unverified",
-    "two challenge load balancers remain undeployed",
+    "DDoS mitigation trigger remains unverified",
+    "policy CAPTCHA completion remains unverified",
     "cr-captcha human completion remains unverified; Google quota warning and challenge expiry were observed",
     "Bot Defense remains configuration-only",
-    "reviewed teardown/rebuild and aggregate zero-drift gates"
+    "reviewed teardown/rebuild remains pending"
   ],
-  "certificate_state": "All six created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
+  "certificate_state": "Seven prior load balancers CertificateValid; cr-ddos-js automatic certificate pending",
   "teardown_rebuild_complete": false,
-  "zero_change_plan": false,
+  "zero_change_plan": true,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
   "recovery_plan_sha256": "b6f72ba58b4e49f209b0af71901265668071d8e8b0d39a368b129be03ff93b8b",
   "recovery_plan_applied": false,
@@ -37,19 +47,20 @@
     "waf-json",
     "disclosure",
     "data-guard",
-    "js"
+    "js",
+    "policy-js"
   ],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
-    "checked_at_utc": "2026-10-06T04:10:52Z",
+    "checked_at_utc": "2026-10-06T11:30:36Z",
     "namespace": "system",
     "virtual_host": {
       "limit": 200,
-      "used": 69
+      "used": 71
     },
     "virtual_host_public": {
       "limit": 200,
-      "used": 41
+      "used": 43
     }
   },
   "recovery_plan_superseded": true,
@@ -96,7 +107,8 @@
     "waf-json",
     "disclosure",
     "data-guard",
-    "js"
+    "js",
+    "policy-js"
   ],
   "actions_wave_complete": true,
   "actions_wave_verified_receipt_sha256": "454803d2cfeba7ae223f262cc677b2ac3ba84a27819ae1a6583c673e76457b98",
@@ -140,5 +152,29 @@
   "captcha_wave_postapply_backup_sha256": "e4eb1bef73a87f7a63f4a499750f36fecc09c2e12127c70a7078d97ab8076e61",
   "captcha_wave_targeted_no_change_plan_sha256": "09e641d38af096cc2578cf673d2c9b5ae45fe99fcd1ac5cbfe859ad7e1549f3c",
   "captcha_wave_certificate_state": "VIRTUAL_HOST_READY / CertificateValid at 2026-10-06T04:19:55Z",
-  "captcha_wave_partial_receipt_sha256": "acb1b64c53f7edf785571561fb5c04db45f798c9e4830c95a91e12574b4b4b26"
+  "captcha_wave_partial_receipt_sha256": "acb1b64c53f7edf785571561fb5c04db45f798c9e4830c95a91e12574b4b4b26",
+  "policy_wave_plan_sha256": "f2ec8c5a21e1e7679b2aa500c67205fc70938a43489ea6837f36ff30816576ef",
+  "policy_wave_approved": true,
+  "policy_wave_applied": true,
+  "policy_wave_complete": false,
+  "policy_wave_state_serial": 61,
+  "policy_wave_postapply_backup_sha256": "f4349671ee783ac6dcd93bd60a533967b4f328be0a9bd65cf082ac9c14d03d63",
+  "policy_wave_targeted_no_change_plan_sha256": "1f4a48e5df66794118fb93f2943ee7b177b63d8635d45300652aa23e0edb173b",
+  "policy_js_verified": true,
+  "policy_captcha_verified": false,
+  "policy_wave_verified_receipt_sha256": "9de3816400e42f38464ca9bb397681d7441e4accd6fe5c02b56348c2b20cd6e4",
+  "ddos_wave_plan_sha256": "ed40ca9b948a5bd82859da2cfd96220429e198e0b5f6721046635b5e2c1cfd3c",
+  "ddos_wave_approved": true,
+  "ddos_wave_applied": true,
+  "ddos_wave_complete": false,
+  "ddos_wave_state_serial": 63,
+  "ddos_wave_postapply_backup_sha256": "65171fd9add8600970878bb7a964f9b7f102ec3fbfff198806cfd71b81b8f0b2",
+  "aggregate_plan_resource_changes": 0,
+  "aggregate_plan_output_changes": ["scenario_hosts"],
+  "aggregate_output_plan_sha256": "d9c93b4ee877d04fc93a2f75fe0f809f78553ba7d1344762ecbbe8825f95c025",
+  "aggregate_output_plan_approved": true,
+  "aggregate_output_plan_applied": true,
+  "aggregate_zero_change_plan_sha256": "09b10d02e945c6f6c34d6b2b1b3be6b6fa4dfca2372259b5a71156a17d4fe6e2",
+  "current_state_serial": 64,
+  "current_state_backup_sha256": "f50fe4b64830f3e19dc9a124382f828256602d07e66c13a4787a01b39e51edf0"
 }

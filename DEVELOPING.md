@@ -8,12 +8,12 @@ Git. Infrastructure applies require explicit approval of the exact saved plan.
 
 Documentation and branding delivery uses the governed Starlight pipeline and shared theme. The user accepted the desktop/mobile visual previews. `operator/branding.md` records the published theme and immutable builder release; `/api/revision.json` identifies the deployed source and image.
 
-Infrastructure remains partially deployed. Six of eight shared load balancers and the updated synthetic origin are deployed.
+All eight shared load balancers and the updated synthetic origin are deployed; full live acceptance remains incomplete.
 The JavaScript challenge passed trusted TLS, fresh-browser completion, repeat access, and unique-path origin ownership. The CAPTCHA host has trusted TLS and a custom challenge page; human completion remains unverified after a Google quota warning and an expired challenge.
-The HTML and JSON WAF, shared errors, direct responses, redirect, metadata, and masking have bounded verified cases; origin-status mappings and challenge modes remain incomplete. Check the dated acceptance record and live public-host usage before each deployment wave.
+The HTML and JSON WAF, shared errors, direct responses, redirect, metadata, and masking have bounded verified cases. Policy JavaScript is verified; origin-status mappings, CAPTCHA completion and a real DDoS trigger remain incomplete. Check the dated acceptance record and live public-host usage before each deployment wave.
 Bot entries are configuration-only and excluded from deployment and required live proof. Preserve private local state
-and captures. A changed recovery plan requires explicit approval before apply. Documentation publication does not
-qualify full live acceptance, teardown/rebuild or zero drift.
+and captures. A changed recovery plan requires explicit approval before apply. The aggregate refresh has zero changes. Documentation publication does not
+qualify full live acceptance or teardown/rebuild.
 
 Reader content lives only in `docs/en/`. Generated schema-projected resource snippets in ignored `docs/_data/` feed the existing `file=` code includes. Their bytes come from
 `terraform/scenarios.tf.json` and inactive `examples/bot-defense.json`; do not copy configuration into prose. Run preparation before the governed builder.

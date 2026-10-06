@@ -62,3 +62,12 @@ The reset path named `/fault/502` produced `503` with “Exact 503” in this te
 ```
 
 **Expected result:** Match the page to the status the edge actually generated. Compare each failure with the healthy `/` control and a direct origin response before attributing the custom page to the edge.
+
+## Verified live paths
+
+These two paths passed DNS, trusted TLS, status, body, healthy-origin control, and response-owner checks on 2026-10-06:
+
+- [Exact 503 page](https://cr-errors.f5-sales-demo.com/fault/503) returns `503` with “Exact 503” when the selected origin port is closed.
+- [Class 5 timeout page](https://cr-errors.f5-sales-demo.com/fault/504) returns `504` with “Class 5” when the selected origin responds after the route timeout.
+
+The other mappings on this load balancer remain configuration examples pending live qualification.

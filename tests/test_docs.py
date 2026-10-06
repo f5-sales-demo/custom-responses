@@ -232,6 +232,25 @@ class DocumentationTests(unittest.TestCase):
                 self.assertEqual(page, "bot-configuration")
                 self.assertEqual(item["verification"], "configuration-only")
 
+    def test_only_verified_live_paths_are_linked(self):
+        record = json.loads((ROOT / "acceptance/current-iteration.json").read_text())
+        inventory = json.loads((ROOT / "scenarios.json").read_text())
+        verified = set(record["verified_live_scenarios"])
+        expected = {
+            f"https://{item['hostname']}{item['trigger']}"
+            for item in inventory
+            if item["id"] in verified
+        }
+        linked = set()
+        for page in (ROOT / "docs/en").glob("*.mdx"):
+            linked.update(
+                re.findall(
+                    r"\]\((https://[a-z0-9.-]+\.f5-sales-demo\.com/[^)\s]*)\)",
+                    page.read_text(),
+                )
+            )
+        self.assertEqual(linked, expected)
+
     def test_editorial_and_includes(self):
         pages = [
             ("index", "Custom Responses"),

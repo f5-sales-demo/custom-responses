@@ -59,3 +59,10 @@ bodies despite the class-4 mapping.
 Record these as measured applicability limits. Keep origin body replacement and custom `502`, class `3`/`4`, and exact `404` examples un-verified; only the qualified `503` and
 `504` custom pages remain published. The inventory preserves its intended custom-page assertions, so these cases continue to fail rather than being converted to passing origin
 controls. The acceptance record contains protected repeat and direct-origin receipt digests. No Terraform or origin fixture change was needed.
+
+## Rebuilt-resource verification
+
+The lifecycle receipt records repeated trusted-TLS checks for all eight rebuilt hosts, the twelve qualified outcomes, fresh JavaScript browser completion, direct origin controls
+and scope comparisons. Each rebuilt WAF block has a matching enforced security event. Blocked-request rows were absent from repeated firewall-log queries, so that log limitation is
+retained. Previous receipts remain historical evidence for the former resource identities. DDoS testing remains deferred; CAPTCHA completion and the documented error-mapping limits
+remain un-verified.

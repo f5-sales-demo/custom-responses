@@ -23,7 +23,7 @@
     "Bot Defense remains configuration-only",
     "reviewed teardown/rebuild remains pending"
   ],
-  "certificate_state": "Seven prior load balancers CertificateValid; cr-ddos-js automatic certificate pending",
+  "certificate_state": "All eight created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
   "teardown_rebuild_complete": false,
   "zero_change_plan": true,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
@@ -176,5 +176,6 @@
   "aggregate_output_plan_applied": true,
   "aggregate_zero_change_plan_sha256": "09b10d02e945c6f6c34d6b2b1b3be6b6fa4dfca2372259b5a71156a17d4fe6e2",
   "current_state_serial": 64,
-  "current_state_backup_sha256": "f50fe4b64830f3e19dc9a124382f828256602d07e66c13a4787a01b39e51edf0"
+  "current_state_backup_sha256": "f50fe4b64830f3e19dc9a124382f828256602d07e66c13a4787a01b39e51edf0",
+  "ddos_wave_control_receipt_sha256": "adb5520f791f072d452e5929dcbd27c699ba0b41bb57a53b6a9610358d04ea32"
 }

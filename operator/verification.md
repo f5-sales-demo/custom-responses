@@ -47,3 +47,5 @@ Both published WAF block links have matching enforced events in protected eviden
 The shared policy host selects JavaScript on `/policy-js`, CAPTCHA on `/policy-captcha`, and no challenge on `/`. Fresh Chrome completed JavaScript verification and reached the
 origin; repeat access succeeded. Origin logs showed zero selected-path requests before browser completion, two JavaScript requests afterward, and zero unsolved CAPTCHA requests.
 Policy CAPTCHA completion remains unverified.
+
+The DDoS host has trusted TLS. Ordinary requests to `/` and `/challenge` return the origin with `200`; requesting the path does not trigger mitigation. The configured custom JavaScript action is present, but a real mitigation event remains unverified and its example stays unpublished.

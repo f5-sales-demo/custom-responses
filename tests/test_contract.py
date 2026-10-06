@@ -146,6 +146,12 @@ class Contract(unittest.TestCase):
             "https://custom-responses.f5-sales-demo.com/new",
         )
         self.assertIn("response_headers_to_add", actions["more_option"][0])
+        self.assertEqual(
+            actions["more_option"][0]["custom_errors"]["503"],
+            routes[0]["direct_response_route"][0]["route_direct_response"][0][
+                "response_body_encoded"
+            ],
+        )
         json_waf = self.lbs["waf-json"]
         disclosure = json_waf["sensitive_data_disclosure_rules"][0][
             "sensitive_data_types_in_response"
@@ -240,7 +246,23 @@ class Contract(unittest.TestCase):
         self.assertEqual(
             record["created_scenario_lbs"], ["cr-waf-html", "cr-errors", "cr-index"]
         )
-        self.assertEqual(record["verified_live_scenarios"], ["fault-503", "fault-504"])
+        self.assertEqual(
+            record["verified_live_scenarios"],
+            [
+                "fault-503",
+                "fault-504",
+                "maintenance",
+                "acknowledgement",
+                "redirect",
+                "metadata",
+            ],
+        )
+        self.assertEqual(
+            record["published_live_scenarios"],
+            ["fault-503", "fault-504", "maintenance", "acknowledgement"],
+        )
+        self.assertTrue(record["actions_wave_complete"])
+        self.assertTrue(record["maintenance_update_complete"])
         self.assertTrue(record["actions_wave_plan_approved"])
         self.assertTrue(record["actions_wave_plan_applied"])
         self.assertTrue(record["actions_wave_plan_apply_complete"])

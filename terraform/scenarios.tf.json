@@ -380,7 +380,10 @@
                 "overwrite": true
               }
             ],
-            "response_cookies_to_remove": ["origin-remove"]
+            "response_cookies_to_remove": ["origin-remove"],
+            "custom_errors": {
+              "503": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+U2NoZWR1bGVkIG1haW50ZW5hbmNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPlNjaGVkdWxlZCBtYWludGVuYW5jZTwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+"
+            }
           }
         ]
       },

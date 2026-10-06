@@ -20,6 +20,8 @@ constraints. For custom error maps, official `x-ves-validation-rules` supply the
 infrastructure acceptance. No network access occurs during generation. To refresh, derive the same selected schema closure from a new official archive, record
 new member digests, and rerun projection and rendered acceptance.
 
+The `metadata.json` and `maintenance-fallback.json` selectors validate the complete source `more_option` block before projecting the response metadata fields or the `503` error mapping into separate examples. Each view retains only fields relevant to its reader outcome.
+
 Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_NAMESPACE>` in both projected views. Exact details preserve encoded bodies and other literal selected values; they do not make unresolved Terraform expressions executable. `<ENCODED_RESPONSE_BODY>` appears only in the primary view.
 
 ## Selector ledger
@@ -31,6 +33,7 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 | `errors-exact.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors/more_option/0/custom_errors/503` |
 | `errors-fault.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/errors/routes` |
 | `maintenance.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/0` |
+| `maintenance-fallback.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/more_option` |
 | `maintenance.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/0/direct_response_route/0/route_direct_response/0/response_body_encoded` |
 | `acknowledgement.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/1` |
 | `acknowledgement.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/1/direct_response_route/0/route_direct_response/0/response_body_encoded` |

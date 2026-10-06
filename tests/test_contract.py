@@ -244,7 +244,8 @@ class Contract(unittest.TestCase):
             sum(item["live_proof_required"] for item in self.items),
         )
         self.assertEqual(
-            record["created_scenario_lbs"], ["cr-waf-html", "cr-errors", "cr-index"]
+            record["created_scenario_lbs"],
+            ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json"],
         )
         self.assertEqual(
             record["verified_live_scenarios"],
@@ -255,12 +256,29 @@ class Contract(unittest.TestCase):
                 "acknowledgement",
                 "redirect",
                 "metadata",
+                "waf-html",
+                "waf-json",
+                "disclosure",
+                "data-guard",
             ],
         )
         self.assertEqual(
             record["published_live_scenarios"],
-            ["fault-503", "fault-504", "maintenance", "acknowledgement"],
+            [
+                "fault-503",
+                "fault-504",
+                "maintenance",
+                "acknowledgement",
+                "redirect",
+                "metadata",
+                "waf-html",
+                "waf-json",
+                "disclosure",
+                "data-guard",
+            ],
         )
+        self.assertTrue(record["origin_vm_replacement_complete"])
+        self.assertTrue(record["waf_json_wave_complete"])
         self.assertTrue(record["actions_wave_complete"])
         self.assertTrue(record["maintenance_update_complete"])
         self.assertTrue(record["actions_wave_plan_approved"])

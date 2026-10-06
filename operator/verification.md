@@ -2,8 +2,7 @@
 
 ## Evidence contract
 
-The origin fixture and digest-pinned httpbin passed local VM health checks. The WAF HTML LB also has a valid automatic
-certificate and measured benign `200` / custom blocked `403` responses; independent WAF event evidence remains required.
+The rebuilt origin fixture and digest-pinned httpbin passed VM health checks. Both WAF load balancers have valid certificates, measured benign `200` / custom blocked `403` responses, and matching enforced security events from 2026-10-06.
 Full inventory acceptance is incomplete. A green source test or saved plan is insufficient. Keep raw HTTP headers,
 bodies, origin logs, security records, browser traces and request IDs in an owner-only directory. Public receipts
 contain sanitized results and SHA-256 identities only.
@@ -36,4 +35,6 @@ Inspect desktop and mobile documentation, all scenario links, shared mega-menu n
 
 Complete one reviewed owned-resource teardown and rebuild. Compare shared DNS zone and unrelated resources before and after. Repeat all live acceptance and finish with `terraform plan -refresh=true -detailed-exitcode`; only exit 0 qualifies zero drift. Leave the rebuilt showcase online.
 
-Unverified inventory entries remain examples, including any load balancer whose create request succeeded but whose response owner is unproven. Publish a live link only after its individual status, body, negative control, DNS, certificate and owner evidence pass. The working WAF HTML response still needs an independent matching WAF event before its link qualifies.
+Unverified inventory entries remain examples, including a load balancer whose create succeeded but whose response owner is unproven. Publish a live link only after its status, body, negative control, DNS, certificate and owner evidence pass.
+
+Both published WAF block links have matching enforced events in protected evidence. The JSON WAF body is served with `text/html; charset=UTF-8`; verify client handling of that media type. Future requests need their own status, owner, and negative-control checks.

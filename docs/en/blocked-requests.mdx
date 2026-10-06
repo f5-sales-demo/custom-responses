@@ -34,6 +34,8 @@ Attach the configured firewall to the load balancer by name and namespace:
 
 **Expected result:** A blocked request returns `403` with the readable page; a benign request still reaches the origin. Check the firewall event: a `403` response alone does not prove the WAF made the block decision.
 
+**Verified live example:** [View the HTML WAF block](https://cr-waf-html.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--). The matching enforced WAF event confirms ownership.
+
 ## JSON blocking message
 
 For application clients, use the same `Forbidden` code with a JSON body:
@@ -49,3 +51,7 @@ For application clients, use the same `Forbidden` code with a JSON body:
 ```
 
 **Expected result:** A blocked request returns `403` with parseable JSON, and the firewall event confirms the block. Inspect `Content-Type` because a JSON body does not set that header by itself. Compare a benign request with the normal origin response.
+
+**Observed media type:** XC served this parseable JSON body as `text/html; charset=UTF-8`. Check whether your client accepts that media type.
+
+**Verified live example:** [View the JSON WAF body](https://cr-waf-json.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--). The matching enforced WAF event confirms ownership.

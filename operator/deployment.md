@@ -68,6 +68,10 @@ Verify DNS, certificate, status, body, negative control and response owner for t
 
 A targeted plan excludes unrelated changes in the full plan. Review those changes in later waves. The origin VM replacement needs separate exact-plan approval before apply. Use [verification](./verification.md) to qualify each deployed case.
 
+## Current serial state
+
+The dated [acceptance snapshot](../acceptance/current-iteration.json) records four created load balancers, the approved origin VM replacement, current quota evidence, and the remaining unverified examples. The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for each remaining challenge load balancer; retain `-parallelism=1` and the exact-plan approval gate.
+
 ## Resume the partial deployment
 
 The initial approved apply created the owned origin resources, namespace, pools, WAFs and one LB. Public virtual-host

@@ -114,6 +114,8 @@ class Contract(unittest.TestCase):
             ],
         )
         self.assertEqual(routes[-1]["advanced_options"][0]["timeout"], 2000)
+        self.assertEqual([route["http_method"] for route in routes], ["ANY"] * 4)
+        self.assertEqual(routes[-1]["advanced_options"][0]["priority"], "DEFAULT")
         self.assertEqual(
             self.by_id["fault-503"]["expected"]["body_contains"], "Exact 503"
         )

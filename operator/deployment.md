@@ -47,7 +47,7 @@ static public IP, outbound traffic, and tenant-specific XC feature charges. Auto
 depend on tenant entitlement. Use Azure's current estimate for the selected subscription and currency; no unverified
 fixed monthly price is implied.
 
-The full plan may replace the origin VM because `custom_data` changed. Review that replacement explicitly. For the first serial wave, save a separate plan targeted only at `xcsh_http_loadbalancer.errors` and inspect its exact actions:
+A full plan can replace the origin VM when `custom_data` changes. Review any replacement explicitly. For the first serial wave, save a separate plan targeted only at `xcsh_http_loadbalancer.errors` and inspect its exact actions:
 
 ```bash
 terraform -chdir=terraform plan -parallelism=1 \
@@ -57,7 +57,9 @@ terraform -chdir=terraform show "$HOME/.local/state/custom-responses/plans/error
 sha256sum "$HOME/.local/state/custom-responses/plans/errors.tfplan"
 ```
 
-Obtain explicit user approval of the **exact saved wave plan** before applying it. A changed plan needs another review. Check the effective `virtual_host.public` limit and usage, as well as the broader Virtual Host limit and usage, in the same XC tenant. If public capacity is full, stop and address that concrete limit before creating a load balancer. After approval and available capacity:
+Review the **exact saved wave plan** before applying it. The user granted standing authorization for Terraform actions in this prototype on 2026-10-06. A changed plan needs a fresh
+review, scope checks, and a protected backup. Check the effective `virtual_host.public` limit and usage, as well as the broader Virtual Host limit and usage, in the same XC tenant.
+If public capacity is full, stop and address that concrete limit before creating a load balancer. With reviewed scope and available capacity:
 
 ```bash
 terraform -chdir=terraform apply -parallelism=1 \
@@ -66,7 +68,7 @@ terraform -chdir=terraform apply -parallelism=1 \
 
 Verify DNS, certificate, status, body, negative control and response owner for the shared error host. Plan and review the next serial wave only after that evidence is complete.
 
-A targeted plan excludes unrelated changes in the full plan. Review those changes in later waves. The origin VM replacement needs separate exact-plan approval before apply. Use [verification](./verification.md) to qualify each deployed case.
+A targeted plan excludes unrelated changes in the full plan. Review those changes in later waves. Review origin VM replacements explicitly before apply under the standing Terraform authorization. Use [verification](./verification.md) to qualify each deployed case.
 
 ## Current serial state
 
@@ -74,15 +76,17 @@ The dated [acceptance snapshot](../acceptance/current-iteration.json) records ei
 The JavaScript challenge host passed certificate, browser completion, negative-control and origin ownership checks, with zero targeted drift. All challenge load balancers are
 deployed. Policy JavaScript completion passed; policy CAPTCHA completion and the DDoS trigger remain unverified. The CAPTCHA host has zero targeted drift, trusted TLS, a custom
 challenge page, and an unsolved negative control. Human completion remains unverified after a Google quota warning and an expired challenge.
-The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for any subsequent infrastructure change; retain `-parallelism=1` and the exact-plan approval gate.
+The initial and pre-replacement full plans are consumed or stale. Review a fresh saved plan for any subsequent infrastructure change; retain `-parallelism=1`, saved-plan review, and scope checks.
 
 ## Resume the partial deployment
 
 The initial approved apply created the owned origin resources, namespace, pools, WAFs and one LB. Public virtual-host
 usage updates rejected the remaining LBs, and Bot Standard is now documented as configuration-only. The previous recovery plan is obsolete. The current source shares compatible scenarios across eight load balancers and preserves the working WAF HTML resource.
 
-Back up the protected local state, verify tenant quota and usage, and save a fresh plan. Review every proposed replacement, especially the origin VM because cloud-init content changed, and obtain approval of that exact plan before applying. Preserve private local state; never reapply the consumed initial plan.
+Back up the protected local state, verify tenant quota and usage, and save a fresh plan. Review every proposed replacement, especially the origin VM because cloud-init content changed, and review that exact plan before applying under the standing authorization. Preserve private local state; never reapply the consumed initial plan.
 
 On a single-create 429, wait five minutes, review a fresh plan, and retry once only if capacity is available. A second 429 requires a sanitized support case for HTTP load-balancer create rate or `virtual_host.public` usage updates. Request a quota increase only if XC reports a lower effective public-host limit than the broader Virtual Host limit.
 
 The approved output-only update refreshed `scenario_hosts` to the eight shared hosts. The full refresh then returned zero changes at state serial 64; its saved-plan and backup digests are in the acceptance snapshot. Runtime completion and reviewed teardown/rebuild remain separate acceptance requirements.
+
+The owned lifecycle rebuild is complete. All eight shared hosts were restored serially from reviewed saved plans, with fresh state backups and repeated qualified traffic checks. Use the current acceptance snapshot for rebuilt state and aggregate zero-drift identities; prior wave receipts describe the previous deployment.

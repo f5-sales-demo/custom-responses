@@ -21,10 +21,10 @@
     "policy CAPTCHA completion remains unverified",
     "cr-captcha human completion remains unverified; Google quota warning and challenge expiry were observed",
     "Bot Defense remains configuration-only",
-    "reviewed teardown/rebuild remains pending"
+    "full live acceptance excludes deferred DDoS and un-verified mapping/CAPTCHA examples"
   ],
   "certificate_state": "All eight created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
-  "teardown_rebuild_complete": false,
+  "teardown_rebuild_complete": true,
   "zero_change_plan": true,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
   "recovery_plan_sha256": "b6f72ba58b4e49f209b0af71901265668071d8e8b0d39a368b129be03ff93b8b",
@@ -52,7 +52,7 @@
   ],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
-    "checked_at_utc": "2026-10-06T11:30:36Z",
+    "checked_at_utc": "2026-10-06T13:32:23Z",
     "namespace": "system",
     "virtual_host": {
       "limit": 200,
@@ -176,9 +176,9 @@
   "aggregate_output_plan_sha256": "d9c93b4ee877d04fc93a2f75fe0f809f78553ba7d1344762ecbbe8825f95c025",
   "aggregate_output_plan_approved": true,
   "aggregate_output_plan_applied": true,
-  "aggregate_zero_change_plan_sha256": "09b10d02e945c6f6c34d6b2b1b3be6b6fa4dfca2372259b5a71156a17d4fe6e2",
-  "current_state_serial": 64,
-  "current_state_backup_sha256": "f50fe4b64830f3e19dc9a124382f828256602d07e66c13a4787a01b39e51edf0",
+  "aggregate_zero_change_plan_sha256": "42b188eb7c9cdc09adf7cb9011ad05b7da576923f7bcea584b750cd9b45f0e95",
+  "current_state_serial": 124,
+  "current_state_backup_sha256": "53ea6df28b007e2649aac0a0fc36c4828204579a7fa4c8accfc381bd15dd2a97",
   "ddos_wave_control_receipt_sha256": "adb5520f791f072d452e5929dcbd27c699ba0b41bb57a53b6a9610358d04ea32",
   "error_mapping_repeat_receipt_sha256": "80b552f0010ca63611eaedaabff993c0b6adb1d07831d29d94e09ef27bb710fd",
   "error_mapping_origin_receipt_sha256": "c74e4c6f9445aa316065480e32b7707489677478a1b660ec95cf99ceb72cb8e4",
@@ -193,5 +193,27 @@
     "parser_failures": { "400": "generic edge body", "431": "generic edge body" },
     "origin_body_replacement_verified": false,
     "custom_502_verified": false
-  }
+  },
+  "terraform_standing_authorization": "User pre-approved Terraform actions for this prototype on 2026-10-06; reviewed saved plans, scope checks, state backups and serial execution remain required.",
+  "lifecycle_rebuild_complete": true,
+  "lifecycle_rebuild_receipt_sha256": "fa24f230afdf4d2e99c8439bd24cdc6c80078399eeea4adcdb961ec9ff955d72",
+  "lifecycle_destroy_plan_sha256": "111e138e0a51b9008311b0480093d50287209e3904b34ea7e7697e0037a4582c",
+  "lifecycle_full_rebuild_review_sha256": "bbbf98b6ef2963f7d3d1220d900afdc5b30b8c6409ecd55775ce65fe2a87111e",
+  "lifecycle_restored_resource_count": 24,
+  "lifecycle_restored_load_balancer_count": 8,
+  "lifecycle_verified_scenarios": [
+    "fault-503",
+    "fault-504",
+    "maintenance",
+    "acknowledgement",
+    "redirect",
+    "metadata",
+    "waf-html",
+    "waf-json",
+    "disclosure",
+    "data-guard",
+    "js",
+    "policy-js"
+  ],
+  "lifecycle_waf_log_caveat": "Each WAF block has a matching enforced security event; matching block rows were absent from repeated firewall-log queries."
 }

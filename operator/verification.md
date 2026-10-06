@@ -37,4 +37,6 @@ Complete one reviewed owned-resource teardown and rebuild. Compare shared DNS zo
 
 Unverified inventory entries remain examples, including a load balancer whose create succeeded but whose response owner is unproven. Publish a live link only after its status, body, negative control, DNS, certificate and owner evidence pass.
 
+The JavaScript challenge has a trusted certificate, the custom first-visit page, an XC challenge cookie, origin access after browser completion, and repeat access. A unique unsolved path produced zero origin log entries before completion and one after; the protected receipt hash is in the acceptance snapshot.
+
 Both published WAF block links have matching enforced events in protected evidence. The JSON WAF body is served with `text/html; charset=UTF-8`; verify client handling of that media type. Future requests need their own status, owner, and negative-control checks.

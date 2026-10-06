@@ -245,7 +245,7 @@ class Contract(unittest.TestCase):
         )
         self.assertEqual(
             record["created_scenario_lbs"],
-            ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json"],
+            ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json", "cr-js"],
         )
         self.assertEqual(
             record["verified_live_scenarios"],
@@ -260,6 +260,7 @@ class Contract(unittest.TestCase):
                 "waf-json",
                 "disclosure",
                 "data-guard",
+                "js",
             ],
         )
         self.assertEqual(
@@ -275,8 +276,11 @@ class Contract(unittest.TestCase):
                 "waf-json",
                 "disclosure",
                 "data-guard",
+                "js",
             ],
         )
+        self.assertTrue(record["js_wave_applied"])
+        self.assertTrue(record["js_wave_complete"])
         self.assertTrue(record["origin_vm_replacement_complete"])
         self.assertTrue(record["waf_json_wave_complete"])
         self.assertTrue(record["actions_wave_complete"])

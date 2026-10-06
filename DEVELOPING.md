@@ -10,7 +10,9 @@ Documentation and branding delivery uses the governed Starlight pipeline and sha
 
 All eight shared load balancers and the updated synthetic origin are deployed; full live acceptance remains incomplete.
 The JavaScript challenge passed trusted TLS, fresh-browser completion, repeat access, and unique-path origin ownership. The CAPTCHA host has trusted TLS and a custom challenge page; human completion remains unverified after a Google quota warning and an expired challenge.
-The HTML and JSON WAF, shared errors, direct responses, redirect, metadata, and masking have bounded verified cases. Policy JavaScript is verified; origin-status mappings and CAPTCHA completion remain incomplete. DDoS testing is deferred; its documentation is marked `un-verified`. Check the dated acceptance record and live public-host usage before each deployment wave.
+The HTML and JSON WAF, shared errors, direct responses, redirect, metadata, and masking have bounded verified cases. Policy JavaScript is verified; origin-body replacement and
+custom `502` remain un-verified after repeat applicability checks; CAPTCHA completion remains incomplete. DDoS testing is deferred; its documentation is marked `un-verified`. Check
+the dated acceptance record and live public-host usage before each deployment wave.
 Bot entries are configuration-only and excluded from deployment and required live proof. Preserve private local state
 and captures. A changed recovery plan requires explicit approval before apply. The aggregate refresh has zero changes. Documentation publication does not
 qualify full live acceptance or teardown/rebuild.

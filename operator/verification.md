@@ -48,3 +48,14 @@ origin; repeat access succeeded. Origin logs showed zero selected-path requests 
 Policy CAPTCHA completion remains unverified.
 
 The DDoS host has trusted TLS. Ordinary requests to `/` and `/challenge` return the origin with `200`; requesting the path does not trigger mitigation. The configured custom JavaScript action is present, but DDoS testing is deferred, a real mitigation event remains unverified, and its documentation is marked `un-verified`.
+
+## Error-mapping applicability findings
+
+The 2026-10-06 repeat matrix over HTTP/1.1 and HTTP/2 matched accepted XC mappings to source. Origin `302`, `404`, `418`, `500`, and `503` responses retained their original bodies.
+`/fault/500` also retained its origin `500` body. Direct VM probes and its private journal confirmed those responses. The reset listener produced a TCP reset directly and XC
+returned `503` with the exact-503 page; the `/fault/502` name is not a verified status assertion. Oversized-header `431` and malformed-method `400` responses retained generic edge
+bodies despite the class-4 mapping.
+
+Record these as measured applicability limits. Keep origin body replacement and custom `502`, class `3`/`4`, and exact `404` examples un-verified; only the qualified `503` and
+`504` custom pages remain published. The inventory preserves its intended custom-page assertions, so these cases continue to fail rather than being converted to passing origin
+controls. The acceptance record contains protected repeat and direct-origin receipt digests. No Terraform or origin fixture change was needed.

@@ -17,7 +17,7 @@
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
     "origin-status and reset-path examples remain unverified",
-    "DDoS mitigation trigger remains unverified",
+    "DDoS testing is deferred; the documented scenario is un-verified",
     "policy CAPTCHA completion remains unverified",
     "cr-captcha human completion remains unverified; Google quota warning and challenge expiry were observed",
     "Bot Defense remains configuration-only",
@@ -167,6 +167,8 @@
   "ddos_wave_approved": true,
   "ddos_wave_applied": true,
   "ddos_wave_complete": false,
+  "ddos_testing_deferred": true,
+  "ddos_documentation_status": "un-verified",
   "ddos_wave_state_serial": 63,
   "ddos_wave_postapply_backup_sha256": "65171fd9add8600970878bb7a964f9b7f102ec3fbfff198806cfd71b81b8f0b2",
   "aggregate_plan_resource_changes": 0,

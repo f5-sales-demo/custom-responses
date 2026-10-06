@@ -22,8 +22,7 @@ replacement.
 
 Use fresh browser contexts for JS and CAPTCHA. Capture the custom wording, actual platform completion and subsequent
 origin access. A CAPTCHA needs a human participant. Prove unsolved access does not reach the protected origin. For
-policy challenges, record the matching `challenge-js-path` or `challenge-captcha-path` rule. For DDoS, use an approved bounded mitigation
-trigger and retain the actual event; ordinary traffic is the negative control.
+policy challenges, record the matching `challenge-js-path` or `challenge-captcha-path` rule. DDoS testing is deferred. Retain the documented configuration with an `un-verified` status; ordinary traffic is only a negative control.
 
 WAF acceptance requires a genuinely blocked synthetic request and its matching enforced event. Test HTML and JSON body variants independently, and record actual Content-Type.
 
@@ -48,4 +47,4 @@ The shared policy host selects JavaScript on `/policy-js`, CAPTCHA on `/policy-c
 origin; repeat access succeeded. Origin logs showed zero selected-path requests before browser completion, two JavaScript requests afterward, and zero unsolved CAPTCHA requests.
 Policy CAPTCHA completion remains unverified.
 
-The DDoS host has trusted TLS. Ordinary requests to `/` and `/challenge` return the origin with `200`; requesting the path does not trigger mitigation. The configured custom JavaScript action is present, but a real mitigation event remains unverified and its example stays unpublished.
+The DDoS host has trusted TLS. Ordinary requests to `/` and `/challenge` return the origin with `200`; requesting the path does not trigger mitigation. The configured custom JavaScript action is present, but DDoS testing is deferred, a real mitigation event remains unverified, and its documentation is marked `un-verified`.

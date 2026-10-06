@@ -52,6 +52,8 @@ The shared policy source above contains this rule alongside the JavaScript rule.
 
 ## DDoS-selected JavaScript challenge
 
+**Status: un-verified.** DDoS testing is deferred. The configuration below documents the intended response; it has not been verified during a live mitigation event.
+
 > **Visitor message:** Please wait while your browser is verified.
 
 `l7_ddos_action_js_challenge` supplies the message and parameters used when application-layer DDoS mitigation selects this action. Requesting `/challenge` alone does not activate mitigation.

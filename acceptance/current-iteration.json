@@ -9,11 +9,11 @@
   "deferred_prerequisites": [
     "origin-status and reset-path examples remain unverified",
     "two challenge load balancers remain undeployed",
-    "cr-captcha certificate and human completion remain unverified",
+    "cr-captcha human completion remains unverified; Google quota warning and challenge expiry were observed",
     "Bot Defense remains configuration-only",
     "reviewed teardown/rebuild and aggregate zero-drift gates"
   ],
-  "certificate_state": "Five prior load balancers CertificateValid; cr-captcha automatic certificate pending on 2026-10-06",
+  "certificate_state": "All six created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
   "teardown_rebuild_complete": false,
   "zero_change_plan": false,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
@@ -139,5 +139,6 @@
   "captcha_wave_state_serial": 59,
   "captcha_wave_postapply_backup_sha256": "e4eb1bef73a87f7a63f4a499750f36fecc09c2e12127c70a7078d97ab8076e61",
   "captcha_wave_targeted_no_change_plan_sha256": "09e641d38af096cc2578cf673d2c9b5ae45fe99fcd1ac5cbfe859ad7e1549f3c",
-  "captcha_wave_certificate_state": "VIRTUAL_HOST_DNS_A_RECORD_ADDED / DomainChallengePending at 2026-10-06T04:12:25Z"
+  "captcha_wave_certificate_state": "VIRTUAL_HOST_READY / CertificateValid at 2026-10-06T04:19:55Z",
+  "captcha_wave_partial_receipt_sha256": "acb1b64c53f7edf785571561fb5c04db45f798c9e4830c95a91e12574b4b4b26"
 }

@@ -282,6 +282,7 @@ class Contract(unittest.TestCase):
         self.assertTrue(record["captcha_wave_applied"])
         self.assertFalse(record["captcha_wave_complete"])
         self.assertFalse(record["captcha_wave_human_complete"])
+        self.assertTrue(record["captcha_wave_partial_receipt_sha256"])
         self.assertNotIn("captcha", record["verified_live_scenarios"])
         self.assertNotIn("captcha", record["published_live_scenarios"])
         self.assertTrue(record["js_wave_applied"])

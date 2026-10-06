@@ -39,4 +39,7 @@ Unverified inventory entries remain examples, including a load balancer whose cr
 
 The JavaScript challenge has a trusted certificate, the custom first-visit page, an XC challenge cookie, origin access after browser completion, and repeat access. A unique unsolved path produced zero origin log entries before completion and one after; the protected receipt hash is in the acceptance snapshot.
 
+The CAPTCHA host has a valid certificate and serves the custom challenge page. A unique unsolved request produced zero origin log entries.
+In a fresh headed Chrome session, the reCAPTCHA iframe showed an Enterprise free-quota warning; clicking opened an image challenge, but it expired before completion and the browser never reached the origin. Keep CAPTCHA unverified and unpublished until actual completion is proven.
+
 Both published WAF block links have matching enforced events in protected evidence. The JSON WAF body is served with `text/html; charset=UTF-8`; verify client handling of that media type. Future requests need their own status, owner, and negative-control checks.

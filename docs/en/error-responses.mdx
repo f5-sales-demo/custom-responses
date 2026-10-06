@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-Custom error mappings give eligible edge-generated failures a message for a status family or an exact code. They do not rewrite every origin response. In this fixture, origin-generated `302`, `404`, `418`, `500`, and `503` responses kept their origin bodies.
+Custom error mappings give eligible edge-generated failures a message for a status family or an exact code. Eligibility depends on the response path. In this fixture, origin-generated `302`, `404`, `418`, `500`, and `503` responses kept their origin bodies. Request-parser failures also kept generic edge bodies.
 
 | Mapping | Visitor message | Result |
 | --- | --- | --- |
@@ -70,4 +70,19 @@ These two paths passed DNS, trusted TLS, status, body, healthy-origin control, a
 - [Exact 503 page](https://cr-errors.f5-sales-demo.com/fault/503) returns `503` with “Exact 503” when the selected origin port is closed.
 - [Class 5 timeout page](https://cr-errors.f5-sales-demo.com/fault/504) returns `504` with “Class 5” when the selected origin responds after the route timeout.
 
-The other mappings on this load balancer remain configuration examples pending live qualification.
+## Observed mapping limits
+
+The checks below were repeated with trusted TLS over HTTP/1.1 and HTTP/2 on 2026-10-06. Direct fixture responses and private origin logs confirmed the origin-backed results.
+
+| Test | Observed response | Custom mapping status |
+| --- | --- | --- |
+| `/status/302`, `/status/418`, `/status/500` | Original status and origin body retained | Class `3`, `4`, and `5` replacement of these origin bodies is **un-verified**. |
+| `/status/404`, `/status/503` | Original status and origin body retained | Exact `404` and `503` replacement of these origin bodies is **un-verified**. |
+| `/fault/500` | Origin `500` and origin body retained | Class `5` replacement of this origin body is **un-verified**. |
+| `/fault/502` | Edge `503` with “Exact 503” after an upstream reset | The path name does not establish a `502`; a custom `502` example is **un-verified**. |
+| Oversized request header | Edge `431` with a generic body | Class `4` did not apply to this request-parser response. |
+| Malformed request method | Edge `400` with a generic body | Class `4` did not apply to this request-parser response. |
+
+The accepted API configuration contained all five mappings and matched the source. The API field description defines class keys and exact-code precedence, but it does not establish
+that every response path is eligible. Use the two verified upstream-fault examples above when demonstrating mapped pages. Keep the remaining mappings as **un-verified**
+configuration examples; do not treat a passing origin-status control as proof that its body was replaced.

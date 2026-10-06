@@ -4,14 +4,15 @@
   "apply_complete": false,
   "namespace": "${xcsh_namespace.showcase.name}",
   "origin_health": "fixture and pinned httpbin responding on VM",
-  "created_scenario_lbs": ["cr-waf-html", "cr-errors", "cr-index"],
+  "created_scenario_lbs": ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json"],
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
     "origin-status and reset-path examples remain unverified",
-    "remaining shared LB waves",
-    "origin VM replacement exact-plan approval to remove legacy links"
+    "four challenge load balancers remain undeployed",
+    "Bot Defense remains configuration-only",
+    "reviewed teardown/rebuild and aggregate zero-drift gates"
   ],
-  "certificate_state": "cr-waf-html and cr-errors VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
+  "certificate_state": "All four created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
   "teardown_rebuild_complete": false,
   "zero_change_plan": false,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
@@ -24,18 +25,29 @@
   "source_load_balancer_count": 8,
   "source_scenario_count": 26,
   "live_proof_required_count": 24,
-  "verified_live_scenarios": ["fault-503", "fault-504", "maintenance", "acknowledgement", "redirect", "metadata"],
+  "verified_live_scenarios": [
+    "fault-503",
+    "fault-504",
+    "maintenance",
+    "acknowledgement",
+    "redirect",
+    "metadata",
+    "waf-html",
+    "waf-json",
+    "disclosure",
+    "data-guard"
+  ],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
-    "checked_at_utc": "2026-10-06T01:29:01Z",
+    "checked_at_utc": "2026-10-06T02:24:16Z",
     "namespace": "system",
     "virtual_host": {
       "limit": 200,
-      "used": 66
+      "used": 67
     },
     "virtual_host_public": {
       "limit": 200,
-      "used": 38
+      "used": 39
     }
   },
   "recovery_plan_superseded": true,
@@ -45,7 +57,7 @@
   "first_wave_plan_changes": ["create xcsh_http_loadbalancer.errors"],
   "first_wave_plan_approved": true,
   "first_wave_plan_applied": true,
-  "origin_fixture_legacy_links": "Preexisting live fixture still links unverified examples; replacement requires separate saved-plan approval.",
+  "origin_fixture_legacy_links": "Removed by the approved origin VM replacement on 2026-10-06.",
   "first_wave_plan_apply_complete": false,
   "first_wave_plan_consumed": true,
   "first_wave_provider_error": "Provider returned route defaults after a null plan; remote resource and state were created, then the state instance was safely untainted.",
@@ -71,11 +83,39 @@
   "actions_wave_state_serial": 50,
   "actions_wave_targeted_no_change_plan_sha256": "cf2a0ec50378615cfa912fd3f25b31c5e0939434170d57986e7d3fdcd9abc018",
   "actions_certificate_snapshot": "VIRTUAL_HOST_READY / CertificateValid at 2026-10-06T01:50:54Z",
-  "published_live_scenarios": ["fault-503", "fault-504", "maintenance", "acknowledgement"],
+  "published_live_scenarios": [
+    "fault-503",
+    "fault-504",
+    "maintenance",
+    "acknowledgement",
+    "redirect",
+    "metadata",
+    "waf-html",
+    "waf-json",
+    "disclosure",
+    "data-guard"
+  ],
   "actions_wave_complete": true,
   "actions_wave_verified_receipt_sha256": "454803d2cfeba7ae223f262cc677b2ac3ba84a27819ae1a6583c673e76457b98",
   "maintenance_update_plan_sha256": "fc87b584f45ab7210d8c81cb2cfd9b951a5b7c3dce85ceba02ebbfb4cbb01c38",
   "maintenance_update_approved": true,
   "maintenance_update_applied": true,
-  "maintenance_update_complete": true
+  "maintenance_update_complete": true,
+  "origin_vm_replacement_plan_sha256": "d53359fa5e18d1511746a5a5f68d3c42db0c8e898b44bf3f9cca2028c6aced24",
+  "origin_vm_replacement_approved": true,
+  "origin_vm_replacement_applied": true,
+  "origin_vm_replacement_complete": true,
+  "origin_vm_state_serial": 55,
+  "origin_vm_journal_backup_sha256": "2ad34db4a6e48f10ba1380a2c77bef274619b9c267121a2418002b87c0a0c8f9",
+  "origin_postreplacement_smoke_sha256": "204a57d795ac0655ee085e6b862f309ead0c4eda78e43b91bd2b587197a6fdf5",
+  "origin_vm_targeted_no_change_plan_sha256": "897341ee3f8410f11c007b782fcab59cb6b765fc34dabb66d99f3ff36eadc607",
+  "waf_json_wave_plan_sha256": "bbb7ea649ace0d4aabae6771b2119018cb8a0061af5f98b0001e7b526e054d67",
+  "waf_json_wave_approved": true,
+  "waf_json_wave_applied": true,
+  "waf_json_wave_complete": true,
+  "waf_json_wave_state_serial": 52,
+  "waf_json_targeted_no_change_plan_sha256": "e076f8958cf66e10178c8965b6f807dbb0692e73a5d9f8829ff8f06b01df0266",
+  "waf_json_verified_receipt_sha256": "58c1007fb76fc7a225971e440c884e34d9cf6e9bc47720e69b587bf125d0ad21",
+  "waf_json_content_type_caveat": "Parseable JSON block body is served with text/html; charset=UTF-8.",
+  "waf_html_verified_receipt_sha256": "e228713d640ef0ed8a973fc5399969abd5b70cbf3cfec427b325aeb2882a123e"
 }

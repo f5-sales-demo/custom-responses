@@ -18,3 +18,5 @@ Configure the add and remove lists under the load balancer's `more_option` field
 ```
 
 **Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the application body. Compare with the untransformed shared error host because these settings apply to the load balancer, not just one path.
+
+**Verified live example:** [Open the transformed response](https://custom-responses.f5-sales-demo.com/) and inspect its response headers and cookies.

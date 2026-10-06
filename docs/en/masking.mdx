@@ -25,6 +25,8 @@ The `sensitive_data_disclosure_rules` entry matches GET `/disclosure`, names `ca
 
 **Expected result:** `/disclosure` returns `200` without the selected synthetic values, while unrelated fields remain intact. Compare `/disclosure-control`, which this rule does not select.
 
+**Verified live example:** [View selected-field masking](https://cr-waf-json.f5-sales-demo.com/disclosure).
+
 ## Data Guard
 
 > **Visitor response:** Supported credit-card and Social Security numbers are masked.
@@ -42,3 +44,5 @@ Firewall attachment:
 ```
 
 **Expected result:** `/data-guard` returns `200` with supported synthetic values masked and other content intact. Compare `/data-guard-control`. Both rules share the JSON WAF load balancer but select separate paths. Compare each path with its matching control to identify the rule that changed the response.
+
+**Verified live example:** [View Data Guard masking](https://cr-waf-json.f5-sales-demo.com/data-guard).

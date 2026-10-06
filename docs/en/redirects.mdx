@@ -18,3 +18,5 @@ The `redirect_route` matches `/old`. Its `route_redirect` sets the protocol to `
 ```
 
 **Expected result:** A request to `/old` without automatic redirect following returns `302` and the intended `Location`. The destination serves the intended content, the redirect chain terminates, and an unrelated path still reaches the origin.
+
+**Verified live example:** [Follow the temporary redirect](https://custom-responses.f5-sales-demo.com/old).

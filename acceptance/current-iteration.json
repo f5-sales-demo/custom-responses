@@ -4,15 +4,15 @@
   "apply_complete": false,
   "namespace": "${xcsh_namespace.showcase.name}",
   "origin_health": "fixture and pinned httpbin responding on VM",
-  "created_scenario_lbs": ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json"],
+  "created_scenario_lbs": ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json", "cr-js"],
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
     "origin-status and reset-path examples remain unverified",
-    "four challenge load balancers remain undeployed",
+    "three challenge load balancers remain undeployed",
     "Bot Defense remains configuration-only",
     "reviewed teardown/rebuild and aggregate zero-drift gates"
   ],
-  "certificate_state": "All four created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
+  "certificate_state": "All five created load balancers VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
   "teardown_rebuild_complete": false,
   "zero_change_plan": false,
   "provider_archive_sha256": "d157b36153a23f973f0e32d3e62143983b88407b5cc87471d5438d38b8ea00de",
@@ -35,15 +35,16 @@
     "waf-html",
     "waf-json",
     "disclosure",
-    "data-guard"
+    "data-guard",
+    "js"
   ],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
-    "checked_at_utc": "2026-10-06T02:24:16Z",
+    "checked_at_utc": "2026-10-06T03:18:49Z",
     "namespace": "system",
     "virtual_host": {
       "limit": 200,
-      "used": 67
+      "used": 66
     },
     "virtual_host_public": {
       "limit": 200,
@@ -93,7 +94,8 @@
     "waf-html",
     "waf-json",
     "disclosure",
-    "data-guard"
+    "data-guard",
+    "js"
   ],
   "actions_wave_complete": true,
   "actions_wave_verified_receipt_sha256": "454803d2cfeba7ae223f262cc677b2ac3ba84a27819ae1a6583c673e76457b98",
@@ -117,5 +119,15 @@
   "waf_json_targeted_no_change_plan_sha256": "e076f8958cf66e10178c8965b6f807dbb0692e73a5d9f8829ff8f06b01df0266",
   "waf_json_verified_receipt_sha256": "58c1007fb76fc7a225971e440c884e34d9cf6e9bc47720e69b587bf125d0ad21",
   "waf_json_content_type_caveat": "Parseable JSON block body is served with text/html; charset=UTF-8.",
-  "waf_html_verified_receipt_sha256": "e228713d640ef0ed8a973fc5399969abd5b70cbf3cfec427b325aeb2882a123e"
+  "waf_html_verified_receipt_sha256": "e228713d640ef0ed8a973fc5399969abd5b70cbf3cfec427b325aeb2882a123e",
+  "js_wave_plan_sha256": "6ddaee8aaaf2560f9e9b7cb8203f3580db480f2d56ba2f7810e4bcb1434480e0",
+  "js_wave_approved": true,
+  "js_wave_applied": true,
+  "js_wave_complete": true,
+  "js_wave_state_serial": 57,
+  "js_wave_postapply_backup_sha256": "a1c14ab1c6fc328e24ef9ee9869e4859a4cf5c3d32a10803423c66fd1901c6b5",
+  "js_wave_targeted_no_change_plan_sha256": "e9c4c04afaa699908f71dcfa9774a1eef75d18937e84fb1ba5c420d6575f4fac",
+  "js_wave_certificate_state": "VIRTUAL_HOST_READY / CertificateValid at 2026-10-06T03:55:11Z",
+  "js_wave_certificate_receipt_sha256": "b7499c4aba88d0474ec2bc819ae08ab94a791a589accd8f94c103bcaaf927620",
+  "js_wave_verified_receipt_sha256": "ad73156a126a9f61b6bf0c0d47e4524539e5e17dfb2eb776d871154c2af0e7cf"
 }

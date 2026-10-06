@@ -245,7 +245,14 @@ class Contract(unittest.TestCase):
         )
         self.assertEqual(
             record["created_scenario_lbs"],
-            ["cr-waf-html", "cr-errors", "cr-index", "cr-waf-json", "cr-js", "cr-captcha"],
+            [
+                "cr-waf-html",
+                "cr-errors",
+                "cr-index",
+                "cr-waf-json",
+                "cr-js",
+                "cr-captcha",
+            ],
         )
         self.assertEqual(
             record["verified_live_scenarios"],

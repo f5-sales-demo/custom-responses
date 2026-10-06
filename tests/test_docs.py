@@ -151,6 +151,25 @@ class DocumentationTests(unittest.TestCase):
             self.assertIsInstance(policy, dict)
             self.assertIsInstance(policy["rule_list"]["rules"], list)
             self.assertIsInstance(policy["rule_list"]["rules"][0]["spec"], dict)
+            fallback = json.loads((output / "maintenance-fallback.json").read_text())[
+                "spec"
+            ]["more_option"]
+            self.assertEqual(set(fallback), {"custom_errors"})
+            self.assertEqual(
+                fallback["custom_errors"]["503"], "<ENCODED_RESPONSE_BODY>"
+            )
+            metadata = json.loads((output / "metadata.json").read_text())["spec"][
+                "more_option"
+            ]
+            self.assertEqual(
+                set(metadata),
+                {
+                    "response_headers_to_add",
+                    "response_headers_to_remove",
+                    "response_cookies_to_add",
+                    "response_cookies_to_remove",
+                },
+            )
             ref = json.loads((output / "waf-attach.json").read_text())["spec"][
                 "app_firewall"
             ]
@@ -236,10 +255,12 @@ class DocumentationTests(unittest.TestCase):
         record = json.loads((ROOT / "acceptance/current-iteration.json").read_text())
         inventory = json.loads((ROOT / "scenarios.json").read_text())
         verified = set(record["verified_live_scenarios"])
+        published = set(record["published_live_scenarios"])
+        self.assertTrue(published <= verified)
         expected = {
             f"https://{item['hostname']}{item['trigger']}"
             for item in inventory
-            if item["id"] in verified
+            if item["id"] in published
         }
         linked = set()
         for page in (ROOT / "docs/en").glob("*.mdx"):

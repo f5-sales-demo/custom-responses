@@ -8,7 +8,7 @@
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
     "origin-status and reset-path examples remain unverified",
-    "actions LB certificate and traffic acceptance",
+    "remaining shared LB waves",
     "origin VM replacement exact-plan approval to remove legacy links"
   ],
   "certificate_state": "cr-waf-html and cr-errors VIRTUAL_HOST_READY / CertificateValid on 2026-10-06",
@@ -24,7 +24,7 @@
   "source_load_balancer_count": 8,
   "source_scenario_count": 26,
   "live_proof_required_count": 24,
-  "verified_live_scenarios": ["fault-503", "fault-504"],
+  "verified_live_scenarios": ["fault-503", "fault-504", "maintenance", "acknowledgement", "redirect", "metadata"],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
     "checked_at_utc": "2026-10-06T01:29:01Z",
@@ -68,7 +68,14 @@
   "actions_wave_plan_approved": true,
   "actions_wave_plan_applied": true,
   "actions_wave_plan_apply_complete": true,
-  "actions_wave_state_serial": 48,
-  "actions_wave_targeted_no_change_plan_sha256": "ae6f3ead27523d0edf0bb41fd14808ecac547dc13e425757b91eed40595b63fb",
-  "actions_certificate_snapshot": "PreDomainChallengePending / Auto Cert Generation In Progress at 2026-10-06T01:33:11Z"
+  "actions_wave_state_serial": 50,
+  "actions_wave_targeted_no_change_plan_sha256": "cf2a0ec50378615cfa912fd3f25b31c5e0939434170d57986e7d3fdcd9abc018",
+  "actions_certificate_snapshot": "VIRTUAL_HOST_READY / CertificateValid at 2026-10-06T01:50:54Z",
+  "published_live_scenarios": ["fault-503", "fault-504", "maintenance", "acknowledgement"],
+  "actions_wave_complete": true,
+  "actions_wave_verified_receipt_sha256": "454803d2cfeba7ae223f262cc677b2ac3ba84a27819ae1a6583c673e76457b98",
+  "maintenance_update_plan_sha256": "fc87b584f45ab7210d8c81cb2cfd9b951a5b7c3dce85ceba02ebbfb4cbb01c38",
+  "maintenance_update_approved": true,
+  "maintenance_update_applied": true,
+  "maintenance_update_complete": true
 }

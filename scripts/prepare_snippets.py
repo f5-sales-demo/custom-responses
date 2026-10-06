@@ -31,10 +31,16 @@ class Snippet(TypedDict):
     source: str
     pointer: str
     decode: bool
+    fields: tuple[str, ...]
 
 
 def selection(
-    output: str, pointer: str, source: str = TF, *, decode_body: bool = False
+    output: str,
+    pointer: str,
+    source: str = TF,
+    *,
+    decode_body: bool = False,
+    fields: tuple[str, ...] = (),
 ) -> Snippet:
     """Describe one source-owned fragment without line-number coupling."""
     return {
@@ -42,6 +48,7 @@ def selection(
         "source": source,
         "pointer": pointer,
         "decode": decode_body,
+        "fields": fields,
     }
 
 
@@ -59,6 +66,11 @@ SELECTIONS = [
     ),
     selection("errors-fault.json", LB + "errors/routes"),
     selection("maintenance.json", LB + "actions/routes/0"),
+    selection(
+        "maintenance-fallback.json",
+        LB + "actions/more_option",
+        fields=("custom_errors",),
+    ),
     selection(
         "maintenance.html",
         LB
@@ -123,7 +135,16 @@ SELECTIONS = [
         decode_body=True,
     ),
     selection("redirect.json", LB + "actions/routes/2"),
-    selection("metadata.json", LB + "actions/more_option"),
+    selection(
+        "metadata.json",
+        LB + "actions/more_option",
+        fields=(
+            "response_headers_to_add",
+            "response_headers_to_remove",
+            "response_cookies_to_add",
+            "response_cookies_to_remove",
+        ),
+    ),
     selection("disclosure.json", LB + "waf-json/sensitive_data_disclosure_rules"),
     selection("data-guard.json", LB + "waf-json/data_guard_rules"),
 ]
@@ -315,6 +336,21 @@ def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> Json
         if len(parts) != BOT_SPEC_SELECTOR_PARTS:
             message = "Bot fragment must select a top-level spec field"
             raise ValueError(message)
+    if item["fields"]:
+        if (
+            item["source"] != TF
+            or field != "more_option"
+            or not isinstance(value, list)
+            or len(value) != 1
+            or not isinstance(value[0], dict)
+        ):
+            message = "Field projection requires one more_option object block"
+            raise ValueError(message)
+        try:
+            value = [{key: value[0][key] for key in item["fields"]}]
+        except KeyError as error:
+            message = "Missing projected source field"
+            raise ValueError(message) from error
     projected = project({field: value}, CONTRACT["resources"][resource])
     return {"spec": placeholders(projected, primary=primary)}
 

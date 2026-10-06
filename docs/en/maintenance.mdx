@@ -22,4 +22,13 @@ In the load balancer's `routes` list, `direct_response_route` matches `/maintena
 ```html file=../_data/maintenance.html wrap
 ```
 
+In this tenant, the direct `503` route initially served a generic F5 error page even though XC accepted the encoded body. Mapping the same body under `more_option.custom_errors["503"]` made the intended page appear. That mapping can also affect other eligible `503` responses on this shared load balancer.
+
+[Maintenance fallback mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+
+```json file=../_data/maintenance-fallback.json wrap
+```
+
 **Expected result:** `/maintenance` returns `503` with “Scheduled maintenance”; `/` returns the normal application response. The route covers only paths it matches.
+
+**Verified live example:** [View the maintenance page](https://custom-responses.f5-sales-demo.com/maintenance).

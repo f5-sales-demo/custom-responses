@@ -52,6 +52,21 @@ These examples passed status, body, healthy-origin control and response-owner ch
 
 **Expected result:** The exact `503` body takes precedence over class `5`; `504` uses the class body. Compare with the healthy `/` response on this host and confirm which component generated the failure.
 
+## Include a per-request identifier
+
+Use the existing `{{request_id}}` template in a mapped page when you want the visitor's message to include an identifier for that request. The decoded previews above contain this template. Keep it in the body before [encoding the message](../configuration-reference/#response-body-encoding); the edge substitutes it when rendering these qualified pages.
+
+**Measured behavior:** Both the exact `503` and class `5` timeout pages exactly matched their accepted templates after substitution. Each repeat request produced a different identifier. The healthy origin response contained no substituted identifier.
+
+1. Open the **Exact 503 page** linked above and find the identifier in the message.
+2. Reload the page to make another request; compare the identifier with the previous response.
+3. Open the **Class 5 timeout page** and repeat the comparison.
+4. Navigate to `/` on the same host and confirm that the healthy application response contains neither this message nor its identifier.
+
+**Expected result:** The literal `{{request_id}}` is absent from each error response, and repeated requests have distinct identifiers without changing `503` or `504`. This proves template substitution; it does not prove that the identifier appears in a particular log or security event. Do not infer substitution in other response families from these two results.
+
+The [sanitized live proof](https://github.com/f5-sales-demo/custom-responses/blob/main/acceptance/additional-response-proof.json) records the template comparisons and controls. Raw runtime identifiers remain outside the public examples.
+
 ## Eligibility limits
 
 Origin-generated `302`, `404`, `418`, `500` and `503` retained their origin bodies. Parser-generated `400` and `431` retained generic edge bodies. Accepted mapping configuration alone does not establish that a response is eligible.

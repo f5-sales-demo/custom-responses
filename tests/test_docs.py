@@ -216,6 +216,58 @@ class DocumentationTests(unittest.TestCase):
                 ["/fault/503", "/fault/504"],
             )
 
+    def test_https_redirect_projection_tracks_source_and_rejects_wrong_type(self):
+        item = next(
+            item
+            for item in self.prepare.SELECTIONS
+            if item["output"] == "https-redirect.json"
+        )
+        source = json.loads((ROOT / item["source"]).read_text())
+        value = self.prepare.select(source, item["pointer"])
+        self.assertEqual(
+            self.prepare.resource_fragment(item, value, primary=True),
+            {"spec": {"https_auto_cert": {"http_redirect": True}}},
+        )
+        self.assertEqual(
+            self.prepare.resource_fragment(
+                item, [{"http_redirect": False}], primary=True
+            ),
+            {"spec": {"https_auto_cert": {"http_redirect": False}}},
+        )
+        with self.assertRaises(ValueError):
+            self.prepare.resource_fragment(
+                item, [{"http_redirect": "true"}], primary=True
+            )
+
+    def test_verified_additions_keep_their_measured_limits(self):
+        proof = json.loads(
+            (ROOT / "acceptance/additional-response-proof.json").read_text()
+        )
+        self.assertFalse(proof["infrastructure_modified"])
+        self.assertEqual(len(proof["verified_additions"]), 2)
+        redirect, request_id = proof["verified_additions"]
+        self.assertEqual(redirect["observations"]["GET_and_POST_status"], 301)
+        self.assertTrue(
+            request_id["observations"][
+                "exact_accepted_template_with_request_id_substituted"
+            ]
+        )
+        self.assertTrue(
+            request_id["observations"]["distinct_IDs_across_repeat_requests"]
+        )
+        self.assertTrue(
+            request_id["observations"]["healthy_control_contains_no_substituted_ID"]
+        )
+        redirects = (ROOT / "docs/en/redirects.mdx").read_text()
+        errors = (ROOT / "docs/en/error-responses.mdx").read_text()
+        self.assertIn("file=../_data/https-redirect.json", redirects)
+        self.assertIn("301", redirects)
+        self.assertIn("does not guarantee POST", redirects)
+        self.assertIn("repeat", errors.lower())
+        self.assertIn("does not prove", errors)
+        for digest in proof["protected_evidence_sha256"].values():
+            self.assertRegex(digest, r"^[a-f0-9]{64}$")
+
     def test_projection_rejects_unknown_types_and_cardinality(self):
         schema = self.prepare.CONTRACT["resources"]["http_loadbalancer"]
         for value in [

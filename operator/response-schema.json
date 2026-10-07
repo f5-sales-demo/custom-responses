@@ -46,6 +46,14 @@
         },
         "user_identification": {
           "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "https_auto_cert": {
+          "type": "object",
+          "properties": {
+            "http_redirect": {
+              "type": "boolean"
+            }
+          }
         }
       }
     },

@@ -142,6 +142,7 @@ SELECTIONS = [
         decode_body=True,
     ),
     selection("redirect.json", LB + "actions/routes/2"),
+    selection("https-redirect.json", LB + "actions/https_auto_cert"),
     selection(
         "metadata.json",
         LB + "actions/more_option",

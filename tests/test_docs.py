@@ -329,14 +329,13 @@ class DocumentationTests(unittest.TestCase):
         for order, (slug, title) in enumerate(pages, start=1):
             text = (ROOT / "docs/en" / (slug + ".mdx")).read_text()
             self.assertIn(f"title: {title}\n", text, slug)
-            description = re.search(r"(?m)^description: (.+)$", text)
-            self.assertIsNotNone(description, slug)
+            self.assertRegex(text, r"(?m)^description: .+", slug)
             self.assertIn(f"  order: {order}\n", text, slug)
-            purpose = next(
-                purpose for page, _, purpose in PAGE_PURPOSES if page == slug
+            self.assertIn(
+                PAGE_PURPOSES[order - 1][2].lower(),
+                text.split("---", 2)[2].split("\n## ")[0].lower(),
+                slug,
             )
-            intro = text.split("---", 2)[2].split("\n## ")[0]
-            self.assertIn(purpose.lower(), intro.lower(), slug)
             headings = re.findall(r"(?m)^## (.+)$", text)
             self.assertEqual(len(headings), len(set(headings)), slug)
             self.assertEqual("tableOfContents: false\n" in text, not headings, slug)

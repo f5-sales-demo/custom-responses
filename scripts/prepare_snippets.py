@@ -384,6 +384,22 @@ def placeholders(value: JsonValue, *, primary: bool) -> JsonValue:
     return value
 
 
+def selected_routes(
+    value: JsonValue, field: str, indices: tuple[int, ...]
+) -> JsonValue:
+    """Retain requested validated routes, rejecting missing source entries."""
+    if not indices:
+        return value
+    if field != "routes" or not isinstance(value, list):
+        message = "Index projection requires a routes array"
+        raise ValueError(message)
+    try:
+        return [value[index] for index in indices]
+    except IndexError as error:
+        message = "Missing projected source route"
+        raise ValueError(message) from error
+
+
 def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> JsonValue:
     """Wrap a selected top-level configuration field in the owning resource spec."""
     parts = item["pointer"].split("/")[1:]
@@ -407,42 +423,34 @@ def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> Json
             raise ValueError(message)
     # Validate the whole selected source before narrowing the reader projection.
     projected = project({field: value}, CONTRACT["resources"][resource])
-    if item["indices"]:
-        if field != "routes" or not isinstance(projected[field], list):
-            message = "Index projection requires a routes array"
-            raise ValueError(message)
-        try:
-            projected[field] = [projected[field][index] for index in item["indices"]]
-        except IndexError as error:
-            message = "Missing projected source route"
-            raise ValueError(message) from error
+    if not isinstance(projected, dict):
+        message = "Resource projection must be an object"
+        raise TypeError(message)
+    narrowed = projected[field]
+    narrowed = selected_routes(narrowed, field, item["indices"])
     if item["fields"]:
-        if (
-            item["source"] != TF
-            or field != "more_option"
-            or not isinstance(value, list)
-            or len(value) != 1
-            or not isinstance(value[0], dict)
-        ):
-            message = "Field projection requires one more_option object block"
+        if field != "more_option" or not isinstance(narrowed, dict):
+            message = "Field projection requires a more_option object"
             raise ValueError(message)
         try:
-            projected[field] = {key: projected[field][key] for key in item["fields"]}
+            narrowed = {key: narrowed[key] for key in item["fields"]}
         except KeyError as error:
             message = "Missing projected source field"
             raise ValueError(message) from error
     if item["keys"]:
-        if item["fields"] != ("custom_errors",):
+        if item["fields"] != ("custom_errors",) or not isinstance(narrowed, dict):
             message = "Key projection requires custom_errors"
             raise ValueError(message)
+        mapping = narrowed["custom_errors"]
+        if not isinstance(mapping, dict):
+            message = "Error projection must be a map"
+            raise ValueError(message)
         try:
-            mapping = projected[field]["custom_errors"]
-            projected[field]["custom_errors"] = {
-                key: mapping[key] for key in item["keys"]
-            }
+            narrowed["custom_errors"] = {key: mapping[key] for key in item["keys"]}
         except KeyError as error:
             message = "Missing projected error mapping"
             raise ValueError(message) from error
+    projected[field] = narrowed
     return {"spec": placeholders(projected, primary=primary)}
 
 

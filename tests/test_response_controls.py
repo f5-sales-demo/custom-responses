@@ -175,8 +175,11 @@ const fetch = async (url, options) => {requests.push({url,options});return {stat
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "rate-panel.cjs"
             path.write_text(harness)
+            node = shutil.which("node")
+            self.assertIsNotNone(node)
+            assert node is not None
             subprocess.run(  # noqa: S603 -- fixed generated test harness
-                [shutil.which("node"), str(path)], check=True, capture_output=True
+                [node, str(path)], check=True, capture_output=True
             )
 
     def test_panel_sends_only_after_click_and_stops_at_budget(self):
@@ -212,6 +215,9 @@ const fetch = async (url, opts) => {
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "panel.cjs"
             path.write_text(harness)
+            node = shutil.which("node")
+            self.assertIsNotNone(node)
+            assert node is not None
             subprocess.run(  # noqa: S603 -- fixed generated test harness
-                [shutil.which("node"), str(path)], check=True, capture_output=True
+                [node, str(path)], check=True, capture_output=True
             )

@@ -99,7 +99,7 @@ resource "azurerm_linux_virtual_machine" "origin" {
   }
   custom_data = base64encode(templatefile("${path.module}/cloud-init.yaml.tftpl", {
     panel         = base64encode(file("${path.module}/../origin/panel.html"))
-    fixture       = base64encode(file("${path.module}/../origin/fixture.py"))
+    fixture       = base64encode(replace(file("${path.module}/../origin/fixture.py"), "# pylint: disable=attribute-defined-outside-init\n", ""))
     inventory     = base64encode(file("${path.module}/.terraform/fixture-inventory.json"))
     httpbin_image = var.httpbin_image
   }))

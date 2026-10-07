@@ -1,5 +1,6 @@
 """Synthetic fixture and isolated fault listeners for the owned showcase."""
 
+# pylint: disable=attribute-defined-outside-init
 import contextlib
 import json
 import logging

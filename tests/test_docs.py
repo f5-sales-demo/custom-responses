@@ -222,7 +222,13 @@ class DocumentationTests(unittest.TestCase):
     def test_contract_has_pinned_sources_and_bounded_resources(self):
         contract = self.prepare.CONTRACT
         self.assertEqual(
-            set(contract["resources"]), {"http_loadbalancer", "app_firewall", "rate_limiter", "user_identification"}
+            set(contract["resources"]),
+            {
+                "http_loadbalancer",
+                "app_firewall",
+                "rate_limiter",
+                "user_identification",
+            },
         )
         for source in contract["sources"]:
             self.assertRegex(source["sha256"], r"^[a-f0-9]{64}$")
@@ -358,7 +364,11 @@ class DocumentationTests(unittest.TestCase):
             {name for name in used_includes if name.endswith("-encoded.json")},
             {name + "-encoded.json" for name in BODY_EXAMPLES},
         )
-        for slug in {slug for slug, _ in pages} - {"index", "configuration-reference", "demo-panel"}:
+        for slug in {slug for slug, _ in pages} - {
+            "index",
+            "configuration-reference",
+            "demo-panel",
+        }:
             text = (ROOT / "docs/en" / (slug + ".mdx")).read_text()
             for name in BODY_EXAMPLES:
                 encoded = f"file=../_data/{name}-encoded.json"
@@ -379,7 +389,11 @@ class DocumentationTests(unittest.TestCase):
         )
         self.assertEqual(
             sorted((slug, title) for title, _, slug in cards),
-            sorted((slug, title) for slug, title in pages if slug not in {"index", "configuration-reference"}),
+            sorted(
+                (slug, title)
+                for slug, title in pages
+                if slug not in {"index", "configuration-reference"}
+            ),
         )
         self.assertEqual(
             re.findall(r"(?m)^## (.+)$", landing),

@@ -1,34 +1,58 @@
 ---
 title: Missing and retired resources
 description: Missing and retired resources explain whether an address is unknown or permanently removed.
-tableOfContents: false
 sidebar:
-  order: 14
+  order: 3
 ---
 
-Give visitors a useful page while preserving the meaning of the HTTP status. A missing address returns `404`; a resource deliberately retired returns `410`.
+Choose `404` when an address is unknown and `410` when a resource was deliberately retired. These direct response routes produce the page at the edge without asking the application to generate it.
 
-> **Visitor response:** A branded “Resource not found” or “Resource retired” page.
+| Status | Meaning | Example message |
+| --- | --- | --- |
+| `404` | The requested resource is not found; the status does not say whether this is permanent. | Resource not found |
+| `410` | The resource is intentionally gone and its removal is expected to be permanent. | Resource retired |
 
-Each `direct_response_route` selects exactly one path and returns its configured status and encoded HTML. The origin does not produce these pages. XC also needs matching load-balancer error bodies for `404` and `410`; without those mappings, these direct error statuses returned generic edge pages. This differs from an error mapping that may apply only to particular edge failures.
+## Unknown resource: 404
 
-```json file=../_data/missing.json wrap
+> **Visitor message:** Resource not found
+
+The direct route selects exactly `/demo/missing` and sets `404` with the encoded page. Pair it with the matching body mapping shown below.
+
+```json file=../_data/missing-encoded.json wrap
 ```
 
-```json file=../_data/gone.json wrap
-```
-
-```json file=../_data/direct-error-bodies.json wrap
-```
+**Decoded preview (escaped):**
 
 ```html file=../_data/missing.html wrap
 ```
 
+**Verified live example:** [Open the missing-resource page](https://custom-responses.f5-sales-demo.com/demo/missing).
+
+**Expected result:** The selected path returns `404` and “Resource not found”.
+
+## Retired resource: 410
+
+> **Visitor message:** Resource retired
+
+This alternative selects exactly `/demo/gone` and sets `410`. Use it when you can tell callers the removal is permanent.
+
+```json file=../_data/gone-encoded.json wrap
+```
+
+**Decoded preview (escaped):**
+
 ```html file=../_data/gone.html wrap
 ```
 
-**Expected result:** `/demo/missing` returns `404`, `/demo/gone` returns `410`, and an unrelated path still reaches the origin. A direct status keeps monitoring and client behavior meaningful while the page explains the next step.
-
-**Verified live example:** [Open the missing-resource page](https://custom-responses.f5-sales-demo.com/demo/missing).
-
 **Verified live example:** [Open the retired-resource page](https://custom-responses.f5-sales-demo.com/demo/gone).
+
+**Expected result:** The selected path returns `410` and “Resource retired”. An unrelated path still reaches the application.
+
+## Required body mappings
+
+On this shared load balancer, both direct error statuses need matching `more_option.custom_errors` bodies for their intended pages to appear. Add the relevant mapping to the same load balancer as its route. These mappings also apply to eligible edge-generated errors; they do not prove that origin-generated `404` or `410` bodies are replaced.
+
+```json file=../_data/direct-error-bodies.json wrap
+```
+
+See [Error responses](../error-responses/) for mapping eligibility and [Maintenance](../maintenance/) for a temporary unavailable-service response.

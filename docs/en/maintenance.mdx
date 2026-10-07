@@ -1,20 +1,24 @@
 ---
 title: Maintenance
 description: Maintenance tells visitors when an application is temporarily unavailable.
-tableOfContents: false
 sidebar:
-  order: 3
+  order: 2
 ---
 
-A direct response route serves a fixed message at `/maintenance` without forwarding the request to the application. This example returns status `503`.
+Return an unavailable-service message without forwarding the request to the application. Choose a direct response when you deliberately want matching requests to stop at the edge; this example selects `/maintenance` and returns `503`.
 
 > **Visitor message:** Scheduled maintenance
 
-In the load balancer's `routes` list, `direct_response_route` matches `/maintenance` and `route_direct_response` defines the status and body. Other paths continue to the application. See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
+## Direct route and matching body
 
-[Maintenance route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+The load balancer's `direct_response_route` selects `/maintenance`; `route_direct_response` sets the status and encoded body. The matching `more_option.custom_errors["503"]` mapping supplies the same body for this direct error status. Both fragments belong to the same load balancer. In the qualified example, the mapping is required for the intended page to appear.
+
+[Maintenance configuration source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/maintenance-encoded.json wrap
+```
+
+```json file=../_data/maintenance-fallback.json wrap
 ```
 
 **Decoded preview (escaped):**
@@ -22,13 +26,10 @@ In the load balancer's `routes` list, `direct_response_route` matches `/maintena
 ```html file=../_data/maintenance.html wrap
 ```
 
-In this tenant, the direct `503` route initially served a generic F5 error page even though XC accepted the encoded body. Mapping the same body under `more_option.custom_errors["503"]` made the intended page appear. That mapping can also affect other eligible `503` responses on this shared load balancer.
+The mapping can also change other eligible `503` responses on this host. It does not establish replacement of application-generated errors; see [Error responses](../error-responses/) for that distinction.
 
-[Maintenance fallback mapping source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
-
-```json file=../_data/maintenance-fallback.json wrap
-```
-
-**Expected result:** `/maintenance` returns `503` with “Scheduled maintenance”; `/` returns the normal application response. The route covers only paths it matches.
+## Confirm the maintenance response
 
 **Verified live example:** [View the maintenance page](https://custom-responses.f5-sales-demo.com/maintenance).
+
+**Expected result:** The selected path returns `503` with “Scheduled maintenance”; `/` returns the normal application response. Compare the body as well as the status. Only matching routes stop forwarding requests.

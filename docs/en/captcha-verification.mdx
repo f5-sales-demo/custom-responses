@@ -1,18 +1,20 @@
 ---
-title: CAPTCHA
-description: CAPTCHA guides visitors through the human-verification step.
+title: CAPTCHA verification
+description: CAPTCHA verification explains a human check whose live completion remains un-verified.
 tableOfContents: false
 sidebar:
-  order: 7
+  order: 13
 ---
 
-A human-verification challenge asks visitors to complete a task before reaching the application. CAPTCHA stands for “Completely Automated Public Turing test to tell Computers and Humans Apart.” Use the custom page to explain what to do.
+**Status: completion un-verified.** The custom page and trusted connection were observed, but a Google quota warning and an expired challenge prevented live human completion. The configuration below describes intended behavior.
+
+A human-verification challenge asks visitors to complete a task before reaching the application, unlike the automatic [JavaScript challenge](../browser-verification/). CAPTCHA stands for “Completely Automated Public Turing test to tell Computers and Humans Apart.” Use the custom page to explain what to do.
 
 > **Visitor message:** Please complete the verification to continue.
 
 The load balancer's `captcha_challenge.custom_page` supplies the wording; `cookie_expiry` is `300` seconds in this example. Keep the CAPTCHA controls usable when customizing the page. A returning visitor with an accepted cookie may not see the challenge again.
 
-This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/). See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
+This setting is not restricted to `/challenge`; that path is only a test URL. To challenge selected paths, see [conditional challenges](../conditional-challenges/).
 
 [CAPTCHA challenge source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -24,4 +26,4 @@ This setting is not restricted to `/challenge`; that path is only a test URL. To
 ```html file=../_data/captcha.html wrap
 ```
 
-**Expected result:** In a fresh browser session, the visitor sees the message, completes a usable CAPTCHA, and reaches the application. With an accepted cookie, a repeat request normally reaches the application without another challenge. Clear the cookie to test the first visit again.
+**Expected result (un-verified):** In a fresh browser session, the visitor sees the message, completes a usable CAPTCHA, and reaches the application. With an accepted cookie, a repeat request normally reaches the application without another challenge. Clear the cookie to test the first visit again.

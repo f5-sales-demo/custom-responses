@@ -2,7 +2,7 @@
 
 The response examples are partial F5 resource specifications, not complete create or replacement requests. The authoritative Terraform and inactive Bot files
 are the only snippet sources. Preparation selects one top-level spec field or one route within `routes`, resolves pinned schema types, unwraps exactly one provider block for an object, and preserves real
-arrays. Encoded values remain exact in details; primary examples use a labelled placeholder. Decoded output preserves exact UTF-8 bytes and is displayed as
+arrays. The published guides use exact encoded values; the generator also retains a primary placeholder view for validation. Decoded output preserves exact UTF-8 bytes and is displayed as
 escaped code, never executed.
 
 ## Official specification inputs
@@ -20,7 +20,7 @@ constraints. For custom error maps, official `x-ves-validation-rules` supply the
 infrastructure acceptance. No network access occurs during generation. To refresh, derive the same selected schema closure from a new official archive, record
 new member digests, and rerun projection and rendered acceptance.
 
-The `metadata.json` and `maintenance-fallback.json` selectors validate the complete source `more_option` block before projecting the response metadata fields or the `503` error mapping into separate examples. Each view retains only fields relevant to its reader outcome.
+Field and key projections validate the complete selected source before narrowing it. `metadata.json` retains response metadata, `maintenance-fallback.json` retains only `503`, and `direct-error-bodies.json` retains only `404` and `410`. `errors-fault.json` retains the qualified `/fault/503` and `/fault/504` routes (source indices 2 and 3). Each view retains only fields relevant to its reader outcome.
 
 Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_NAMESPACE>` in both projected views. Exact details preserve encoded bodies and other literal selected values; they do not make unresolved Terraform expressions executable. `<ENCODED_RESPONSE_BODY>` appears only in the primary view.
 
@@ -71,6 +71,7 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 | `rate-attach.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/response-controls/api_rate_limit` |
 | `rate-body.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/response-controls/more_option` |
 | `rate-limiter.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_rate_limiter/response-controls/limits` |
+| `rate-limiter-identity.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_rate_limiter/response-controls/user_identification` |
 | `rate-identity.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_user_identification/response-controls/rules` |
 
 ## Editorial guidance

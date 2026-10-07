@@ -32,6 +32,8 @@ class Snippet(TypedDict):
     pointer: str
     decode: bool
     fields: tuple[str, ...]
+    keys: tuple[str, ...]
+    indices: tuple[int, ...]
 
 
 def selection(
@@ -41,6 +43,8 @@ def selection(
     *,
     decode_body: bool = False,
     fields: tuple[str, ...] = (),
+    keys: tuple[str, ...] = (),
+    indices: tuple[int, ...] = (),
 ) -> Snippet:
     """Describe one source-owned fragment without line-number coupling."""
     return {
@@ -49,6 +53,8 @@ def selection(
         "pointer": pointer,
         "decode": decode_body,
         "fields": fields,
+        "keys": keys,
+        "indices": indices,
     }
 
 
@@ -64,12 +70,13 @@ SELECTIONS = [
         LB + "errors/more_option/0/custom_errors/503",
         decode_body=True,
     ),
-    selection("errors-fault.json", LB + "errors/routes"),
+    selection("errors-fault.json", LB + "errors/routes", indices=(2, 3)),
     selection("maintenance.json", LB + "actions/routes/0"),
     selection(
         "maintenance-fallback.json",
         LB + "actions/more_option",
         fields=("custom_errors",),
+        keys=("503",),
     ),
     selection(
         "maintenance.html",
@@ -175,6 +182,7 @@ SELECTIONS += [
         "direct-error-bodies.json",
         LB + "actions/more_option",
         fields=("custom_errors",),
+        keys=("404", "410"),
     )
 ]
 SELECTIONS += [
@@ -186,6 +194,10 @@ SELECTIONS += [
     ),
     selection(
         "rate-limiter.json", "/resource/xcsh_rate_limiter/response-controls/limits"
+    ),
+    selection(
+        "rate-limiter-identity.json",
+        "/resource/xcsh_rate_limiter/response-controls/user_identification",
     ),
     selection(
         "rate-identity.json",
@@ -393,6 +405,17 @@ def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> Json
         if len(parts) != BOT_SPEC_SELECTOR_PARTS:
             message = "Bot fragment must select a top-level spec field"
             raise ValueError(message)
+    # Validate the whole selected source before narrowing the reader projection.
+    projected = project({field: value}, CONTRACT["resources"][resource])
+    if item["indices"]:
+        if field != "routes" or not isinstance(projected[field], list):
+            message = "Index projection requires a routes array"
+            raise ValueError(message)
+        try:
+            projected[field] = [projected[field][index] for index in item["indices"]]
+        except IndexError as error:
+            message = "Missing projected source route"
+            raise ValueError(message) from error
     if item["fields"]:
         if (
             item["source"] != TF
@@ -404,11 +427,22 @@ def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> Json
             message = "Field projection requires one more_option object block"
             raise ValueError(message)
         try:
-            value = [{key: value[0][key] for key in item["fields"]}]
+            projected[field] = {key: projected[field][key] for key in item["fields"]}
         except KeyError as error:
             message = "Missing projected source field"
             raise ValueError(message) from error
-    projected = project({field: value}, CONTRACT["resources"][resource])
+    if item["keys"]:
+        if item["fields"] != ("custom_errors",):
+            message = "Key projection requires custom_errors"
+            raise ValueError(message)
+        try:
+            mapping = projected[field]["custom_errors"]
+            projected[field]["custom_errors"] = {
+                key: mapping[key] for key in item["keys"]
+            }
+        except KeyError as error:
+            message = "Missing projected error mapping"
+            raise ValueError(message) from error
     return {"spec": placeholders(projected, primary=primary)}
 
 

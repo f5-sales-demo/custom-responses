@@ -2,16 +2,23 @@
 title: Configuration reference
 description: Configuration reference explains how to use resource fragments, placeholders, and encoded bodies.
 sidebar:
-  order: 13
+  order: 16
 ---
 
-Each example shows only the fields needed for its outcome. Add those fields to an existing resource; the example is not a complete configuration.
+Use these conventions to read and adapt the shared resource fragments. Each guide shows the fields needed for its outcome and its required relationships; add them to the matching resource in your environment.
 
 ## Resource fragments
 
 The JavaScript Object Notation (JSON) snippets show fields under `spec`. Keep their object and array structure when you add them to a resource. Add routes and rules to existing lists without overwriting unrelated entries. Where the schema offers alternative response choices, select only one.
 
-Replace `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>`, and `<XC_NAMESPACE>` with resource names and the namespace in your environment.
+| Fragment fields | Owning resource | References to replace |
+| --- | --- | --- |
+| `routes`, `more_option`, challenges, masking rules, `api_rate_limit` | HTTP load balancer | `<ORIGIN_POOL_NAME>`, `<APP_FIREWALL_NAME>`, `<RATE_LIMITER_NAME>` and `<XC_NAMESPACE>`, where shown. |
+| `blocking_page` | Application firewall | Attach this firewall from the load balancer using `<APP_FIREWALL_NAME>` and `<XC_NAMESPACE>`. |
+| `rules` naming the client header | User identification | Name this resource wherever `<USER_IDENTIFICATION_NAME>` appears. |
+| `limits`, `user_identification` | Rate limiter | Reference `<USER_IDENTIFICATION_NAME>` and `<XC_NAMESPACE>`; attach this limiter as `<RATE_LIMITER_NAME>`. |
+
+Reuse each placeholder consistently across the fragments in its guide. The [Rate limits](../rate-limits/) guide shows the complete identification → limiter → load-balancer attachment → custom-body relationship.
 
 ## Response-body encoding
 
@@ -21,6 +28,6 @@ When customizing a challenge page, keep F5's verification script or CAPTCHA cont
 
 ## Complete configuration sources
 
-- [Load-balancer and application-firewall examples](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) show complete Terraform resources.
+- [Load-balancer and application-firewall examples](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json) include the load-balancer, firewall, rate-limiter and user-identification resources.
 - [Inactive Bot Defense examples](https://github.com/f5-sales-demo/custom-responses/blob/main/examples/bot-defense.json) show the block and redirect alternatives.
 - [Provider requirements](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/versions.tf) list the required provider versions.

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Read a cross-origin response</title><style>body{margin:0;background:#071b33;color:#fff;font:16px system-ui}main{max-width:52rem;margin:auto;padding:1.25rem}h1{font-size:1.6rem}p{line-height:1.5}button{font:inherit;background:#fff;color:#071b33;border:0;border-radius:.4rem;padding:.85rem;cursor:pointer}button:disabled{opacity:.6}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#102944;border-radius:.5rem;padding:1rem;min-height:8rem}:focus-visible{outline:3px solid #ff6a6f;outline-offset:3px}</style></head>
+<body><main><h1>Read a cross-origin response</h1><p>One click sends fixed synthetic data from the allowed documentation origin. It reserves two requests for a preflight and POST; no test requests run on load.</p>
+<button type="button" id="run">Test allowed cross-origin access</button>
+<p id="budget">12 requests remaining</p>
+<pre id="result" role="status" aria-live="polite">Select the button to begin.</pre>
+</main><script>const MAX_REQUESTS = 12;
+const COST = 2;
+const COUNT = 1;
+const COOLDOWN = 0;
+const ENDPOINT = "https://custom-responses.f5-sales-demo.com/demo/cors";
+"use strict";
+const DOC_ORIGIN = "https://f5-sales-demo.github.io";
+let remaining = MAX_REQUESTS;
+let busy = false;
+let lastRun = -Infinity;
+const button = document.querySelector("#run");
+const result = document.querySelector("#result");
+const budget = document.querySelector("#budget");
+function refresh() {
+  const cooldown = Math.max(0, COOLDOWN - (Date.now() - lastRun));
+  button.disabled = busy || remaining < COST || location.origin !== DOC_ORIGIN || cooldown > 0;
+  budget.textContent = `${remaining} requests remaining` + (cooldown > 0 ? "; wait two minutes between runs." : "");
+  if (cooldown > 0) setTimeout(refresh, cooldown);
+}
+button.addEventListener("click", async () => {
+  if (busy || remaining < COST || location.origin !== DOC_ORIGIN || Date.now() - lastRun < COOLDOWN) return;
+  remaining -= COST;
+  lastRun = Date.now();
+  busy = true;
+  refresh();
+  result.textContent = "Request in progress…";
+  try {
+    const rows = [];
+    const client = "panel-synthetic-" + crypto.randomUUID();
+    for (let i = 0; i < COUNT; i++) {
+      const response = await fetch(ENDPOINT, {
+        credentials:"omit", cache:"no-store", redirect:"error",
+        signal:AbortSignal.timeout(10000), method:"POST", headers:{"Content-Type":"application/json", "X-CR-Client":client}, body:'{"sample":"synthetic"}'
+      });
+      rows.push({status:response.status, body:await response.text()});
+    }
+    result.textContent = JSON.stringify(rows, null, 2);
+  } catch {
+    result.textContent = "The test could not complete. A network or server failure and browser permission failure can look alike. Inspect the browser network log before interpreting the result.";
+  } finally {
+    busy = false;
+    refresh();
+  }
+});
+refresh();</script></body></html>

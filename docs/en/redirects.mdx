@@ -1,32 +1,58 @@
 ---
 title: Redirects
 description: Redirects send visitors from a selected path to its new location.
-tableOfContents: false
 sidebar:
-  order: 10
+  order: 6
 ---
 
-A route redirect sends a request to its new location. The destination application serves the response.
+Move a resource while controlling request method, body and query handling. A redirect route returns a status and `Location`; the destination application serves the final response.
 
-> **Visitor response:** A redirect status and a `Location` identifying the destination.
+> **Visitor response:** A redirect followed by the destination response.
 
-The existing `/old` route returns `302` to `/new`. For requests with a body, `/demo/temporary` uses `307` and `/demo/permanent` uses `308` to preserve the request method and payload. The temporary route retains query parameters; the permanent route removes them. Removing a query changes the destination data even though the method and body survive.
+| Status | Move | Method and body |
+| --- | --- | --- |
+| `302` | Temporary | Clients may change POST to GET. |
+| `307` | Temporary | Method and body preserved. |
+| `308` | Permanent | Method and body preserved. |
+
+The `302` and `307` examples retain the query; the `308` example removes it. Removing the query is this example's `remove_all_params` setting, not an inherent property of `308`. Permanent redirects can be cached by clients.
+
+## Configure the redirect you need
+
+### 302: `/old` to `/new`
 
 ```json file=../_data/redirect.json wrap
 ```
 
+### 307: temporary POST destination
+
 ```json file=../_data/temporary.json wrap
 ```
+
+### 308: permanent POST destination with query removal
 
 ```json file=../_data/permanent.json wrap
 ```
 
-**Expected result:** A synthetic POST with `?sample=synthetic` reaches `/demo/echo` as POST with the same body. The `307` destination includes the query; the `308` destination has no query. Inspect the first status and `Location` before following, then compare the echo. An unrelated path still reaches the origin.
+These are alternatives on different paths, not sequential steps. The `route_redirect` object selects the destination and status within each route.
 
-**Verified live example:** [Follow the temporary redirect](https://custom-responses.f5-sales-demo.com/old).
+## Compare a fixed POST
 
-Use the [Demo panel](../demo-panel/) to send the fixed POST examples. Permanent redirects can be cached by clients; use the owned demo paths when exploring this behavior.
+**Verified live example:** [Open the application demo panel](https://custom-responses.f5-sales-demo.com/demo/panel).
 
-**Verified live example:** [Open the 307 redirect](https://custom-responses.f5-sales-demo.com/demo/temporary?sample=synthetic).
+1. Select **POST through 307** to send a fixed synthetic body with `?sample=synthetic`.
+2. Inspect the echo: its method is POST, its body is preserved, and its query contains `sample=synthetic`.
+3. Select **POST through 308** to send the same input through the permanent alternative.
+4. Inspect the echo: POST and the body remain, but the query is empty.
 
-**Verified live example:** [Open the 308 redirect](https://custom-responses.f5-sales-demo.com/demo/permanent?sample=synthetic).
+The application panel runs on the destination's own origin. Every action requires a click and reserves two requests against a twelve-request page budget. It reports the final echo; use the browser's network inspector with **Preserve log** to inspect the initial status and `Location`.
+
+**Expected result:** The first response matches the selected status and destination; the final echo confirms the method, body and query behavior. An unrelated path still reaches the origin.
+
+Qualified direct links let you explore GET redirects, but they do not demonstrate POST preservation:
+
+- [Follow the 302 redirect](https://custom-responses.f5-sales-demo.com/old).
+- [Open the 307 redirect](https://custom-responses.f5-sales-demo.com/demo/temporary?sample=synthetic).
+- [Open the 308 redirect](https://custom-responses.f5-sales-demo.com/demo/permanent?sample=synthetic).
+
+For metadata changes on the response instead of a move, see [Headers and cookies](../headers-cookies/).

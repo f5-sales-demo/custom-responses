@@ -2,12 +2,22 @@
 title: WAF blocking
 description: WAF blocking shows a browser page or structured message when the application firewall rejects a request.
 sidebar:
-  order: 5
+  order: 10
 ---
 
-A web application firewall (WAF) decides when to block a request. Configure `blocking_page` on the application firewall, then attach that firewall to the load balancer through `app_firewall`. Use a firewall in blocking mode and an authorized test request that triggers a rule.
+Explain an application-firewall rejection to browsers or clients. A web application firewall (WAF) makes the blocking decision; its `blocking_page` supplies the response body. Use this behavior for a security rejection, rather than a direct route reply.
 
-Use Hypertext Markup Language (HTML) for browser pages or JavaScript Object Notation (JSON) for application clients.
+| Body | Choose it for | Measured limitation |
+| --- | --- | --- |
+| Hypertext Markup Language (HTML) | A readable browser rejection page | A benign request remains available. |
+| JavaScript Object Notation (JSON) | A structured message for clients | The example's parseable body was served as `text/html; charset=UTF-8`. |
+
+## Attach the selected firewall
+
+Configure `blocking_page` on a firewall in blocking mode, then attach that firewall to the load balancer through `app_firewall`. Both body alternatives use this relationship; select the matching firewall name and namespace.
+
+```json file=../_data/waf-attach.json wrap
+```
 
 The encoded `blocking_page` value has a 4,096-character limit including the prefix. See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
 
@@ -25,11 +35,6 @@ Set `blocking_page.response_code` to `Forbidden` and put the HTML message in `bl
 **Decoded preview (escaped):**
 
 ```html file=../_data/waf-html.html wrap
-```
-
-Attach the configured firewall to the load balancer by name and namespace:
-
-```json file=../_data/waf-attach.json wrap
 ```
 
 **Expected result:** A blocked request returns `403` with the readable page; a benign request still reaches the origin. Check the firewall event: a `403` response alone does not prove the WAF made the block decision.
@@ -55,3 +60,5 @@ For application clients, use the same `Forbidden` code with a JSON body:
 **Observed media type:** XC served this parseable JSON body as `text/html; charset=UTF-8`. Check whether your client accepts that media type.
 
 **Verified live example:** [View the JSON WAF body](https://cr-waf-json.f5-sales-demo.com/?q=%27%20OR%201%3D1%20--). The matching enforced WAF event confirms ownership.
+
+See [Rate limits](../rate-limits/) when the rejection comes from a request allowance instead of a firewall rule.

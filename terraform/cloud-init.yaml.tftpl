@@ -2,6 +2,10 @@
 package_update: true
 packages: [docker.io, python3]
 write_files:
+  - path: /opt/custom-responses/panel.html
+    permissions: "0644"
+    encoding: b64
+    content: ${panel}
   - path: /opt/custom-responses/fixture.py
     permissions: "0644"
     encoding: b64

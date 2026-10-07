@@ -1,0 +1,24 @@
+---
+title: CORS
+description: CORS lets a specific documentation origin read selected application responses.
+tableOfContents: false
+sidebar:
+  order: 15
+---
+
+Allow browser requests from the exact documentation origin, `https://f5-sales-demo.github.io`, to `/demo/cors`. An origin is the scheme and host; the documentation project path is not part of it.
+
+> **Visitor response:** The allowed documentation panel can read the synthetic JSON. A disallowed cross-origin panel cannot read it. Same-origin application access works without CORS permission.
+
+The route allows `GET`, `POST`, and `OPTIONS`, with `Content-Type` and `X-CR-Client` request headers. Credentials are disabled. A POST with these headers makes the browser issue a preflight before the application request. The response permissions belong to this route; the root grants no CORS access.
+
+```json file=../_data/cors.json wrap
+```
+
+**Expected result:** The allowed origin receives its exact `Access-Control-Allow-Origin` value. A preflight advertises the configured methods and headers, and a POST echoes its fixed synthetic body. A disallowed origin receives no browser access. CORS controls browser access to responses; it does not authenticate clients or prevent non-browser requests.
+
+The panel below runs from this documentation origin. Click **Test CORS** to send the example; it sends nothing automatically. Redirect and header controls are available on the application panel.
+
+<iframe src="../../assets/demo-panel.html" title="Allowed-origin CORS demonstration" loading="lazy" style="width:100%;height:44rem;border:0;border-radius:0.5rem" />
+
+**Verified live example:** [Open the CORS echo](https://custom-responses.f5-sales-demo.com/demo/cors).

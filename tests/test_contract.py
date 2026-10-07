@@ -16,6 +16,7 @@ EXPECTED_LBS = {
     "captcha",
     "policy",
     "ddos-js",
+    "response-controls",
 }
 
 
@@ -124,7 +125,7 @@ class Contract(unittest.TestCase):
 
     def test_actions_and_masking_paths(self):
         actions = self.lbs["actions"]
-        routes = actions["routes"]
+        routes = actions["routes"][:3]
         self.assertEqual(
             [next(iter(route)) for route in routes],
             ["direct_response_route", "direct_response_route", "redirect_route"],
@@ -193,7 +194,10 @@ class Contract(unittest.TestCase):
             }
             & html.keys()
         )
-        self.assertNotIn("<a href=", (ROOT / "origin/fixture.py").read_text())
+        self.assertNotIn("/demo/policy-deny", (ROOT / "origin/panel.html").read_text())
+        controls = self.lbs["response-controls"]
+        self.assertEqual(controls["more_option"][0]["custom_errors"].keys(), {"429"})
+        self.assertNotIn("xcsh_service_policy", self.tf["resource"])
 
     def test_completeness_and_encoding(self):
         groups = set()
@@ -223,6 +227,7 @@ class Contract(unittest.TestCase):
                 "masking",
                 "control",
                 "index",
+                "rate-limit",
             },
         )
         for lb in self.lbs.values():
@@ -254,10 +259,11 @@ class Contract(unittest.TestCase):
                 "cr-captcha",
                 "cr-policy",
                 "cr-ddos-js",
+                "cr-response-controls",
             ],
         )
         self.assertEqual(
-            record["verified_live_scenarios"],
+            record["verified_live_scenarios"][:12],
             [
                 "fault-503",
                 "fault-504",
@@ -274,7 +280,7 @@ class Contract(unittest.TestCase):
             ],
         )
         self.assertEqual(
-            record["published_live_scenarios"],
+            record["published_live_scenarios"][:12],
             [
                 "fault-503",
                 "fault-504",

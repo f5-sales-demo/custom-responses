@@ -12,7 +12,8 @@
     "cr-js",
     "cr-captcha",
     "cr-policy",
-    "cr-ddos-js"
+    "cr-ddos-js",
+    "cr-response-controls"
   ],
   "live_acceptance_complete": false,
   "deferred_prerequisites": [
@@ -33,9 +34,9 @@
   "source_tests": "Python unittest suite; 7 managed shell test files; Terraform validate; Ruff; pre-commit; staged PII enforcement and audit",
   "configuration_only_scenarios": ["bot-block", "bot-redirect"],
   "bot_live_proof_required": false,
-  "source_load_balancer_count": 8,
-  "source_scenario_count": 26,
-  "live_proof_required_count": 24,
+  "source_load_balancer_count": 9,
+  "source_scenario_count": 34,
+  "live_proof_required_count": 32,
   "verified_live_scenarios": [
     "fault-503",
     "fault-504",
@@ -48,7 +49,15 @@
     "disclosure",
     "data-guard",
     "js",
-    "policy-js"
+    "policy-js",
+    "missing",
+    "gone",
+    "temporary",
+    "permanent",
+    "route-headers",
+    "cors",
+    "panel",
+    "rate-limit"
   ],
   "unverified_scenarios_are_examples": true,
   "quota_snapshot": {
@@ -108,7 +117,15 @@
     "disclosure",
     "data-guard",
     "js",
-    "policy-js"
+    "policy-js",
+    "missing",
+    "gone",
+    "temporary",
+    "permanent",
+    "route-headers",
+    "cors",
+    "panel",
+    "rate-limit"
   ],
   "actions_wave_complete": true,
   "actions_wave_verified_receipt_sha256": "454803d2cfeba7ae223f262cc677b2ac3ba84a27819ae1a6583c673e76457b98",
@@ -176,9 +193,9 @@
   "aggregate_output_plan_sha256": "d9c93b4ee877d04fc93a2f75fe0f809f78553ba7d1344762ecbbe8825f95c025",
   "aggregate_output_plan_approved": true,
   "aggregate_output_plan_applied": true,
-  "aggregate_zero_change_plan_sha256": "42b188eb7c9cdc09adf7cb9011ad05b7da576923f7bcea584b750cd9b45f0e95",
-  "current_state_serial": 124,
-  "current_state_backup_sha256": "53ea6df28b007e2649aac0a0fc36c4828204579a7fa4c8accfc381bd15dd2a97",
+  "aggregate_zero_change_plan_sha256": "3921599f5a671f1ae890f8eaeddebfb4d5b9a6c0be87a507df134d12d1a6d517",
+  "current_state_serial": 144,
+  "current_state_backup_sha256": "51964775ffd41af3b55c30862559c607b3bf9515a6e6ae4139e1d5bdcb542450",
   "ddos_wave_control_receipt_sha256": "adb5520f791f072d452e5929dcbd27c699ba0b41bb57a53b6a9610358d04ea32",
   "error_mapping_repeat_receipt_sha256": "80b552f0010ca63611eaedaabff993c0b6adb1d07831d29d94e09ef27bb710fd",
   "error_mapping_origin_receipt_sha256": "c74e4c6f9445aa316065480e32b7707489677478a1b660ec95cf99ceb72cb8e4",
@@ -190,7 +207,10 @@
     "origin_fault_500_body_retained": true,
     "reset_path_status": 503,
     "reset_path_body": "Exact 503",
-    "parser_failures": { "400": "generic edge body", "431": "generic edge body" },
+    "parser_failures": {
+      "400": "generic edge body",
+      "431": "generic edge body"
+    },
     "origin_body_replacement_verified": false,
     "custom_502_verified": false
   },
@@ -215,5 +235,38 @@
     "js",
     "policy-js"
   ],
-  "lifecycle_waf_log_caveat": "Each WAF block has a matching enforced security event; matching block rows were absent from repeated firewall-log queries."
+  "lifecycle_waf_log_caveat": "Each WAF block has a matching enforced security event; matching block rows were absent from repeated firewall-log queries.",
+  "second_round": {
+    "checked_at_utc": "2026-10-07T01:40:00Z",
+    "issue": 56,
+    "qualified_scenarios": [
+      "missing",
+      "gone",
+      "temporary",
+      "permanent",
+      "route-headers",
+      "cors",
+      "panel",
+      "rate-limit"
+    ],
+    "qualified_receipt_sha256": "4a503056afa3887bbfcec4fe5f320b8ea1fc76528e76943a921601e4304d5245",
+    "native_limiter_receipt_sha256": "b4ccb68f3f5d9826c9bb91b5367a023534678a37616febdb2d871edc9f30b9ca",
+    "custom_limiter_receipt_sha256": "947c1267aa644b444aa5e7a0b275ae4471e771637842563cabb4aeb6db20ad39",
+    "security_events_sha256": "9a44d8d298c3b780678ac6c210b445b316c109d45e38617df0521b27f9d9629e",
+    "origin_evidence_sha256": "d3c467027b846401d8b803a94146667a50f6ba09f50866a3560d9edb7985107b",
+    "browser_receipt_sha256": "25bb37303ac4688a01c6394480c1062b53ed6da84d6a56072c4d13dfd0305b77",
+    "provider_version": "13.0.3",
+    "provider_changed": false,
+    "origin_replacements": 1,
+    "origin_plan_sha256": "e844321b05cb215a72ab32397f0caf1fa8edcebb4226e560d18a74b02eacbf11",
+    "direct_body_plan_sha256": "ad6740e0d8e38de12817f7b4a042b8df4888d32e9a5fb268e987730806ec997e",
+    "zero_change_plan_sha256": "3921599f5a671f1ae890f8eaeddebfb4d5b9a6c0be87a507df134d12d1a6d517",
+    "failed_policy_removed": true,
+    "policy_finding": "Selected path reached origin with Terraform and direct API configuration; custom 403 not qualified.",
+    "rate_limit_requests_per_run": 16,
+    "rate_limit_window_seconds": 120,
+    "ddos_status": "un-verified; testing deferred",
+    "prior_twelve_rechecked": true,
+    "docs_browser_receipt_sha256": "d0ef033823f4a64a5d92f82b38adcd718e050aa42e5668107523922b0d6ecf13"
+  }
 }

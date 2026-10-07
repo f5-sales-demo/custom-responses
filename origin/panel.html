@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Custom Responses demo panel</title>
+<style>
+body{margin:0;background:#071b33;color:#fff;font:16px system-ui}main{max-width:52rem;margin:auto;padding:2rem}h1{font-size:clamp(2rem,6vw,3rem)}p{line-height:1.6}.brand{color:#ff6a6f;font-weight:700}.controls{display:flex;flex-wrap:wrap;gap:.75rem}button{font:inherit;background:#fff;color:#071b33;border:0;border-radius:.4rem;padding:.85rem;cursor:pointer}button:disabled{opacity:.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#102944;border-radius:.5rem;padding:1rem;min-height:8rem}a{color:#9cddff}:focus-visible{outline:3px solid #ff6a6f;outline-offset:3px}
+</style>
+</head>
+<body><main>
+<p class="brand">F5 · Custom Responses</p><h1>Try response controls</h1>
+<p>Each click sends fixed synthetic data to an owned demo endpoint. No requests run automatically. This panel allows at most 12 requests per page visit; a redirect uses two.</p>
+<div class="controls">
+<button type="button" data-action="temporary">POST through 307</button>
+<button type="button" data-action="permanent">POST through 308</button>
+<button type="button" data-action="headers">Compare scoped headers</button>
+<button type="button" data-action="cors">Test CORS</button>
+</div>
+<p id="budget">12 requests remaining</p>
+<pre id="result" role="status" aria-live="polite">Choose a control to begin.</pre>
+<p>For CORS, <a href="https://f5-sales-demo.github.io/custom-responses/en/cors/">open the documentation guide</a>. Its panel runs from the allowed documentation origin. The application panel has a different origin and demonstrates denied browser access.</p>
+<script>
+"use strict";
+const ACTION_ORIGIN = "https://custom-responses.f5-sales-demo.com";
+const DOC_ORIGIN = "https://f5-sales-demo.github.io";
+const MAX_REQUESTS = 12;
+let remaining = MAX_REQUESTS;
+let busy = false;
+const result = document.querySelector("#result");
+const budget = document.querySelector("#budget");
+const buttons = [...document.querySelectorAll("button[data-action]")];
+const actions = Object.freeze({temporary:2, permanent:2, headers:2, cors:2});
+function refresh() {
+  budget.textContent = `${remaining} requests remaining`;
+  for (const button of buttons) {
+    button.disabled = busy || remaining < actions[button.dataset.action] ||
+      (location.origin !== ACTION_ORIGIN && button.dataset.action !== "cors");
+  }
+}
+async function send(path, options = {}) {
+  const response = await fetch(ACTION_ORIGIN + path, {
+    credentials:"omit", cache:"no-store", redirect:"follow",
+    signal:AbortSignal.timeout(10000), ...options
+  });
+  return {status:response.status, url:response.url,
+    route:response.headers.get("X-CR-Route"),
+    owner:response.headers.get("X-Response-Owner"), body:await response.text()};
+}
+async function run(action) {
+  if (busy || !Object.hasOwn(actions, action) || remaining < actions[action]) return;
+  if (location.origin !== ACTION_ORIGIN && action !== "cors") return;
+  busy = true;
+  remaining -= actions[action]; // Reserve redirects and browser preflights before sending.
+  refresh();
+  result.textContent = "Request in progress…";
+  try {
+    let rows;
+    if (action === "temporary" || action === "permanent") {
+      rows = await send(`/demo/${action}?sample=synthetic`, {
+        method:"POST", headers:{"Content-Type":"text/plain", "X-CR-Client":"panel-synthetic"},
+        body:"synthetic panel payload"
+      });
+    } else if (action === "headers") {
+      rows = [await send("/demo/headers"), await send("/")];
+    } else {
+      rows = await send("/demo/cors", {
+        method:"POST", headers:{"Content-Type":"application/json", "X-CR-Client":"panel-synthetic"},
+        body:'{"sample":"synthetic"}'
+      });
+    }
+    result.textContent = JSON.stringify(rows, null, 2);
+  } catch {
+    result.textContent = action === "cors" && location.origin !== DOC_ORIGIN
+      ? "Browser access denied for this origin. Use the documentation panel for the allowed-origin test."
+      : "The request could not complete. Check connectivity and try another control.";
+  } finally {
+    busy = false;
+    refresh();
+  }
+}
+for (const button of buttons) button.addEventListener("click", () => run(button.dataset.action));
+refresh();
+</script>
+</main></body></html>

@@ -20,3 +20,12 @@ Configure the add and remove lists under the load balancer's `more_option` field
 **Expected result:** The transformed host returns the added header and cookie, omits the unwanted values, and preserves the application body. Compare with the untransformed shared error host because these settings apply to the load balancer, not just one path.
 
 **Verified live example:** [Open the transformed response](https://custom-responses.f5-sales-demo.com/) and inspect its response headers and cookies.
+
+For metadata confined to one path, `/demo/headers` adds `X-CR-Route: scoped` under the route's `advanced_options`. The root response omits this header. The existing host-wide transformations still apply to both responses.
+
+```json file=../_data/route-headers.json wrap
+```
+
+**Expected result:** Compare `/demo/headers` with `/` on the same host. Only the selected route has `X-CR-Route`; both responses keep the synthetic origin body. Use the [Demo panel](../demo-panel/) to compare them.
+
+**Verified live example:** [Open the scoped-header route](https://custom-responses.f5-sales-demo.com/demo/headers).

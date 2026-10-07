@@ -573,5 +573,193 @@
     "synthetic_fields": ["card"],
     "live_proof_required": true,
     "delivery_state": "example; live verification pending"
+  },
+  {
+    "id": "missing",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "direct",
+    "owner": "XC direct route",
+    "trigger": "/demo/missing",
+    "expected": {
+      "status": 404,
+      "body_contains": "Resource not found"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
+  },
+  {
+    "id": "gone",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "direct",
+    "owner": "XC direct route",
+    "trigger": "/demo/gone",
+    "expected": {
+      "status": 410,
+      "body_contains": "Resource retired"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
+  },
+  {
+    "id": "temporary",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "redirect",
+    "owner": "XC redirect route",
+    "trigger": "/demo/temporary?sample=synthetic",
+    "expected": {
+      "status": 307
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending",
+    "method": "POST",
+    "request_headers": {
+      "Content-Type": "text/plain",
+      "X-CR-Client": "verification-synthetic"
+    },
+    "request_body": "synthetic redirect payload",
+    "expected_location": "https://custom-responses.f5-sales-demo.com/demo/echo?sample=synthetic",
+    "expected_echo_query": "sample=synthetic"
+  },
+  {
+    "id": "permanent",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "redirect",
+    "owner": "XC redirect route",
+    "trigger": "/demo/permanent?sample=synthetic",
+    "expected": {
+      "status": 308
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending",
+    "method": "POST",
+    "request_headers": {
+      "Content-Type": "text/plain",
+      "X-CR-Client": "verification-synthetic"
+    },
+    "request_body": "synthetic redirect payload",
+    "expected_location": "https://custom-responses.f5-sales-demo.com/demo/echo",
+    "expected_echo_query": ""
+  },
+  {
+    "id": "route-headers",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "metadata",
+    "owner": "origin with XC route headers",
+    "trigger": "/demo/headers",
+    "expected": {
+      "status": 200,
+      "body_contains": "Custom responses origin",
+      "headers": {
+        "X-CR-Route": "scoped"
+      }
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin",
+      "headers_absent": ["X-CR-Route"]
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
+  },
+  {
+    "id": "cors",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "control",
+    "owner": "origin with XC CORS policy",
+    "trigger": "/demo/cors",
+    "expected": {
+      "status": 200,
+      "body_contains": "Synthetic demonstration data"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending",
+    "cors_origin": "https://f5-sales-demo.github.io"
+  },
+  {
+    "id": "panel",
+    "hostname": "custom-responses.f5-sales-demo.com",
+    "group": "control",
+    "owner": "origin",
+    "trigger": "/demo/panel",
+    "expected": {
+      "status": 200,
+      "body_contains": "Try response controls"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": ["DNS", "automatic certificate", "reachable fixture origin"],
+    "verification": "http",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending"
+  },
+  {
+    "id": "rate-limit",
+    "hostname": "cr-response-controls.f5-sales-demo.com",
+    "group": "rate-limit",
+    "owner": "XC API rate limiter",
+    "trigger": "/demo/rate-limit",
+    "expected": {
+      "status": 429,
+      "body_contains": "Demo request limit reached"
+    },
+    "negative_control": {
+      "path": "/",
+      "status": 200,
+      "body_contains": "Custom responses origin"
+    },
+    "prerequisites": [
+      "DNS",
+      "automatic certificate",
+      "healthy fixture",
+      "matching API Rate Limiting security event",
+      "synthetic X-CR-Client identity"
+    ],
+    "verification": "bounded-rate-limit",
+    "live_proof_required": true,
+    "delivery_state": "example; live verification pending",
+    "request_budget": 36,
+    "window_seconds": 120,
+    "recovery_seconds": 65
   }
 ]

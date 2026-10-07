@@ -59,7 +59,22 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 | `metadata.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/more_option` |
 | `disclosure.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-json/sensitive_data_disclosure_rules` |
 | `data-guard.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-json/data_guard_rules` |
+| `missing.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/3` |
+| `gone.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/4` |
+| `temporary.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/5` |
+| `permanent.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/6` |
+| `route-headers.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/7` |
+| `cors.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/8` |
+| `missing.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/3/direct_response_route/0/route_direct_response/0/response_body_encoded` |
+| `gone.html` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/4/direct_response_route/0/route_direct_response/0/response_body_encoded` |
+| `direct-error-bodies.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/more_option` |
+| `rate-attach.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/response-controls/api_rate_limit` |
+| `rate-body.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/response-controls/more_option` |
+| `rate-limiter.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_rate_limiter/response-controls/limits` |
+| `rate-identity.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_user_identification/response-controls/rules` |
 
 ## Editorial guidance
 
 The revision follows the managed style guide and Google's [procedure guidance](https://developers.google.com/style/procedures) and [active-voice guidance](https://developers.google.com/style/voice): outcome first, second person, imperative actions, conditions before instructions, one action per step and independent alternatives.
+
+The second round adds the official rate-limiter and user-identification contracts. Their pinned member digests are recorded in `response-schema.json`; the generator selects their `limits`, `user_identification` and `rules` fields and the HTTP load balancer API rate-limit attachment.

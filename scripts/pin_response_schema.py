@@ -14,6 +14,12 @@ MEMBERS = {
     "http_loadbalancer": "docs-cloud-f5-com.0080.public.ves.io.schema.views.http_loadbalancer.ves-swagger.json",
     "app_firewall": "docs-cloud-f5-com.0019.public.ves.io.schema.app_firewall.ves-swagger.json",
 }
+MEMBERS.update(
+    {
+        "rate_limiter": "docs-cloud-f5-com.0202.public.ves.io.schema.rate_limiter.ves-swagger.json",
+        "user_identification": "docs-cloud-f5-com.0266.public.ves.io.schema.user_identification.ves-swagger.json",
+    }
+)
 FIELDS = {
     "http_loadbalancer": [
         "more_option",
@@ -26,8 +32,12 @@ FIELDS = {
         "bot_defense",
         "sensitive_data_disclosure_rules",
         "data_guard_rules",
+        "api_rate_limit",
+        "user_identification",
     ],
     "app_firewall": ["blocking_page"],
+    "rate_limiter": ["limits", "user_identification"],
+    "user_identification": ["rules"],
 }
 CONSTRAINTS = {
     "type",

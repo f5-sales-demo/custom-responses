@@ -5,17 +5,35 @@ import hashlib
 import json
 import shutil
 import subprocess
+import time
+import uuid
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
+MAX_BODY_BYTES = 65536
+RATE_REQUEST_BUDGET = 36
+RATE_WINDOW_SECONDS = 120
+RATE_ALLOWANCE = 5
 
 
 def capture(
-    item: dict[str, Any], path: str, directory: Path, method: str = "GET"
+    item: dict[str, Any],
+    path: str,
+    directory: Path,
+    method: str = "GET",
+    request_headers: dict[str, str] | None = None,
+    request_body: str | None = None,
 ) -> dict[str, Any]:
     """Capture one inventory-bound HTTPS request without following redirects."""
-    if not item["hostname"].endswith(".f5-sales-demo.com") or not path.startswith("/"):
+    if (
+        not item["hostname"].endswith(".f5-sales-demo.com")
+        or "/" in item["hostname"]
+        or not path.startswith("/")
+        or path.startswith("//")
+        or method not in {"GET", "POST", "OPTIONS"}
+    ):
         message = "Request must target the owned inventory"
         raise ValueError(message)
     curl = shutil.which("curl")
@@ -25,9 +43,36 @@ def capture(
     stem = (
         item["id"]
         + "-"
-        + hashlib.sha256((item["hostname"] + method + path).encode()).hexdigest()[:12]
+        + hashlib.sha256(
+            (
+                item["hostname"]
+                + method
+                + path
+                + json.dumps(request_headers or {}, sort_keys=True)
+            ).encode()
+        ).hexdigest()[:12]
     )
     headers, body = directory / (stem + ".headers"), directory / (stem + ".body")
+    sequence = len(list(directory.glob(item["id"] + "-*.headers")))
+    headers = directory / (stem + "-" + str(sequence) + ".headers")
+    body = directory / (stem + "-" + str(sequence) + ".body")
+    extra = []
+    for name, value in (request_headers or {}).items():
+        if name not in {
+            "Content-Type",
+            "X-CR-Client",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers",
+        } or any(c in value for c in "\r\n"):
+            message = "Unsupported synthetic header"
+            raise ValueError(message)
+        extra += ["--header", name + ": " + value]
+    if request_body is not None:
+        if len(request_body.encode()) > MAX_BODY_BYTES:
+            message = "Synthetic body exceeds budget"
+            raise ValueError(message)
+        extra += ["--data-binary", request_body]
     result = subprocess.run(  # noqa: S603 -- executable and argv validated; no shell
         [
             curl,
@@ -45,6 +90,7 @@ def capture(
             str(body),
             "--write-out",
             "%{http_code}",
+            *extra,
             "https://" + item["hostname"] + path,
         ],
         capture_output=True,
@@ -58,6 +104,16 @@ def capture(
     }
 
 
+def response_headers(response: dict[str, Any]) -> dict[str, str]:
+    """Normalize measured header fields for exact comparisons."""
+    return {
+        key.strip().lower(): value.strip()
+        for line in response["headers"].splitlines()
+        if ":" in line
+        for key, value in [line.split(":", 1)]
+    }
+
+
 def check_expected(expected: dict[str, Any], response: dict[str, Any]) -> list[str]:
     """Compare measured response with independent inventory expectations."""
     failures = []
@@ -68,8 +124,19 @@ def check_expected(expected: dict[str, Any], response: dict[str, Any]) -> list[s
         and expected["body_contains"].encode() not in response["body"]
     ):
         failures.append("body mismatch")
-    if "content-type:" not in response["headers"].lower():
+    if "content-type:" not in response["headers"].lower() and (
+        response["body"] or response["status"] not in {307, 308}
+    ):
         failures.append("Content-Type absent")
+    headers = response_headers(response)
+    for name, value in expected.get("headers", {}).items():
+        if headers.get(name.lower()) != value:
+            failures.append("header mismatch: " + name)
+    failures.extend(
+        "unexpected header: " + name
+        for name in expected.get("headers_absent", [])
+        if name.lower() in headers
+    )
     return failures
 
 
@@ -107,6 +174,175 @@ def check_redirect(
     destination = capture(item, "/new", directory)
     failures += check_expected(
         {"status": 200, "body_contains": "Custom responses origin"}, destination
+    )
+    return failures
+
+
+def check_method_redirect(
+    item: dict[str, Any], positive: dict[str, Any], directory: Path
+) -> list[str]:
+    """Follow only an independently expected owned Location with the same payload."""
+    location = response_headers(positive).get("location")
+    if location != item["expected_location"]:
+        return ["Location mismatch"]
+    target = urlsplit(location)
+    if (
+        target.scheme != "https"
+        or target.netloc != item["hostname"]
+        or target.path != "/demo/echo"
+    ):
+        return ["redirect destination outside owned echo"]
+    destination = capture(
+        item,
+        target.path + ("?" + target.query if target.query else ""),
+        directory,
+        item["method"],
+        item["request_headers"],
+        item["request_body"],
+    )
+    failures = check_expected({"status": 200}, destination)
+    echo = json.loads(destination["body"])
+    expected = {
+        "method": item["method"],
+        "path": "/demo/echo",
+        "query": item["expected_echo_query"],
+        "body": item["request_body"],
+        "headers": item["request_headers"],
+    }
+    for key, value in expected.items():
+        if echo.get(key) != value:
+            failures.append("redirect echo mismatch: " + key)
+    return failures
+
+
+def check_cors(item: dict[str, Any], directory: Path) -> list[str]:
+    """Measure allowed and denied origins, preflight, POST, and route isolation."""
+    origin = item["cors_origin"]
+    denied = "https://denied.example.invalid"
+    failures = []
+    for source in (origin, denied):
+        for method in ("GET", "POST", "OPTIONS"):
+            headers = {"Origin": source}
+            body = None
+            if method == "OPTIONS":
+                headers.update(
+                    {
+                        "Access-Control-Request-Method": "POST",
+                        "Access-Control-Request-Headers": "content-type,x-cr-client",
+                    }
+                )
+            if method == "POST":
+                headers.update(
+                    {
+                        "Content-Type": "application/json",
+                        "X-CR-Client": "verification-synthetic",
+                    }
+                )
+                body = '{"sample":"synthetic"}'
+            response = capture(item, "/demo/cors", directory, method, headers, body)
+            fields = response_headers(response)
+            if source == origin:
+                if fields.get("access-control-allow-origin") != origin:
+                    failures.append("allowed origin missing")
+                if response["status"] not in (
+                    {200, 204} if method == "OPTIONS" else {200}
+                ):
+                    failures.append("CORS status mismatch")
+                if method == "OPTIONS":
+                    for field, required in [
+                        ("access-control-allow-methods", {"get", "post", "options"}),
+                        (
+                            "access-control-allow-headers",
+                            {"content-type", "x-cr-client"},
+                        ),
+                    ]:
+                        values = {
+                            x.strip().lower() for x in fields.get(field, "").split(",")
+                        }
+                        if values != required:
+                            failures.append("preflight permissions mismatch")
+                else:
+                    echo = json.loads(response["body"])
+                    if echo.get("method") != method or echo.get("body") != (body or ""):
+                        failures.append("CORS echo mismatch")
+            elif "access-control-allow-origin" in fields:
+                failures.append("disallowed origin granted browser access")
+    root = capture(item, "/", directory, request_headers={"Origin": origin})
+    if "access-control-allow-origin" in response_headers(root):
+        failures.append("CORS leaked to root")
+    return failures
+
+
+def check_rate_limit(item: dict[str, Any], directory: Path) -> list[str]:
+    """Bound the request sequence and require custom denial, isolation and recovery."""
+    if (
+        item.get("request_budget") != RATE_REQUEST_BUDGET
+        or item.get("window_seconds") != RATE_WINDOW_SECONDS
+    ):
+        message = "Unsupported rate-limit budget"
+        raise ValueError(message)
+    start = time.monotonic()
+    count = 0
+    client = "verification-synthetic-" + str(uuid.uuid4())
+
+    def request(
+        path: str, method: str = "GET", identity: str = client
+    ) -> dict[str, Any]:
+        nonlocal count
+        if (
+            count >= item["request_budget"]
+            or time.monotonic() - start >= item["window_seconds"]
+        ):
+            message = "Rate-limit request budget exhausted"
+            raise ValueError(message)
+        count += 1
+        return capture(
+            item,
+            path,
+            directory,
+            method,
+            {"X-CR-Client": identity},
+            "synthetic payload" if method == "POST" else None,
+        )
+
+    failures = []
+    for index in range(8):
+        response = request(item["trigger"])
+        failures += check_expected(
+            {"status": 200, "body_contains": "Synthetic demonstration data"}
+            if index < RATE_ALLOWANCE
+            else item["expected"],
+            response,
+        )
+    for path, method, identity in [
+        (item["trigger"], "GET", client + "-independent"),
+        (item["trigger"], "POST", client),
+        ("/", "GET", client),
+        (item["trigger"] + "-other", "GET", client),
+    ]:
+        response = request(path, method, identity)
+        failures += check_expected({"status": 200}, response)
+        if (
+            response_headers(response).get("x-response-owner")
+            != "custom-responses-origin"
+        ):
+            failures.append("rate-limit isolation origin missing")
+    deadline = start + item["recovery_seconds"]
+    while time.monotonic() < deadline:
+        time.sleep(min(30, max(0, deadline - time.monotonic())))
+    failures += check_expected(
+        {"status": 200, "body_contains": "Synthetic demonstration data"},
+        request(item["trigger"]),
+    )
+    (directory / "rate-limit-budget.json").write_text(
+        json.dumps(
+            {
+                "count": count,
+                "elapsed_seconds": round(time.monotonic() - start, 2),
+                "failures": failures,
+            }
+        )
+        + "\n"
     )
     return failures
 
@@ -152,6 +388,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--captures", required=True, type=Path)
     parser.add_argument(
+        "--scenario", action="append", help="Select bounded inventory cases"
+    )
+    parser.add_argument(
         "--owner-evidence",
         type=Path,
         help="Private reviewed manual evidence keyed by scenario ID",
@@ -166,6 +405,8 @@ def main() -> int:
     )
     results = []
     for item in json.loads((ROOT / "scenarios.json").read_text()):
+        if args.scenario and item["id"] not in args.scenario:
+            continue
         if item["verification"] == "configuration-only":
             results.append(
                 {
@@ -181,7 +422,12 @@ def main() -> int:
         failures = []
         try:
             positive = capture(
-                item, item["trigger"], args.captures, item.get("method", "GET")
+                item,
+                item["trigger"],
+                args.captures,
+                item.get("method", "GET"),
+                item.get("request_headers"),
+                item.get("request_body"),
             )
             control_item = {
                 **item,
@@ -190,12 +436,19 @@ def main() -> int:
             control = capture(
                 control_item, item["negative_control"]["path"], args.captures
             )
-            failures += check_expected(item["expected"], positive)
+            if item["verification"] == "bounded-rate-limit":
+                failures += check_rate_limit(item, args.captures)
+            else:
+                failures += check_expected(item["expected"], positive)
             # Fresh challenge controls need browser and origin evidence instead of a curl 200.
             if item["group"] not in ["challenge", "conditional", "masking"]:
                 failures += check_expected(item["negative_control"], control)
             if item["id"] == "redirect":
                 failures += check_redirect(item, positive, args.captures)
+            if item["id"] in {"temporary", "permanent"}:
+                failures += check_method_redirect(item, positive, args.captures)
+            if item["id"] == "cors":
+                failures += check_cors(item, args.captures)
             if item["id"] == "metadata":
                 failures += check_metadata(positive, control)
             if item["group"] == "masking":
@@ -229,7 +482,8 @@ def main() -> int:
             }
         )
     receipt = {
-        "complete": all(r["pass"] for r in results if r["pass"] is not None),
+        "complete": bool(results)
+        and all(r["pass"] for r in results if r["pass"] is not None),
         "results": results,
     }
     (args.captures / "sanitized-receipt.json").write_text(

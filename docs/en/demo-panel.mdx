@@ -1,0 +1,20 @@
+---
+title: Demo panel
+description: Demo panel lets you compare redirects, scoped headers, and browser CORS behavior.
+tableOfContents: false
+sidebar:
+  order: 16
+---
+
+Explore fixed synthetic requests with explicit button clicks. The application panel compares POST redirects and route headers, and reads its own CORS route through same-origin browser access. A different application origin cannot read that route.
+
+> **Visitor response:** A measured status, final destination, selected response headers, and synthetic echo data.
+
+The echo returns the method, path, query, selected `Content-Type`, `X-CR-Client`, and `Origin` headers, and the synthetic body. It omits authorization and cookies. Requests and destinations are fixed to owned demo endpoints. Loading the panel sends no demonstration requests; every action requires a click.
+
+**Expected result:** The panel allows at most twelve requests per page visit and reserves two per action to include a redirect or browser preflight. Buttons
+disable while a request is active and when the remaining budget is insufficient. The [CORS guide](../cors/) contains the documentation panel for allowed-origin
+access and the qualified limiter. Its security control sends seven requests on click, reserves fourteen including possible preflights, runs once per two
+minutes, and caps the page visit at 36 requests.
+
+**Verified live example:** [Open the application demo panel](https://custom-responses.f5-sales-demo.com/demo/panel).

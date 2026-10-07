@@ -53,7 +53,13 @@ class BotScopeTests(unittest.TestCase):
                 contextlib.redirect_stdout(io.StringIO()),
             ):
                 self.assertEqual(verify.main(), 1)
-            self.assertEqual(capture.call_count, 24)
+            self.assertEqual(
+                capture.call_count,
+                sum(
+                    item["live_proof_required"]
+                    for item in json.loads((ROOT / "scenarios.json").read_text())
+                ),
+            )
             receipt = json.loads((Path(temp) / "sanitized-receipt.json").read_text())
         self.assertFalse(receipt["complete"])
         self.assertEqual(sum(item["pass"] is None for item in receipt["results"]), 2)

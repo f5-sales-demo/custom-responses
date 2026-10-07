@@ -24,5 +24,13 @@
   "redirect": "redirects",
   "metadata": "headers-cookies",
   "disclosure": "masking",
-  "data-guard": "masking"
+  "data-guard": "masking",
+  "missing": "missing-resources",
+  "gone": "missing-resources",
+  "temporary": "redirects",
+  "permanent": "redirects",
+  "route-headers": "headers-cookies",
+  "cors": "supporting-fixture",
+  "panel": "supporting-fixture",
+  "rate-limit": "rate-limits"
 }

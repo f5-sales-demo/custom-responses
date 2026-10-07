@@ -40,6 +40,12 @@
           "items": {
             "$ref": "http_loadbalancer:policySimpleDataGuardRule"
           }
+        },
+        "api_rate_limit": {
+          "$ref": "http_loadbalancer:common_wafAPIRateLimit"
+        },
+        "user_identification": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
         }
       }
     },
@@ -48,6 +54,38 @@
       "properties": {
         "blocking_page": {
           "$ref": "app_firewall:app_firewallCustomBlockingPage"
+        }
+      }
+    },
+    "rate_limiter": {
+      "type": "object",
+      "properties": {
+        "limits": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "rate_limiter:rate_limiterRateLimitValue"
+          }
+        },
+        "user_identification": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "rate_limiter:schemaObjectRefType"
+          }
+        }
+      }
+    },
+    "user_identification": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "$ref": "user_identification:user_identificationUserIdentificationRule"
+          }
         }
       }
     }
@@ -2362,6 +2400,316 @@
         }
       }
     },
+    "http_loadbalancer:common_wafAPIRateLimit": {
+      "type": "object",
+      "properties": {
+        "api_endpoint_rules": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "http_loadbalancer:common_wafApiEndpointRule"
+          }
+        },
+        "bypass_rate_limiting_rules": {
+          "$ref": "http_loadbalancer:common_wafBypassRateLimitingRules"
+        },
+        "custom_ip_allowed_list": {
+          "$ref": "http_loadbalancer:common_wafCustomIpAllowedList"
+        },
+        "ip_allowed_list": {
+          "$ref": "http_loadbalancer:viewsPrefixStringListType"
+        },
+        "no_ip_allowed_list": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "server_url_rules": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "http_loadbalancer:common_wafServerUrlRule"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:common_wafApiEndpointRule": {
+      "type": "object",
+      "properties": {
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "api_endpoint_method": {
+          "$ref": "http_loadbalancer:policyHttpMethodMatcherType"
+        },
+        "api_endpoint_path": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "client_matcher": {
+          "$ref": "http_loadbalancer:policyClientMatcher"
+        },
+        "inline_rate_limiter": {
+          "$ref": "http_loadbalancer:common_wafInlineRateLimiter"
+        },
+        "ref_rate_limiter": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "request_matcher": {
+          "$ref": "http_loadbalancer:policyRequestMatcher"
+        },
+        "specific_domain": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
+    "http_loadbalancer:policyClientMatcher": {
+      "type": "object",
+      "properties": {
+        "any_client": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "any_ip": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "asn_list": {
+          "$ref": "http_loadbalancer:policyAsnMatchList"
+        },
+        "asn_matcher": {
+          "$ref": "http_loadbalancer:policyAsnMatcherType"
+        },
+        "client_selector": {
+          "$ref": "http_loadbalancer:schemaLabelSelectorType"
+        },
+        "ip_matcher": {
+          "$ref": "http_loadbalancer:policyIpMatcherType"
+        },
+        "ip_prefix_list": {
+          "$ref": "http_loadbalancer:policyPrefixMatchList"
+        },
+        "ip_threat_category_list": {
+          "$ref": "http_loadbalancer:schemapolicyIPThreatCategoryListType"
+        },
+        "tls_fingerprint_matcher": {
+          "$ref": "http_loadbalancer:policyTlsFingerprintMatcherType"
+        }
+      }
+    },
+    "http_loadbalancer:schemapolicyIPThreatCategoryListType": {
+      "type": "object",
+      "properties": {
+        "ip_threat_categories": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "http_loadbalancer:policyIPThreatCategory"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyIPThreatCategory": {
+      "type": "string",
+      "enum": [
+        "SPAM_SOURCES",
+        "WINDOWS_EXPLOITS",
+        "WEB_ATTACKS",
+        "BOTNETS",
+        "SCANNERS",
+        "REPUTATION",
+        "PHISHING",
+        "PROXY",
+        "MOBILE_THREATS",
+        "TOR_PROXY",
+        "DENIAL_OF_SERVICE",
+        "NETWORK"
+      ]
+    },
+    "http_loadbalancer:common_wafInlineRateLimiter": {
+      "type": "object",
+      "properties": {
+        "ref_user_id": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "threshold": {
+          "type": "integer"
+        },
+        "unit": {
+          "$ref": "http_loadbalancer:rate_limiterRateLimitPeriodUnit"
+        },
+        "use_http_lb_user_id": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        }
+      }
+    },
+    "http_loadbalancer:rate_limiterRateLimitPeriodUnit": {
+      "type": "string",
+      "enum": ["SECOND", "MINUTE", "HOUR"]
+    },
+    "http_loadbalancer:policyRequestMatcher": {
+      "type": "object",
+      "properties": {
+        "cookie_matchers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:policyCookieMatcherType"
+          }
+        },
+        "headers": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemapolicyHeaderMatcherType"
+          }
+        },
+        "jwt_claims": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:policyJWTClaimMatcherType"
+          }
+        },
+        "query_params": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "http_loadbalancer:schemapolicyQueryParameterMatcherType"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:policyJWTClaimMatcherType": {
+      "type": "object",
+      "properties": {
+        "check_not_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "check_present": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "invert_matcher": {
+          "type": "boolean"
+        },
+        "item": {
+          "$ref": "http_loadbalancer:policyMatcherType"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 256
+        }
+      }
+    },
+    "http_loadbalancer:common_wafBypassRateLimitingRules": {
+      "type": "object",
+      "properties": {
+        "bypass_rate_limiting_rules": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "http_loadbalancer:common_wafBypassRateLimitingRule"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:common_wafBypassRateLimitingRule": {
+      "type": "object",
+      "properties": {
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "any_url": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "api_endpoint": {
+          "$ref": "http_loadbalancer:common_wafApiEndpointDetails"
+        },
+        "api_groups": {
+          "$ref": "http_loadbalancer:common_wafAPIGroups"
+        },
+        "base_path": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "client_matcher": {
+          "$ref": "http_loadbalancer:policyClientMatcher"
+        },
+        "request_matcher": {
+          "$ref": "http_loadbalancer:policyRequestMatcher"
+        },
+        "specific_domain": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
+    "http_loadbalancer:common_wafAPIGroups": {
+      "type": "object",
+      "properties": {
+        "api_groups": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:common_wafCustomIpAllowedList": {
+      "type": "object",
+      "properties": {
+        "rate_limiter_allowed_prefixes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:viewsPrefixStringListType": {
+      "type": "object",
+      "properties": {
+        "prefixes": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "http_loadbalancer:common_wafServerUrlRule": {
+      "type": "object",
+      "properties": {
+        "any_domain": {
+          "$ref": "http_loadbalancer:ioschemaEmpty"
+        },
+        "api_group": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "base_path": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "client_matcher": {
+          "$ref": "http_loadbalancer:policyClientMatcher"
+        },
+        "inline_rate_limiter": {
+          "$ref": "http_loadbalancer:common_wafInlineRateLimiter"
+        },
+        "ref_rate_limiter": {
+          "$ref": "http_loadbalancer:schemaviewsObjectRefType"
+        },
+        "request_matcher": {
+          "$ref": "http_loadbalancer:policyRequestMatcher"
+        },
+        "specific_domain": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
     "app_firewall:app_firewallCustomBlockingPage": {
       "type": "object",
       "properties": {
@@ -2436,6 +2784,169 @@
         "NotExtended",
         "NetworkAuthenticationRequired"
       ]
+    },
+    "rate_limiter:rate_limiterRateLimitValue": {
+      "type": "object",
+      "properties": {
+        "action_block": {
+          "$ref": "rate_limiter:rate_limiterRateLimitBlockAction"
+        },
+        "burst_multiplier": {
+          "type": "integer"
+        },
+        "disabled": {
+          "$ref": "rate_limiter:ioschemaEmpty"
+        },
+        "leaky_bucket": {
+          "$ref": "rate_limiter:rate_limiterLeakyBucketRateLimiter"
+        },
+        "period_multiplier": {
+          "type": "integer"
+        },
+        "token_bucket": {
+          "$ref": "rate_limiter:rate_limiterTokenBucketRateLimiter"
+        },
+        "total_number": {
+          "type": "integer"
+        },
+        "unit": {
+          "$ref": "rate_limiter:rate_limiterRateLimitPeriodUnit"
+        }
+      }
+    },
+    "rate_limiter:rate_limiterRateLimitBlockAction": {
+      "type": "object",
+      "properties": {
+        "hours": {
+          "$ref": "rate_limiter:rate_limiterInputHours"
+        },
+        "minutes": {
+          "$ref": "rate_limiter:rate_limiterInputMinutes"
+        },
+        "seconds": {
+          "$ref": "rate_limiter:rate_limiterInputSeconds"
+        }
+      }
+    },
+    "rate_limiter:rate_limiterInputHours": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "integer"
+        }
+      }
+    },
+    "rate_limiter:rate_limiterInputMinutes": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "integer"
+        }
+      }
+    },
+    "rate_limiter:rate_limiterInputSeconds": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "integer"
+        }
+      }
+    },
+    "rate_limiter:ioschemaEmpty": {
+      "type": "object"
+    },
+    "rate_limiter:rate_limiterLeakyBucketRateLimiter": {
+      "type": "object"
+    },
+    "rate_limiter:rate_limiterTokenBucketRateLimiter": {
+      "type": "object"
+    },
+    "rate_limiter:rate_limiterRateLimitPeriodUnit": {
+      "type": "string",
+      "enum": ["SECOND", "MINUTE", "HOUR"]
+    },
+    "rate_limiter:schemaObjectRefType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "tenant": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "user_identification:user_identificationUserIdentificationRule": {
+      "type": "object",
+      "properties": {
+        "client_asn": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "client_city": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "client_country": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "client_ip": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "client_region": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "cookie_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "http_header_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "ip_and_http_header_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "ip_and_ja4_tls_fingerprint": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "ip_and_tls_fingerprint": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "ja4_tls_fingerprint": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "jwt_claim_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "none": {
+          "$ref": "user_identification:ioschemaEmpty"
+        },
+        "query_param_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "tls_fingerprint": {
+          "$ref": "user_identification:ioschemaEmpty"
+        }
+      }
+    },
+    "user_identification:ioschemaEmpty": {
+      "type": "object"
     }
   },
   "sources": [
@@ -2443,15 +2954,29 @@
       "resource": "http_loadbalancer",
       "url": "https://docs.cloud.f5.com/docs-v2/downloads/f5-distributed-cloud-open-api.zip",
       "member": "docs-cloud-f5-com.0080.public.ves.io.schema.views.http_loadbalancer.ves-swagger.json",
-      "sha256": "326c0df9d8758fa7125a450063a962da859ee9685b87857d13e4fdf8005fed96",
+      "sha256": "0dd0bc1f99f68af4c46672d52929d7fa81c050eb4d39b33008fd76d9f76852a1",
       "spec_ref": "#/components/schemas/viewshttp_loadbalancerCreateSpecType"
     },
     {
       "resource": "app_firewall",
       "url": "https://docs.cloud.f5.com/docs-v2/downloads/f5-distributed-cloud-open-api.zip",
       "member": "docs-cloud-f5-com.0019.public.ves.io.schema.app_firewall.ves-swagger.json",
-      "sha256": "d98233c45b3e19bab72282b1f9e12609fd6f645f2ae9174e6a6492eb3f61b664",
+      "sha256": "5af90d92b6dc008eb2e1e2a923bf928cfd5e03071b894746932dad577810852e",
       "spec_ref": "#/components/schemas/app_firewallCreateSpecType"
+    },
+    {
+      "resource": "rate_limiter",
+      "url": "https://docs.cloud.f5.com/docs-v2/downloads/f5-distributed-cloud-open-api.zip",
+      "member": "docs-cloud-f5-com.0202.public.ves.io.schema.rate_limiter.ves-swagger.json",
+      "sha256": "af97d6aed5350dfdb21d85e08a8b90b11f49e61d9b62d80df0707a20438faafc",
+      "spec_ref": "#/components/schemas/rate_limiterCreateSpecType"
+    },
+    {
+      "resource": "user_identification",
+      "url": "https://docs.cloud.f5.com/docs-v2/downloads/f5-distributed-cloud-open-api.zip",
+      "member": "docs-cloud-f5-com.0266.public.ves.io.schema.user_identification.ves-swagger.json",
+      "sha256": "ff892e09761d41001ce39ab2777a0ba8ad9ab75e3a3303f20e97940139226d34",
+      "spec_ref": "#/components/schemas/user_identificationCreateSpecType"
     }
   ]
 }

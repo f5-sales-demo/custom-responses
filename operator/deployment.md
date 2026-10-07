@@ -90,3 +90,9 @@ On a single-create 429, wait five minutes, review a fresh plan, and retry once o
 The approved output-only update refreshed `scenario_hosts` to the eight shared hosts. The full refresh then returned zero changes at state serial 64; its saved-plan and backup digests are in the acceptance snapshot. Runtime completion and reviewed teardown/rebuild remain separate acceptance requirements.
 
 The owned lifecycle rebuild is complete. All eight shared hosts were restored serially from reviewed saved plans, with fresh state backups and repeated qualified traffic checks. Use the current acceptance snapshot for rebuilt state and aggregate zero-drift identities; prior wave receipts describe the previous deployment.
+
+## Response controls round
+
+Run `python3 scripts/prepare_snippets.py` before planning. It stages a deterministic fixture inventory in the ignored Terraform working directory so documentation formatting does not trigger another VM replacement. The echo and click-only panel are bundled into one reviewed origin replacement. Keep the fixture source and documentation panel identical.
+
+The actions host adds direct missing/retired pages, method-preserving redirects, scoped headers and exact documentation-origin CORS. Security response customization is probed on a separate host and qualifies only with measured custom bodies, unrelated-path controls, independent ownership and bounded recovery checks. Remove mechanisms and unused resources that fail. DDoS remains deferred and un-verified.

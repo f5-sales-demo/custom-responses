@@ -66,3 +66,26 @@ The lifecycle receipt records repeated trusted-TLS checks for all eight rebuilt 
 and scope comparisons. Each rebuilt WAF block has a matching enforced security event. Blocked-request rows were absent from repeated firewall-log queries, so that log limitation is
 retained. Previous receipts remain historical evidence for the former resource identities. DDoS testing remains deferred; CAPTCHA completion and the documented error-mapping limits
 remain un-verified.
+
+## Response semantics
+
+Select inventory cases with repeated `--scenario` options. The verifier sends explicit methods, synthetic headers and bodies, checks exact redirect Locations
+and echo query/method/payload, compares scoped headers with the root, and measures allowed/denied CORS and preflight permissions. It follows only the
+independently expected owned echo destination. Independent configuration and origin evidence are still required.
+
+The panel reserves a maximum of twelve requests per visit, two per click, and dispatches only from button handlers. Browser verification must prove no request
+at load, redirect payload/query behavior and CORS success from the exact documentation origin plus denial from the application origin. Security probes permit at
+most 36 requests per two-minute run and must include unrelated paths, POST isolation, independent synthetic clients and recovery.
+
+## Second-round qualification
+
+Eight additional examples passed trusted TLS, response semantics, independent configuration and origin evidence. The direct 404/410 pages require matching
+error-body mappings; the direct routes own the status. Empty 307/308 responses need no Content-Type and preserve POST payloads through the echo. The exact
+documentation origin passes CORS; a different owned origin is denied, while same-origin access works normally.
+
+The referenced limiter delivered exact custom 429 bodies after five GET requests, isolated synthetic clients and POST/unrelated paths, and recovered after 65
+seconds. Matching API Rate Limiting block events identify XC ownership. Native and custom runs each used sixteen requests within 120 seconds. The service-policy
+path reached origin even with the direct API contract; its unqualified rule, policy and 403 mapping were removed. The retained ninth host serves the qualified
+limiter only.
+
+All twelve prior qualified examples were rechecked after the single VM replacement, including both WAF events and fresh JavaScript completion. DDoS stays deferred and un-verified. Full refresh returned zero resource and output changes at state serial 144. The second-round acceptance record binds protected plan, configuration, event, origin and browser receipts by digest.

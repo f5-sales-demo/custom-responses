@@ -148,6 +148,50 @@ SELECTIONS = [
     selection("disclosure.json", LB + "waf-json/sensitive_data_disclosure_rules"),
     selection("data-guard.json", LB + "waf-json/data_guard_rules"),
 ]
+SELECTIONS += [
+    selection(name + ".json", LB + "actions/routes/" + str(index))
+    for name, index in [
+        ("missing", 3),
+        ("gone", 4),
+        ("temporary", 5),
+        ("permanent", 6),
+        ("route-headers", 7),
+        ("cors", 8),
+    ]
+]
+SELECTIONS += [
+    selection(
+        name + ".html",
+        LB
+        + "actions/routes/"
+        + str(index)
+        + "/direct_response_route/0/route_direct_response/0/response_body_encoded",
+        decode_body=True,
+    )
+    for name, index in [("missing", 3), ("gone", 4)]
+]
+SELECTIONS += [
+    selection(
+        "direct-error-bodies.json",
+        LB + "actions/more_option",
+        fields=("custom_errors",),
+    )
+]
+SELECTIONS += [
+    selection("rate-attach.json", LB + "response-controls/api_rate_limit"),
+    selection(
+        "rate-body.json",
+        LB + "response-controls/more_option",
+        fields=("custom_errors",),
+    ),
+    selection(
+        "rate-limiter.json", "/resource/xcsh_rate_limiter/response-controls/limits"
+    ),
+    selection(
+        "rate-identity.json",
+        "/resource/xcsh_user_identification/response-controls/rules",
+    ),
+]
 
 
 def select(document: JsonValue, pointer: str) -> JsonValue:
@@ -307,8 +351,21 @@ def placeholders(value: JsonValue, *, primary: bool) -> JsonValue:
             value = "<XC_NAMESPACE>"
         elif re.fullmatch(r"\$\{xcsh_app_firewall\.[a-z-]+\.name\}", value):
             value = "<APP_FIREWALL_NAME>"
-        elif re.fullmatch(r"\$\{xcsh_origin_pool\.[a-z0-9-]+\.name\}", value):
-            value = "<ORIGIN_POOL_NAME>"
+        elif re.fullmatch(
+            r"\$\{xcsh_(?:origin_pool|rate_limiter|user_identification)\.[a-z0-9-]+\.name\}",
+            value,
+        ):
+            value = (
+                "<"
+                + (
+                    "RATE_LIMITER_NAME"
+                    if "xcsh_rate_limiter" in value
+                    else "USER_IDENTIFICATION_NAME"
+                    if "xcsh_user_identification" in value
+                    else "ORIGIN_POOL_NAME"
+                )
+                + ">"
+            )
         if "${" in value:
             message = "Unrecognized resource reference"
             raise ValueError(message)
@@ -407,4 +464,17 @@ def prepare(
 
 
 if __name__ == "__main__":
+    fixture_inventory = ROOT / "terraform/.terraform/fixture-inventory.json"
+    fixture_inventory.parent.mkdir(parents=True, exist_ok=True)
+    fixture_inventory.write_text(
+        json.dumps(
+            [
+                item
+                for item in json.loads((ROOT / "scenarios.json").read_text())
+                if item["group"] != "rate-limit"
+            ],
+            indent=2,
+        )
+        + "\n"
+    )
     print("Prepared", prepare(), "source-selected documentation snippets")

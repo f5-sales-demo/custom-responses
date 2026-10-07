@@ -1,0 +1,31 @@
+---
+title: Rate limits
+description: Rate limits return a custom 429 page when a synthetic client exceeds the configured request allowance.
+tableOfContents: false
+sidebar:
+  order: 17
+---
+
+Explain why a client should slow down while preserving the `429` status. This example limits GET requests to exactly `/demo/rate-limit`, identified by the synthetic `X-CR-Client` header.
+
+> **Visitor response:** “Demo request limit reached” after five requests in one minute.
+
+The referenced limiter allows five requests per minute with burst multiplier one and a ten-second block action. The load balancer maps exact status `429` to the custom HTML. A different synthetic client, POST request, or unrelated path still reaches the origin. Recovery was measured after 65 seconds; the ten-second action does not imply the request allowance is fully replenished then.
+
+```json file=../_data/rate-attach.json wrap
+```
+
+```json file=../_data/rate-limiter.json wrap
+```
+
+```json file=../_data/rate-identity.json wrap
+```
+
+```json file=../_data/rate-body.json wrap
+```
+
+**Expected result:** The first five requests succeed, subsequent requests receive `429` and the configured body, and the independent controls remain available. XC's API Rate Limiting event identifies the block owner. The demo header identifies synthetic traffic; clients can change it, so it is not authentication or a production identity design.
+
+Use **Trigger custom 429** in the [documentation panel](../cors/) to run seven fixed GET requests. The action runs only on a click, reserves fourteen requests including possible browser preflights, and runs at most once per two minutes.
+
+**Verified live example:** [Open the rate-limit endpoint](https://cr-response-controls.f5-sales-demo.com/demo/rate-limit).

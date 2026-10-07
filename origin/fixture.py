@@ -1,5 +1,6 @@
 """Synthetic fixture and isolated fault listeners for the owned showcase."""
 
+# pylint: disable=attribute-defined-outside-init
 import contextlib
 import json
 import logging
@@ -12,6 +13,7 @@ import urllib.error
 import urllib.request
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from typing import cast
 from urllib.parse import urlsplit
 
@@ -29,6 +31,8 @@ DELAY_PORT = 8084
 ERROR_PORT = 8081
 MIN_ERROR_STATUS = 300
 MAX_ERROR_STATUS = 599
+MAX_BODY_BYTES = 65536
+ECHO_HEADERS = ("Content-Type", "X-CR-Client", "Origin")
 
 
 class Fixture(BaseHTTPRequestHandler):
@@ -50,9 +54,22 @@ class Fixture(BaseHTTPRequestHandler):
 
     # pylint: disable-next=invalid-name
     def do_POST(self) -> None:
-        """Consume a bounded synthetic POST before serving the response."""
-        length = min(int(self.headers.get("Content-Length", "0")), 65536)
-        self.rfile.read(length)
+        """Reject oversized or invalid input before reading synthetic request data."""
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            self.send_error(HTTPStatus.BAD_REQUEST)
+            return
+        if self.headers.get("Transfer-Encoding") or not 0 <= length <= MAX_BODY_BYTES:
+            self.close_connection = True
+            self.send_error(HTTPStatus.REQUEST_ENTITY_TOO_LARGE)
+            return
+        self.request_body = self.rfile.read(length).decode("utf-8", errors="replace")
+        self.do_GET()
+
+    # pylint: disable-next=invalid-name
+    def do_OPTIONS(self) -> None:
+        """Allow an origin control without supplying any CORS permissions."""
         self.do_GET()
 
     # pylint: disable-next=invalid-name
@@ -72,7 +89,25 @@ class Fixture(BaseHTTPRequestHandler):
         body: str | bytes = (
             '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Custom responses origin</title></head><body><main><h1>Custom responses origin</h1><p>Healthy synthetic fixture.</p>'
         )
-        if path in [
+        if path in {"/demo/echo", "/demo/cors", "/demo/rate-limit"}:
+            content_type = "application/json"
+            body = json.dumps(
+                {
+                    "method": self.command,
+                    "path": path,
+                    "query": urlsplit(self.path).query,
+                    "headers": {
+                        key: self.headers[key]
+                        for key in ECHO_HEADERS
+                        if key in self.headers
+                    },
+                    "body": getattr(self, "request_body", ""),
+                    "label": "Synthetic demonstration data",
+                }
+            )
+        elif path == "/demo/panel":
+            body = Path(__file__).with_name("panel.html").read_text(encoding="utf-8")
+        elif path in [
             "/disclosure",
             "/disclosure-control",
             "/data-guard",

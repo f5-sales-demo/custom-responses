@@ -6,17 +6,27 @@ sidebar:
   order: 10
 ---
 
-A route redirect sends requests for `/old` to `/new` using `https`. The destination application serves the page.
+A route redirect sends a request to its new location. The destination application serves the response.
 
-> **Visitor response:** `302` with a `Location` ending in `/new`.
+> **Visitor response:** A redirect status and a `Location` identifying the destination.
 
-The `redirect_route` matches `/old`. Its `route_redirect` sets the protocol to `https`, the path to `/new`, and the status to `302` for temporary movement. Check how your clients handle request methods, and avoid a loop back to `/old`.
-
-[Redirect route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
+The existing `/old` route returns `302` to `/new`. For requests with a body, `/demo/temporary` uses `307` and `/demo/permanent` uses `308` to preserve the request method and payload. The temporary route retains query parameters; the permanent route removes them. Removing a query changes the destination data even though the method and body survive.
 
 ```json file=../_data/redirect.json wrap
 ```
 
-**Expected result:** A request to `/old` without automatic redirect following returns `302` and the intended `Location`. The destination serves the intended content, the redirect chain terminates, and an unrelated path still reaches the origin.
+```json file=../_data/temporary.json wrap
+```
+
+```json file=../_data/permanent.json wrap
+```
+
+**Expected result:** A synthetic POST with `?sample=synthetic` reaches `/demo/echo` as POST with the same body. The `307` destination includes the query; the `308` destination has no query. Inspect the first status and `Location` before following, then compare the echo. An unrelated path still reaches the origin.
 
 **Verified live example:** [Follow the temporary redirect](https://custom-responses.f5-sales-demo.com/old).
+
+Use the [Demo panel](../demo-panel/) to send the fixed POST examples. Permanent redirects can be cached by clients; use the owned demo paths when exploring this behavior.
+
+**Verified live example:** [Open the 307 redirect](https://custom-responses.f5-sales-demo.com/demo/temporary?sample=synthetic).
+
+**Verified live example:** [Open the 308 redirect](https://custom-responses.f5-sales-demo.com/demo/permanent?sample=synthetic).

@@ -357,6 +357,157 @@
                 "http_method": "ANY"
               }
             ]
+          },
+          {
+            "direct_response_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/missing"
+                  }
+                ],
+                "http_method": "ANY",
+                "route_direct_response": [
+                  {
+                    "response_code": 404,
+                    "response_body_encoded": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+UmVzb3VyY2Ugbm90IGZvdW5kPC90aXRsZT48c3R5bGU+Ym9keXttYXJnaW46MDtiYWNrZ3JvdW5kOiMwNzFiMzM7Y29sb3I6I2ZmZjtmb250OjE4cHggc3lzdGVtLXVpfW1haW57bWF4LXdpZHRoOjQycmVtO21hcmdpbjoxMnZoIGF1dG87cGFkZGluZzoycmVtfS5icmFuZHtjb2xvcjojZmY1ZjY0O2ZvbnQtd2VpZ2h0OjcwMH1oMXtmb250LXNpemU6Y2xhbXAoMnJlbSw2dncsMy41cmVtKX1we2xpbmUtaGVpZ2h0OjEuNn1he2NvbG9yOiM5Y2RkZmZ9PC9zdHlsZT48L2hlYWQ+PGJvZHk+PG1haW4+PHAgY2xhc3M9ImJyYW5kIj5GNSDCtyBDdXN0b20gUmVzcG9uc2VzPC9wPjxoMT5SZXNvdXJjZSBub3QgZm91bmQ8L2gxPjxwPlRoZSByZXF1ZXN0ZWQgZGVtbyByZXNvdXJjZSBpcyBtaXNzaW5nLiBDaGVjayB0aGUgYWRkcmVzcyBhbmQgdHJ5IGFnYWluLjwvcD48YSBocmVmPSIvZGVtby9wYW5lbCI+RXhwbG9yZSByZXNwb25zZSBjb250cm9sczwvYT48L21haW4+PC9ib2R5PjwvaHRtbD4="
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "direct_response_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/gone"
+                  }
+                ],
+                "http_method": "ANY",
+                "route_direct_response": [
+                  {
+                    "response_code": 410,
+                    "response_body_encoded": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+UmVzb3VyY2UgcmV0aXJlZDwvdGl0bGU+PHN0eWxlPmJvZHl7bWFyZ2luOjA7YmFja2dyb3VuZDojMDcxYjMzO2NvbG9yOiNmZmY7Zm9udDoxOHB4IHN5c3RlbS11aX1tYWlue21heC13aWR0aDo0MnJlbTttYXJnaW46MTJ2aCBhdXRvO3BhZGRpbmc6MnJlbX0uYnJhbmR7Y29sb3I6I2ZmNWY2NDtmb250LXdlaWdodDo3MDB9aDF7Zm9udC1zaXplOmNsYW1wKDJyZW0sNnZ3LDMuNXJlbSl9cHtsaW5lLWhlaWdodDoxLjZ9YXtjb2xvcjojOWNkZGZmfTwvc3R5bGU+PC9oZWFkPjxib2R5PjxtYWluPjxwIGNsYXNzPSJicmFuZCI+RjUgwrcgQ3VzdG9tIFJlc3BvbnNlczwvcD48aDE+UmVzb3VyY2UgcmV0aXJlZDwvaDE+PHA+VGhpcyBkZW1vIHJlc291cmNlIGhhcyBiZWVuIHBlcm1hbmVudGx5IHJldGlyZWQuIENob29zZSBhIGN1cnJlbnQgcmVzb3VyY2UuPC9wPjxhIGhyZWY9Ii9kZW1vL3BhbmVsIj5FeHBsb3JlIHJlc3BvbnNlIGNvbnRyb2xzPC9hPjwvbWFpbj48L2JvZHk+PC9odG1sPg=="
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "redirect_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/temporary"
+                  }
+                ],
+                "http_method": "ANY",
+                "route_redirect": [
+                  {
+                    "proto_redirect": "https",
+                    "path_redirect": "/demo/echo",
+                    "response_code": 307,
+                    "retain_all_params": {}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "redirect_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/permanent"
+                  }
+                ],
+                "http_method": "ANY",
+                "route_redirect": [
+                  {
+                    "proto_redirect": "https",
+                    "path_redirect": "/demo/echo",
+                    "response_code": 308,
+                    "remove_all_params": {}
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "simple_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/headers"
+                  }
+                ],
+                "http_method": "ANY",
+                "origin_pools": [
+                  {
+                    "pool": [
+                      {
+                        "name": "${xcsh_origin_pool.healthy.name}",
+                        "namespace": "${xcsh_namespace.showcase.name}"
+                      }
+                    ],
+                    "weight": 1,
+                    "priority": 1
+                  }
+                ],
+                "advanced_options": [
+                  {
+                    "priority": "DEFAULT",
+                    "response_headers_to_add": [
+                      {
+                        "name": "X-CR-Route",
+                        "value": "scoped",
+                        "append": false
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "simple_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/cors"
+                  }
+                ],
+                "http_method": "ANY",
+                "origin_pools": [
+                  {
+                    "pool": [
+                      {
+                        "name": "${xcsh_origin_pool.healthy.name}",
+                        "namespace": "${xcsh_namespace.showcase.name}"
+                      }
+                    ],
+                    "weight": 1,
+                    "priority": 1
+                  }
+                ],
+                "advanced_options": [
+                  {
+                    "priority": "DEFAULT",
+                    "cors_policy": [
+                      {
+                        "allow_origin": ["https://f5-sales-demo.github.io"],
+                        "allow_methods": "GET, POST, OPTIONS",
+                        "allow_headers": "Content-Type, X-CR-Client",
+                        "expose_headers": "X-Response-Owner",
+                        "allow_credentials": false,
+                        "maximum_age": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ],
         "more_option": [
@@ -382,7 +533,9 @@
             ],
             "response_cookies_to_remove": ["origin-remove"],
             "custom_errors": {
-              "503": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+U2NoZWR1bGVkIG1haW50ZW5hbmNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPlNjaGVkdWxlZCBtYWludGVuYW5jZTwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+"
+              "503": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+U2NoZWR1bGVkIG1haW50ZW5hbmNlPC90aXRsZT48L2hlYWQ+PGJvZHk+PG1haW4+PGgxPlNjaGVkdWxlZCBtYWludGVuYW5jZTwvaDE+PHA+RjUgY3VzdG9tIHJlc3BvbnNlcyBzaG93Y2FzZS48L3A+PC9tYWluPjwvYm9keT48L2h0bWw+",
+              "404": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+UmVzb3VyY2Ugbm90IGZvdW5kPC90aXRsZT48c3R5bGU+Ym9keXttYXJnaW46MDtiYWNrZ3JvdW5kOiMwNzFiMzM7Y29sb3I6I2ZmZjtmb250OjE4cHggc3lzdGVtLXVpfW1haW57bWF4LXdpZHRoOjQycmVtO21hcmdpbjoxMnZoIGF1dG87cGFkZGluZzoycmVtfS5icmFuZHtjb2xvcjojZmY1ZjY0O2ZvbnQtd2VpZ2h0OjcwMH1oMXtmb250LXNpemU6Y2xhbXAoMnJlbSw2dncsMy41cmVtKX1we2xpbmUtaGVpZ2h0OjEuNn1he2NvbG9yOiM5Y2RkZmZ9PC9zdHlsZT48L2hlYWQ+PGJvZHk+PG1haW4+PHAgY2xhc3M9ImJyYW5kIj5GNSDCtyBDdXN0b20gUmVzcG9uc2VzPC9wPjxoMT5SZXNvdXJjZSBub3QgZm91bmQ8L2gxPjxwPlRoZSByZXF1ZXN0ZWQgZGVtbyByZXNvdXJjZSBpcyBtaXNzaW5nLiBDaGVjayB0aGUgYWRkcmVzcyBhbmQgdHJ5IGFnYWluLjwvcD48YSBocmVmPSIvZGVtby9wYW5lbCI+RXhwbG9yZSByZXNwb25zZSBjb250cm9sczwvYT48L21haW4+PC9ib2R5PjwvaHRtbD4=",
+              "410": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+UmVzb3VyY2UgcmV0aXJlZDwvdGl0bGU+PHN0eWxlPmJvZHl7bWFyZ2luOjA7YmFja2dyb3VuZDojMDcxYjMzO2NvbG9yOiNmZmY7Zm9udDoxOHB4IHN5c3RlbS11aX1tYWlue21heC13aWR0aDo0MnJlbTttYXJnaW46MTJ2aCBhdXRvO3BhZGRpbmc6MnJlbX0uYnJhbmR7Y29sb3I6I2ZmNWY2NDtmb250LXdlaWdodDo3MDB9aDF7Zm9udC1zaXplOmNsYW1wKDJyZW0sNnZ3LDMuNXJlbSl9cHtsaW5lLWhlaWdodDoxLjZ9YXtjb2xvcjojOWNkZGZmfTwvc3R5bGU+PC9oZWFkPjxib2R5PjxtYWluPjxwIGNsYXNzPSJicmFuZCI+RjUgwrcgQ3VzdG9tIFJlc3BvbnNlczwvcD48aDE+UmVzb3VyY2UgcmV0aXJlZDwvaDE+PHA+VGhpcyBkZW1vIHJlc291cmNlIGhhcyBiZWVuIHBlcm1hbmVudGx5IHJldGlyZWQuIENob29zZSBhIGN1cnJlbnQgcmVzb3VyY2UuPC9wPjxhIGhyZWY9Ii9kZW1vL3BhbmVsIj5FeHBsb3JlIHJlc3BvbnNlIGNvbnRyb2xzPC9hPjwvbWFpbj48L2JvZHk+PC9odG1sPg=="
             }
           }
         ]
@@ -654,6 +807,146 @@
             "cookie_expiry": 300,
             "custom_page": "string:///PHA+UGxlYXNlIHdhaXQgd2hpbGUgeW91ciBicm93c2VyIGlzIHZlcmlmaWVkLjwvcD4=",
             "js_script_delay": 1000
+          }
+        ]
+      },
+      "response-controls": {
+        "name": "cr-response-controls",
+        "namespace": "${xcsh_namespace.showcase.name}",
+        "domains": ["cr-response-controls.f5-sales-demo.com"],
+        "advertise_on_public_default_vip": {},
+        "https_auto_cert": [
+          {
+            "http_redirect": true
+          }
+        ],
+        "default_route_pools": [
+          {
+            "pool": [
+              {
+                "name": "${xcsh_origin_pool.healthy.name}",
+                "namespace": "${xcsh_namespace.showcase.name}"
+              }
+            ],
+            "weight": 1,
+            "priority": 1
+          }
+        ],
+        "user_identification": [
+          {
+            "name": "${xcsh_user_identification.response-controls.name}",
+            "namespace": "${xcsh_namespace.showcase.name}"
+          }
+        ],
+        "api_rate_limit": [
+          {
+            "no_ip_allowed_list": {},
+            "api_endpoint_rules": [
+              {
+                "any_domain": {},
+                "api_endpoint_path": "/demo/rate-limit",
+                "api_endpoint_method": [
+                  {
+                    "methods": ["GET"]
+                  }
+                ],
+                "ref_rate_limiter": [
+                  {
+                    "name": "${xcsh_rate_limiter.response-controls.name}",
+                    "namespace": "${xcsh_namespace.showcase.name}"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "more_option": [
+          {
+            "custom_errors": {
+              "429": "string:///PCFkb2N0eXBlIGh0bWw+PGh0bWwgbGFuZz0iZW4iPjxoZWFkPjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij48bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoIj48dGl0bGU+RGVtbyByZXF1ZXN0IGxpbWl0IHJlYWNoZWQ8L3RpdGxlPjwvaGVhZD48Ym9keT48bWFpbj48aDE+RGVtbyByZXF1ZXN0IGxpbWl0IHJlYWNoZWQ8L2gxPjxwPkY1IGN1c3RvbSByZXNwb25zZXMgc2hvd2Nhc2UuPC9wPjwvbWFpbj48L2JvZHk+PC9odG1sPg=="
+            }
+          }
+        ],
+        "no_service_policies": {},
+        "routes": [
+          {
+            "simple_route": [
+              {
+                "path": [
+                  {
+                    "path": "/demo/rate-limit"
+                  }
+                ],
+                "http_method": "ANY",
+                "origin_pools": [
+                  {
+                    "pool": [
+                      {
+                        "name": "${xcsh_origin_pool.healthy.name}",
+                        "namespace": "${xcsh_namespace.showcase.name}"
+                      }
+                    ],
+                    "weight": 1,
+                    "priority": 1
+                  }
+                ],
+                "advanced_options": [
+                  {
+                    "priority": "DEFAULT",
+                    "cors_policy": [
+                      {
+                        "allow_origin": ["https://f5-sales-demo.github.io"],
+                        "allow_methods": "GET, POST, OPTIONS",
+                        "allow_headers": "Content-Type, X-CR-Client",
+                        "allow_credentials": false,
+                        "maximum_age": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "xcsh_user_identification": {
+      "response-controls": {
+        "name": "cr-response-controls",
+        "namespace": "${xcsh_namespace.showcase.name}",
+        "rules": [
+          {
+            "http_header_name": "X-CR-Client"
+          }
+        ]
+      }
+    },
+    "xcsh_rate_limiter": {
+      "response-controls": {
+        "name": "cr-response-controls",
+        "namespace": "${xcsh_namespace.showcase.name}",
+        "user_identification": [
+          {
+            "name": "${xcsh_user_identification.response-controls.name}",
+            "namespace": "${xcsh_namespace.showcase.name}"
+          }
+        ],
+        "limits": [
+          {
+            "total_number": 5,
+            "unit": "MINUTE",
+            "period_multiplier": 1,
+            "burst_multiplier": 1,
+            "token_bucket": {},
+            "action_block": [
+              {
+                "seconds": [
+                  {
+                    "duration": 10
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

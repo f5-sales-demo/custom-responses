@@ -29,6 +29,10 @@ NO_SUBSECTIONS = {
     "captcha-verification",
     "redirects",
     "headers-cookies",
+    "missing-resources",
+    "cors",
+    "demo-panel",
+    "rate-limits",
 }
 
 
@@ -218,7 +222,13 @@ class DocumentationTests(unittest.TestCase):
     def test_contract_has_pinned_sources_and_bounded_resources(self):
         contract = self.prepare.CONTRACT
         self.assertEqual(
-            set(contract["resources"]), {"http_loadbalancer", "app_firewall"}
+            set(contract["resources"]),
+            {
+                "http_loadbalancer",
+                "app_firewall",
+                "rate_limiter",
+                "user_identification",
+            },
         )
         for source in contract["sources"]:
             self.assertRegex(source["sha256"], r"^[a-f0-9]{64}$")
@@ -287,6 +297,10 @@ class DocumentationTests(unittest.TestCase):
             ("headers-cookies", "Headers and cookies"),
             ("masking", "Data masking"),
             ("configuration-reference", "Configuration reference"),
+            ("missing-resources", "Missing and retired resources"),
+            ("cors", "CORS"),
+            ("demo-panel", "Demo panel"),
+            ("rate-limits", "Rate limits"),
         ]
         outputs = {item["output"] for item in self.prepare.SELECTIONS}
         valid_includes = outputs | {
@@ -330,7 +344,7 @@ class DocumentationTests(unittest.TestCase):
             for filename in includes:
                 self.assertIn(filename, valid_includes, slug)
             used_includes.update(includes)
-            if slug not in {"index", "configuration-reference"}:
+            if slug not in {"index", "configuration-reference", "demo-panel"}:
                 self.assertIn("Visitor", text, slug)
                 self.assertRegex(text, r"\*\*Expected (?:result|configuration):\*\*")
                 self.assertTrue(any(name.endswith(".json") for name in includes))
@@ -350,7 +364,11 @@ class DocumentationTests(unittest.TestCase):
             {name for name in used_includes if name.endswith("-encoded.json")},
             {name + "-encoded.json" for name in BODY_EXAMPLES},
         )
-        for slug in {slug for slug, _ in pages} - {"index", "configuration-reference"}:
+        for slug in {slug for slug, _ in pages} - {
+            "index",
+            "configuration-reference",
+            "demo-panel",
+        }:
             text = (ROOT / "docs/en" / (slug + ".mdx")).read_text()
             for name in BODY_EXAMPLES:
                 encoded = f"file=../_data/{name}-encoded.json"
@@ -370,8 +388,12 @@ class DocumentationTests(unittest.TestCase):
             landing,
         )
         self.assertEqual(
-            [(slug, title) for title, _, slug in cards],
-            pages[1:-1],
+            sorted((slug, title) for title, _, slug in cards),
+            sorted(
+                (slug, title)
+                for slug, title in pages
+                if slug not in {"index", "configuration-reference"}
+            ),
         )
         self.assertEqual(
             re.findall(r"(?m)^## (.+)$", landing),

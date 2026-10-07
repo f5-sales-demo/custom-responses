@@ -1,0 +1,51 @@
+{
+  "checked_at_utc": "2026-10-07T03:41:41.906651+00:00",
+  "source_commit": "7f138c358016b7b0862e32911f8b52bd6cfdfe69",
+  "request_budget": {
+    "maximum": 16,
+    "actual_public_http_requests": 14,
+    "direct_origin_controls": 1
+  },
+  "verified_additions": [
+    {
+      "name": "Automatic HTTP-to-HTTPS redirect",
+      "field": "spec.https_auto_cert.http_redirect",
+      "hosts": ["custom-responses.f5-sales-demo.com", "cr-errors.f5-sales-demo.com"],
+      "observations": {
+        "GET_and_POST_status": 301,
+        "exact_https_location_preserves_path_and_query": true,
+        "trusted_HTTPS_destination_status": 200,
+        "direct_origin_status": 200,
+        "direct_origin_redirect_absent": true
+      },
+      "limit": "301 does not guarantee POST method preservation; use HTTPS directly for submission."
+    },
+    {
+      "name": "Per-request ID in mapped custom error pages",
+      "field": "spec.more_option.custom_errors",
+      "examples": ["https://cr-errors.f5-sales-demo.com/fault/503", "https://cr-errors.f5-sales-demo.com/fault/504"],
+      "observations": {
+        "expected_statuses": [503, 504],
+        "exact_accepted_template_with_request_id_substituted": true,
+        "distinct_IDs_across_repeat_requests": true,
+        "unexpanded_template_absent": true,
+        "healthy_origin_control_status": 200,
+        "healthy_control_contains_no_substituted_ID": true,
+        "trusted_TLS": true
+      },
+      "limit": "This proves substitution; correlation to a particular log or security event is not claimed."
+    }
+  ],
+  "protected_evidence_sha256": {
+    "receipt.json": "b590e7c9923fa5aa1cea600218f3178c5eef743f83c9d6eda55e7f75f874d909",
+    "additional-proof.json": "724a31e3b5af76b8730f6fbb4c037a01e87d8e0b8455730de5d887e6bb8c9adf",
+    "origin-control-and-journal.txt": "608ca8442915a6a08f8cb8b8859fe1846ba23442626cb570eb20052da26f2a8c",
+    "origin-control.headers": "037d6c9631f2f62f74e9096762459aa9281b699882180055cbb14738ce396bb2"
+  },
+  "configuration_sha256": {
+    "cr-index": "c0ca64661c888f7e0b3690f5b9b42a13b2559f3cf31955329c46f358a87cd6cb",
+    "cr-errors": "e710bc6e1d78735638d849ec2e1e591ba004815b953b645b7cc74be803727ed9",
+    "cr-response-controls": "dea2d1df49e1dbf201cba2ff3ae172013297a8d98d72694b5d41f5d1ff08c48d"
+  },
+  "infrastructure_modified": false
+}

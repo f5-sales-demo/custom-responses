@@ -55,6 +55,7 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 | `bot-block.json` | `examples/bot-defense.json` | `/bot-block/bot_defense` |
 | `bot-redirect.json` | `examples/bot-defense.json` | `/bot-redirect/bot_defense` |
 | `bot-block.html` | `examples/bot-defense.json` | `/bot-block/bot_defense/0/policy/0/protected_app_endpoints/0/mitigation/0/block/0/body` |
+| `https-redirect.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/https_auto_cert` |
 | `redirect.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/routes/2` |
 | `metadata.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/actions/more_option` |
 | `disclosure.json` | `terraform/scenarios.tf.json` | `/resource/xcsh_http_loadbalancer/waf-json/sensitive_data_disclosure_rules` |
@@ -79,3 +80,5 @@ Resource references become `<APP_FIREWALL_NAME>`, `<ORIGIN_POOL_NAME>` and `<XC_
 The revision follows the managed style guide and Google's [procedure guidance](https://developers.google.com/style/procedures) and [active-voice guidance](https://developers.google.com/style/voice): outcome first, second person, imperative actions, conditions before instructions, one action per step and independent alternatives.
 
 The second round adds the official rate-limiter and user-identification contracts. Their pinned member digests are recorded in `response-schema.json`; the generator selects their `limits`, `user_identification` and `rules` fields and the HTTP load balancer API rate-limit attachment.
+
+The automatic HTTPS redirect projection retains only `https_auto_cert.http_redirect` from the pinned HTTP load-balancer schema. Its Boolean type and source digest remain bound to the existing official input; TLS settings and other certificate options are outside this fragment.

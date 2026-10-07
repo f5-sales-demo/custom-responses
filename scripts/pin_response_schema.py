@@ -34,6 +34,7 @@ FIELDS = {
         "data_guard_rules",
         "api_rate_limit",
         "user_identification",
+        "https_auto_cert",
     ],
     "app_firewall": ["blocking_page"],
     "rate_limiter": ["limits", "user_identification"],
@@ -103,6 +104,21 @@ def reduce_schema(schema: dict, resource: str, schemas: dict, contract: dict) ->
     return result
 
 
+def selected_schema(
+    key: str, schema: dict, resource: str, schemas: dict, contract: dict
+) -> dict:
+    """Bound the automatic-certificate example to its redirect flag."""
+    if key == "https_auto_cert":
+        name = schema["$ref"].split("/")[-1]
+        schema = {
+            "type": "object",
+            "properties": {
+                "http_redirect": schemas[name]["properties"]["http_redirect"]
+            },
+        }
+    return reduce_schema(schema, resource, schemas, contract)
+
+
 def derive(specifications: dict[str, bytes]) -> dict:
     """Keep selected fields, reachable definitions and official validation bounds."""
     contract: dict = {"resources": {}, "definitions": {}, "sources": []}
@@ -114,8 +130,12 @@ def derive(specifications: dict[str, bytes]) -> dict:
         contract["resources"][resource] = {
             "type": "object",
             "properties": {
-                key: reduce_schema(
-                    schemas[reference]["properties"][key], resource, schemas, contract
+                key: selected_schema(
+                    key,
+                    schemas[reference]["properties"][key],
+                    resource,
+                    schemas,
+                    contract,
                 )
                 for key in FIELDS[resource]
             },

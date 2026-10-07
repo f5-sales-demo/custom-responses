@@ -13,7 +13,7 @@ The JavaScript Object Notation (JSON) snippets show fields under `spec`. Keep th
 
 | Fragment fields | Owning resource | References to replace |
 | --- | --- | --- |
-| `routes`, `more_option`, challenges, masking rules, `api_rate_limit` | HTTP load balancer | `<ORIGIN_POOL_NAME>`, `<APP_FIREWALL_NAME>`, `<RATE_LIMITER_NAME>` and `<XC_NAMESPACE>`, where shown. |
+| `routes`, `more_option`, `https_auto_cert`, challenges, masking rules, `api_rate_limit` | HTTP load balancer | `<ORIGIN_POOL_NAME>`, `<APP_FIREWALL_NAME>`, `<RATE_LIMITER_NAME>` and `<XC_NAMESPACE>`, where shown. |
 | `blocking_page` | Application firewall | Attach this firewall from the load balancer using `<APP_FIREWALL_NAME>` and `<XC_NAMESPACE>`. |
 | `rules` naming the client header | User identification | Name this resource wherever `<USER_IDENTIFICATION_NAME>` appears. |
 | `limits`, `user_identification` | Rate limiter | Reference `<USER_IDENTIFICATION_NAME>` and `<XC_NAMESPACE>`; attach this limiter as `<RATE_LIMITER_NAME>`. |
@@ -24,7 +24,7 @@ Reuse each placeholder consistently across the fragments in its guide. The [Rate
 
 Encode the message as UTF-8 (8-bit Unicode Transformation Format), convert those bytes to Base64 with `=` padding, then prepend `string:///`. The prefix counts toward the field's length limit. Examples show exact encoded values; decoded previews display markup as code without executing it.
 
-When customizing a challenge page, keep F5's verification script or CAPTCHA controls in place so visitors can complete it. The `request_id` template is part of the example error body.
+When customizing a challenge page, keep F5's verification script or CAPTCHA controls in place so visitors can complete it. The [Error responses guide](../error-responses/#include-a-per-request-identifier) explains the measured `{{request_id}}` substitution and repeat-request check.
 
 ## Complete configuration sources
 

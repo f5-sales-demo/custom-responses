@@ -1,11 +1,11 @@
 ---
 title: Redirects
-description: Redirects send visitors from a selected path to its new location.
+description: Redirects move selected paths or send HTTP requests to HTTPS, with different method-handling rules.
 sidebar:
   order: 6
 ---
 
-Move a resource while controlling request method, body and query handling. A redirect route returns a status and `Location`; the destination application serves the final response.
+Move a resource while controlling request method, body and query handling. An explicit route moves a selected path; an automatic HTTP-to-HTTPS redirect changes the connection scheme for the host. Both return a status and `Location`; the destination application serves the final response.
 
 > **Visitor response:** A redirect followed by the destination response.
 
@@ -56,3 +56,29 @@ Qualified direct links let you explore GET redirects, but they do not demonstrat
 - [Open the 308 redirect](https://custom-responses.f5-sales-demo.com/demo/permanent?sample=synthetic).
 
 For metadata changes on the response instead of a move, see [Headers and cookies](../headers-cookies/).
+
+## Automatic HTTP-to-HTTPS redirects
+
+Choose the host-wide redirect when HTTP requests should move to the same address over HTTPS (HTTP over Transport Layer Security). It runs at the load balancer's HTTP listener, separately from the redirect routes above. In this example, `https_auto_cert.http_redirect` enables it.
+
+```json file=../_data/https-redirect.json wrap
+```
+
+**Measured behavior:** GET and POST requests to the HTTP echo address returned `301`. The `Location` used HTTPS and retained the path and query. The trusted HTTPS destination returned `200`; the direct origin returned `200` without a redirect.
+
+A `301` does not guarantee POST method preservation when a client follows it. Start submission requests with HTTPS; changing this automatic redirect does not turn it into the `307` or `308` route alternatives.
+
+1. Open the browser's network inspector and select **Preserve log**.
+2. Navigate to `http://custom-responses.f5-sales-demo.com/demo/echo?sample=synthetic`.
+3. Inspect the first response: it should be `301` with `Location: https://custom-responses.f5-sales-demo.com/demo/echo?sample=synthetic`.
+4. Inspect the HTTPS response: it should return `200` with the synthetic echo and `sample=synthetic` query.
+
+**Expected result:** HTTP receives the host-wide redirect, while HTTPS reaches the application. If your browser upgrades HTTP before sending it, that navigation does not exercise the listener; use the fixed command below to inspect the first response without following it.
+
+```bash
+curl --silent --show-error --max-time 15 \
+  --dump-header - --output /dev/null \
+  'http://custom-responses.f5-sales-demo.com/demo/echo?sample=synthetic'
+```
+
+The [sanitized live proof](https://github.com/f5-sales-demo/custom-responses/blob/main/acceptance/additional-response-proof.json) records the independent configuration, HTTPS and direct-origin controls. This redirect changes the destination, not the response body.

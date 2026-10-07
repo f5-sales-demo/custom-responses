@@ -2,16 +2,20 @@
 title: Conditional challenges
 description: Conditional challenges use policy rules or DDoS mitigation to select verification.
 sidebar:
-  order: 8
+  order: 14
 ---
 
-A policy rule can select JavaScript or human verification for a sensitive path. The human-verification option is a CAPTCHA, short for “Completely Automated Public Turing test to tell Computers and Humans Apart.” Application-layer distributed denial-of-service (DDoS) mitigation can also select JavaScript verification during an event.
+Apply verification to selected traffic instead of the host-wide settings in [JavaScript challenge](../browser-verification/) and [CAPTCHA verification](../captcha-verification/). A policy rule can select a sensitive path; an event-driven mitigation selects traffic during an attack.
 
-| Alternative | Selector | Comparison |
+The human-verification option is a CAPTCHA, short for “Completely Automated Public Turing test to tell Computers and Humans Apart.”
+
+Application-layer distributed denial-of-service (DDoS) mitigation can also select JavaScript verification during an event.
+
+| Alternative | Selector | Status and comparison |
 | --- | --- | --- |
-| Policy JavaScript | Exact `/policy-js` rule | `/` bypasses verification. |
-| Policy CAPTCHA | Exact `/policy-captcha` rule | `/` bypasses verification. |
-| DDoS JavaScript | Active application-layer mitigation | Normal traffic outside the event. |
+| Policy JavaScript | Exact `/policy-js` rule | JavaScript is verified; `/` bypasses verification. |
+| Policy CAPTCHA | Exact `/policy-captcha` rule | Completion **un-verified**; `/` should bypass verification. |
+| DDoS JavaScript | Active application-layer mitigation | **un-verified; deferred**. Compare normal traffic outside the event. |
 
 See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message. Keep the JavaScript verification script or CAPTCHA controls usable when customizing a challenge message.
 
@@ -37,6 +41,8 @@ See [response-body encoding](../configuration-reference/#response-body-encoding)
 
 ## Policy-selected CAPTCHA
 
+**Status: completion un-verified.** Selection and successful human completion must be confirmed independently; the qualified policy JavaScript result does not qualify this alternative.
+
 > **Visitor message:** Please complete the verification to continue.
 
 `policy_based_challenge.captcha_challenge_parameters` supplies the page and cookie lifetime. An exact `/policy-captcha` rule selects `enable_captcha_challenge`, with `no_challenge` as the default.
@@ -48,7 +54,7 @@ The shared policy source above contains this rule alongside the JavaScript rule.
 ```html file=../_data/policy-captcha.html wrap
 ```
 
-**Expected result:** A fresh visit to `/policy-captcha` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Confirm the CAPTCHA policy rule selected the request.
+**Expected result (un-verified):** A fresh visit to `/policy-captcha` shows a usable CAPTCHA; completion reaches the application. `/` bypasses the challenge. Confirm the CAPTCHA policy rule selected the request.
 
 ## DDoS-selected JavaScript challenge
 

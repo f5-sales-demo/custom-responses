@@ -32,6 +32,8 @@ class Snippet(TypedDict):
     pointer: str
     decode: bool
     fields: tuple[str, ...]
+    keys: tuple[str, ...]
+    indices: tuple[int, ...]
 
 
 def selection(
@@ -41,6 +43,8 @@ def selection(
     *,
     decode_body: bool = False,
     fields: tuple[str, ...] = (),
+    keys: tuple[str, ...] = (),
+    indices: tuple[int, ...] = (),
 ) -> Snippet:
     """Describe one source-owned fragment without line-number coupling."""
     return {
@@ -49,6 +53,8 @@ def selection(
         "pointer": pointer,
         "decode": decode_body,
         "fields": fields,
+        "keys": keys,
+        "indices": indices,
     }
 
 
@@ -64,12 +70,13 @@ SELECTIONS = [
         LB + "errors/more_option/0/custom_errors/503",
         decode_body=True,
     ),
-    selection("errors-fault.json", LB + "errors/routes"),
+    selection("errors-fault.json", LB + "errors/routes", indices=(2, 3)),
     selection("maintenance.json", LB + "actions/routes/0"),
     selection(
         "maintenance-fallback.json",
         LB + "actions/more_option",
         fields=("custom_errors",),
+        keys=("503",),
     ),
     selection(
         "maintenance.html",
@@ -175,6 +182,7 @@ SELECTIONS += [
         "direct-error-bodies.json",
         LB + "actions/more_option",
         fields=("custom_errors",),
+        keys=("404", "410"),
     )
 ]
 SELECTIONS += [
@@ -186,6 +194,10 @@ SELECTIONS += [
     ),
     selection(
         "rate-limiter.json", "/resource/xcsh_rate_limiter/response-controls/limits"
+    ),
+    selection(
+        "rate-limiter-identity.json",
+        "/resource/xcsh_rate_limiter/response-controls/user_identification",
     ),
     selection(
         "rate-identity.json",
@@ -372,6 +384,22 @@ def placeholders(value: JsonValue, *, primary: bool) -> JsonValue:
     return value
 
 
+def selected_routes(
+    value: JsonValue, field: str, indices: tuple[int, ...]
+) -> JsonValue:
+    """Retain requested validated routes, rejecting missing source entries."""
+    if not indices:
+        return value
+    if field != "routes" or not isinstance(value, list):
+        message = "Index projection requires a routes array"
+        raise ValueError(message)
+    try:
+        return [value[index] for index in indices]
+    except IndexError as error:
+        message = "Missing projected source route"
+        raise ValueError(message) from error
+
+
 def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> JsonValue:
     """Wrap a selected top-level configuration field in the owning resource spec."""
     parts = item["pointer"].split("/")[1:]
@@ -393,22 +421,36 @@ def resource_fragment(item: Snippet, value: JsonValue, *, primary: bool) -> Json
         if len(parts) != BOT_SPEC_SELECTOR_PARTS:
             message = "Bot fragment must select a top-level spec field"
             raise ValueError(message)
+    # Validate the whole selected source before narrowing the reader projection.
+    projected = project({field: value}, CONTRACT["resources"][resource])
+    if not isinstance(projected, dict):
+        message = "Resource projection must be an object"
+        raise TypeError(message)
+    narrowed = projected[field]
+    narrowed = selected_routes(narrowed, field, item["indices"])
     if item["fields"]:
-        if (
-            item["source"] != TF
-            or field != "more_option"
-            or not isinstance(value, list)
-            or len(value) != 1
-            or not isinstance(value[0], dict)
-        ):
-            message = "Field projection requires one more_option object block"
+        if field != "more_option" or not isinstance(narrowed, dict):
+            message = "Field projection requires a more_option object"
             raise ValueError(message)
         try:
-            value = [{key: value[0][key] for key in item["fields"]}]
+            narrowed = {key: narrowed[key] for key in item["fields"]}
         except KeyError as error:
             message = "Missing projected source field"
             raise ValueError(message) from error
-    projected = project({field: value}, CONTRACT["resources"][resource])
+    if item["keys"]:
+        if item["fields"] != ("custom_errors",) or not isinstance(narrowed, dict):
+            message = "Key projection requires custom_errors"
+            raise ValueError(message)
+        mapping = narrowed["custom_errors"]
+        if not isinstance(mapping, dict):
+            message = "Error projection must be a map"
+            raise ValueError(message)
+        try:
+            narrowed["custom_errors"] = {key: mapping[key] for key in item["keys"]}
+        except KeyError as error:
+            message = "Missing projected error mapping"
+            raise ValueError(message) from error
+    projected[field] = narrowed
     return {"spec": placeholders(projected, primary=primary)}
 
 

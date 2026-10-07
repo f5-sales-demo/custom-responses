@@ -148,39 +148,59 @@ class ResponseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify.check_rate_limit({**item, "request_budget": 37}, ROOT)
 
-    def test_documentation_limiter_requires_click_and_enforces_cooldown(self):
-        panel = (ROOT / "docs/assets/demo-panel.html").read_text()
-        script = panel.split("<script>")[1].split("</script>")[0]
-        harness = (
-            """
+    def test_focused_widgets_bound_clicks_and_report_transport_failure(self):
+        for name, cost, budget, count in [
+            ("cors-demo", 2, 12, 1),
+            ("rate-limit-demo", 14, 36, 7),
+        ]:
+            panel = (ROOT / "docs/assets" / (name + ".html")).read_text()
+            script = panel.split("<script>")[1].split("</script>")[0]
+            harness = (
+                """
 const assert = require("node:assert/strict");
-let requests = [], handlers = {};
-const location = {origin:"https://f5-sales-demo.github.io"};
-const crypto = {randomUUID:() => "synthetic-test"};
-const controls = ["temporary","permanent","headers","cors"].map(action => ({dataset:{action},addEventListener:() => {}}));
-const rate = {addEventListener:(name, fn) => {handlers.rate=fn;}};
-const document = {querySelector:selector => selector === "#rate-limit-demo" ? rate : {}, querySelectorAll:() => controls};
-const fetch = async (url, options) => {requests.push({url,options});return {status:requests.length>5?429:200,headers:{get:()=>null},text:async()=>"synthetic"};};
+let requests=[], handler, fail=false, now=0, timer;
+const Date={now:()=>now};
+const setTimeout=fn=>{timer=fn;};
+const location={origin:"https://f5-sales-demo.github.io"};
+const crypto={randomUUID:()=>"synthetic-test"};
+const fakeButton={addEventListener:(name,fn)=>{handler=fn;}};
+const fakeResult={};
+const document={querySelector:s=>s==="#run"?fakeButton:s==="#result"?fakeResult:{}};
+const fetch=async(url,options)=>{
+ requests.push({url,options});
+ if(fail) throw Error("network");
+ return {status:200,url,headers:{get:()=>null},text:async()=>"synthetic"};
+};
 """
-            + script
-            + """
-(async () => {
+                + script
+                + f"""
+(async()=>{{
  assert.equal(requests.length,0);
- await handlers.rate();assert.equal(requests.length,7);assert.equal(remaining,22);
- assert(requests.every(r=>r.url === "https://cr-response-controls.f5-sales-demo.com/demo/rate-limit"));
- await handlers.rate();assert.equal(requests.length,7);assert.equal(rate.disabled,true);
-})().catch(error=>{console.error(error);process.exitCode=1;});
+ await handler(); assert.equal(requests.length,{count});
+ assert.equal(remaining,{budget - cost});
+ assert(requests.every(r=>r.options.credentials==="omit" && r.options.redirect==="error"));
+ if(COOLDOWN){{
+   await handler();assert.equal(requests.length,{count});
+   now=120001;timer();assert.equal(button.disabled,false);
+ }}
+ fail=true;await handler();
+ assert(result.textContent.includes("could not complete"));
+ assert(!result.textContent.includes("access denied"));
+ now=240002;
+ for(let i=0;i<20;i++){{await handler();now+=120001;}}
+ assert.equal(remaining, {budget} % {cost});assert.equal(button.disabled,true);
+ location.origin="https://example.invalid";remaining={budget};
+ const before=requests.length;await handler();assert.equal(requests.length,before);
+}})().catch(error=>{{console.error(error);process.exitCode=1;}});
 """
-        )
-        with tempfile.TemporaryDirectory() as temp:
-            path = Path(temp) / "rate-panel.cjs"
-            path.write_text(harness)
-            node = shutil.which("node")
-            self.assertIsNotNone(node)
-            assert node is not None
-            subprocess.run(  # noqa: S603 -- fixed generated test harness
-                [node, str(path)], check=True, capture_output=True
             )
+            with tempfile.TemporaryDirectory() as temp:
+                path = Path(temp) / "focused-widget.cjs"
+                path.write_text(harness)
+                node = shutil.which("node")
+                self.assertIsNotNone(node)
+                assert node is not None
+                subprocess.run([node, str(path)], check=True)  # noqa: S603
 
     def test_panel_sends_only_after_click_and_stops_at_budget(self):
         panel = (ROOT / "origin/panel.html").read_text()

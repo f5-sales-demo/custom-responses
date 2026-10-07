@@ -1,11 +1,13 @@
 ---
-title: Bot Defense
-description: Bot Defense examples compare inactive block and redirect settings for a protected endpoint.
+title: Bot Defense configuration
+description: Bot Defense configuration examples compare inactive block and redirect settings for a protected endpoint.
 sidebar:
-  order: 9
+  order: 15
 ---
 
-When Bot Defense Standard selects mitigation for a protected endpoint, it can block the request or redirect the visitor to a help page. These examples are inactive and configuration-only; they do not demonstrate live classification or mitigation.
+**Scope: configuration-only.** These inactive alternatives explain how Bot Defense Standard would block a classified request or redirect a visitor on a protected endpoint. Live classification and mitigation are unavailable in this example.
+
+Choose between endpoint-specific mitigation actions after Bot Defense classification; a fixed path response or WAF rejection has a different decision model.
 
 Both examples protect POST `/bot-check` over a secure connection for web clients. They allow good bots, use the United States regional endpoint, and insert asynchronous JavaScript after the page's `<head>` element. Each endpoint chooses either `mitigation.block` or `mitigation.redirect`.
 
@@ -37,3 +39,5 @@ The redirect alternative uses `mitigation.redirect.uri` to point to a help page.
 ```
 
 **Expected configuration:** The POST endpoint has one redirect action and points to the intended help page. Runtime redirect behavior remains unverified.
+
+See [WAF blocking](../blocked-requests/) for qualified firewall rejection examples.

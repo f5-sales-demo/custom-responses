@@ -2,10 +2,10 @@
 title: Data masking
 description: Data masking hides selected fields or recognized sensitive values before a response reaches the client.
 sidebar:
-  order: 12
+  order: 9
 ---
 
-Masking hides sensitive values without replacing the entire response. For known JavaScript Object Notation (JSON) fields, name the fields to hide. Data Guard detects supported credit card and Social Security number formats. Use synthetic data to test either mechanism.
+Hide selected fields or recognized sensitive values without replacing the entire response. For known JavaScript Object Notation (JSON) fields, name the fields to hide. Data Guard detects supported credit card and Social Security number formats. Use synthetic data to test either mechanism.
 
 | Mechanism | Selection | Expected change |
 | --- | --- | --- |
@@ -16,14 +16,16 @@ Masking hides sensitive values without replacing the entire response. For known 
 
 > **Visitor response:** The JSON response keeps its structure but hides the values of `card` and `ssn`.
 
-The `sensitive_data_disclosure_rules` entry matches GET `/disclosure`, names `card` and `ssn` in `body.fields`, and selects `mask`. The replacement text can vary; check that the original values are gone.
+The `sensitive_data_disclosure_rules` entry matches GET `/disclosure`, names `card` and `ssn` in `body.fields`, and selects `mask`. Check that the selected synthetic values are absent, not merely that a masking rule is configured.
 
 [Selected-field masking source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
 ```json file=../_data/disclosure.json wrap
 ```
 
-**Expected result:** `/disclosure` returns `200` without the selected synthetic values, while unrelated fields remain intact. Compare `/disclosure-control`, which this rule does not select.
+**Measured result:** `/disclosure` returned `200` with `card` and `ssn` masked.
+
+**Expected result:** The selected synthetic values are absent and unrelated fields remain intact. Compare `/disclosure-control`, which this rule does not select.
 
 **Verified live example:** [View selected-field masking](https://cr-waf-json.f5-sales-demo.com/disclosure).
 
@@ -43,6 +45,10 @@ Firewall attachment:
 ```json file=../_data/data-guard-attach.json wrap
 ```
 
-**Expected result:** `/data-guard` returns `200` with supported synthetic values masked and other content intact. Compare `/data-guard-control`. Both rules share the JSON WAF load balancer but select separate paths. Compare each path with its matching control to identify the rule that changed the response.
+**Measured result:** `/data-guard` returned `200` with the recognized synthetic values masked.
+
+**Expected result:** The sensitive values are hidden and other content remains intact. Compare `/data-guard-control`. Both rules share the JSON WAF load balancer but select separate paths. Compare each path with its matching control to identify the rule that changed the response.
 
 **Verified live example:** [View Data Guard masking](https://cr-waf-json.f5-sales-demo.com/data-guard).
+
+For a complete rejection instead of selective response changes, see [WAF blocking](../blocked-requests/).

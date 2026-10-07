@@ -1,12 +1,13 @@
 ---
 title: Headers and cookies
 description: Headers and cookies add or remove response metadata without changing the application body.
-tableOfContents: false
 sidebar:
-  order: 11
+  order: 7
 ---
 
-The load balancer can add headers and cookies to an application response and remove unwanted values before returning it to the client.
+Choose the scope for response metadata changes: host-wide transformations affect the load balancer, while route-specific headers affect only matching paths. Both can preserve the application body.
+
+## Host-wide headers and cookies
 
 > **Visitor response:** `x-showcase: custom-responses` and a `showcase=custom-responses` cookie, without `x-origin-remove` or `origin-remove`.
 
@@ -21,11 +22,15 @@ Configure the add and remove lists under the load balancer's `more_option` field
 
 **Verified live example:** [Open the transformed response](https://custom-responses.f5-sales-demo.com/) and inspect its response headers and cookies.
 
+## Route-specific headers
+
 For metadata confined to one path, `/demo/headers` adds `X-CR-Route: scoped` under the route's `advanced_options`. The root response omits this header. The existing host-wide transformations still apply to both responses.
 
 ```json file=../_data/route-headers.json wrap
 ```
 
-**Expected result:** Compare `/demo/headers` with `/` on the same host. Only the selected route has `X-CR-Route`; both responses keep the synthetic origin body. Use the [Demo panel](../demo-panel/) to compare them.
+**Expected result:** Compare `/demo/headers` with `/` on the same host. Only the selected route has `X-CR-Route`; both responses keep the synthetic origin body. Use **Compare scoped headers** in the [application demo panel](https://custom-responses.f5-sales-demo.com/demo/panel) to compare them. It sends two fixed requests only when clicked.
 
 **Verified live example:** [Open the scoped-header route](https://custom-responses.f5-sales-demo.com/demo/headers).
+
+The different controls reflect scope: use an untransformed host for host-wide settings and a nonmatching path on the same host for route settings. See [CORS](../cors/) for browser permission to read a cross-origin response.

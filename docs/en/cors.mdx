@@ -1,24 +1,43 @@
 ---
-title: CORS
-description: CORS lets a specific documentation origin read selected application responses.
-tableOfContents: false
+title: Cross-origin access (CORS)
+description: Cross-origin access (CORS) allows a specific browser origin to read an application response.
 sidebar:
-  order: 15
+  order: 8
 ---
 
-Allow browser requests from the exact documentation origin, `https://f5-sales-demo.github.io`, to `/demo/cors`. An origin is the scheme and host; the documentation project path is not part of it.
+Allow a particular browser origin to read an application response. Cross-origin resource sharing (CORS) grants that browser permission; it does not authenticate callers or prevent non-browser requests.
 
-> **Visitor response:** The allowed documentation panel can read the synthetic JSON. A disallowed cross-origin panel cannot read it. Same-origin application access works without CORS permission.
+An origin consists of scheme, host and port. A project path is not part of it: all pages under `https://f5-sales-demo.github.io` share that origin, including this guide.
 
-The route allows `GET`, `POST`, and `OPTIONS`, with `Content-Type` and `X-CR-Client` request headers. Credentials are disabled. A POST with these headers makes the browser issue a preflight before the application request. The response permissions belong to this route; the root grants no CORS access.
+> **Visitor response:** The allowed documentation origin can read the synthetic response.
+
+## Same-origin and cross-origin access
+
+| Request context | Browser behavior |
+| --- | --- |
+| Application panel fetching its own origin | Same-origin access works without CORS permission. |
+| Documentation widget fetching the application | Cross-origin access requires permission for `https://f5-sales-demo.github.io`. |
+| A different cross-origin page | The browser cannot expose the response unless that origin is allowed. |
+
+Navigating directly to an echo address is not a CORS test. It does not test whether a page on another origin can read the response. The application panel shares the application's origin, so its own fetch also does not demonstrate denied cross-origin access.
+
+## Route permission and preflight
+
+The `/demo/cors` route allows `GET`, `POST` and `OPTIONS`, with `Content-Type` and `X-CR-Client` request headers. Credentials are disabled. A POST with these headers requires a browser preflight before the application request. The root route grants no CORS access.
 
 ```json file=../_data/cors.json wrap
 ```
 
-**Expected result:** The allowed origin receives its exact `Access-Control-Allow-Origin` value. A preflight advertises the configured methods and headers, and a POST echoes its fixed synthetic body. A disallowed origin receives no browser access. CORS controls browser access to responses; it does not authenticate clients or prevent non-browser requests.
+## Read the allowed response
 
-The panel below runs from this documentation origin. Click **Test CORS** to send the example; it sends nothing automatically. Redirect and header controls are available on the application panel.
+The focused widget below sends one synthetic POST only when clicked. It reserves two requests for the preflight and POST, within a twelve-request page budget.
 
-<iframe src="../../assets/demo-panel.html" title="Allowed-origin CORS demonstration" loading="lazy" style="width:100%;height:44rem;border:0;border-radius:0.5rem" />
+<iframe src="../../assets/cors-demo.html" title="Cross-origin response demonstration" loading="lazy" style="width:100%;height:34rem;border:0;border-radius:0.5rem" />
 
-**Verified live example:** [Open the CORS echo](https://custom-responses.f5-sales-demo.com/demo/cors).
+1. Select **Test allowed cross-origin access**.
+2. Inspect the returned status and synthetic echo; the widget can read the body from the application origin.
+3. In the browser's network inspector, inspect the preflight and POST response permissions.
+
+**Expected result:** The response grants the exact documentation origin with `Access-Control-Allow-Origin`. The preflight advertises the configured methods and headers. A denied origin receives no browser permission. A fetch failure alone cannot distinguish CORS denial from connectivity or server failure; it means the test did not complete.
+
+**Verified endpoint:** [Open the CORS echo](https://custom-responses.f5-sales-demo.com/demo/cors). This navigation shows the endpoint, not cross-origin permission. Use [Rate limits](../rate-limits/) for the separate request-limit demonstration.

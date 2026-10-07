@@ -1,31 +1,58 @@
 ---
 title: Rate limits
 description: Rate limits return a custom 429 page when a synthetic client exceeds the configured request allowance.
-tableOfContents: false
 sidebar:
-  order: 17
+  order: 11
 ---
 
-Explain why a client should slow down while preserving the `429` status. This example limits GET requests to exactly `/demo/rate-limit`, identified by the synthetic `X-CR-Client` header.
+Explain a genuine request-limit rejection while preserving `429`. User identification groups synthetic clients by the `X-CR-Client` header and limits GET requests to exactly `/demo/rate-limit`.
 
-> **Visitor response:** “Demo request limit reached” after five requests in one minute.
+> **Visitor response:** Demo request limit reached
 
-The referenced limiter allows five requests per minute with burst multiplier one and a ten-second block action. The load balancer maps exact status `429` to the custom HTML. A different synthetic client, POST request, or unrelated path still reaches the origin. Recovery was measured after 65 seconds; the ten-second action does not imply the request allowance is fully replenished then.
+The header is a demonstration identity; callers can change it. It does not authenticate clients or define a production identity design.
 
-```json file=../_data/rate-attach.json wrap
-```
+## Connect identification, limiter and response
 
-```json file=../_data/rate-limiter.json wrap
-```
+Each fragment belongs to a different part of the relationship. Use the same named identification and limiter resources wherever their placeholders recur.
+
+**User-identification resource:** Read the synthetic header to group requests by client.
 
 ```json file=../_data/rate-identity.json wrap
 ```
 
+**Rate-limiter resource:** Reference that identification resource.
+
+```json file=../_data/rate-limiter-identity.json wrap
+```
+
+**Rate-limiter resource:** Set five requests per minute, burst multiplier one, and a ten-second block action.
+
+```json file=../_data/rate-limiter.json wrap
+```
+
+**Load-balancer resource:** Attach the limiter to the selected GET endpoint.
+
+```json file=../_data/rate-attach.json wrap
+```
+
+**Load-balancer resource:** Supply the exact `429` custom body.
+
 ```json file=../_data/rate-body.json wrap
 ```
 
-**Expected result:** The first five requests succeed, subsequent requests receive `429` and the configured body, and the independent controls remain available. XC's API Rate Limiting event identifies the block owner. The demo header identifies synthetic traffic; clients can change it, so it is not authentication or a production identity design.
+The demonstration's route also permits the documentation origin to read its responses, using the CORS relationship described in [Cross-origin access](../cors/).
 
-Use **Trigger custom 429** in the [documentation panel](../cors/) to run seven fixed GET requests. The action runs only on a click, reserves fourteen requests including possible browser preflights, and runs at most once per two minutes.
+## Trigger and interpret the rejection
 
-**Verified live example:** [Open the rate-limit endpoint](https://cr-response-controls.f5-sales-demo.com/demo/rate-limit).
+The focused widget sends seven fixed GET requests using a fresh synthetic client. It runs only when clicked, reserves fourteen requests including possible preflights, caps a page visit at 36 requests, and allows a run at most once per two minutes.
+
+<iframe src="../../assets/rate-limit-demo.html" title="Bounded request-limit demonstration" loading="lazy" style="width:100%;height:40rem;border:0;border-radius:0.5rem" />
+
+1. Select **Trigger custom 429**.
+2. Compare the first five successful responses with the later `429` responses and custom body.
+
+**Expected result:** The selected requests exceed the allowance and receive `429` with “Demo request limit reached”. A different synthetic client, POST request or unrelated path still reaches the origin. The measured API Rate Limiting event identifies the limiter as the block owner; the status alone does not.
+
+The ten-second block duration is distinct from replenishing the request allowance. Recovery was measured after 65 seconds. The widget's two-minute cooldown bounds repeated demonstrations; it does not measure recovery, and loading it sends no test requests.
+
+**Verified live example:** [Open the rate-limit endpoint](https://cr-response-controls.f5-sales-demo.com/demo/rate-limit). A single navigation does not demonstrate exceeding the allowance.

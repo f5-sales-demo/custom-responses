@@ -8,13 +8,13 @@ sidebar:
 
 <style>{`@media (max-width: 480px) { h1#_top { font-size: 2rem; } }`}</style>
 
-A direct response route returns “Request received” at `/acknowledgement` with status `200`. The application does not process that request.
+Return a fixed reply when application processing is unnecessary. This direct response route returns “Request received” at `/acknowledgement` with status `200`.
+
+**Limit:** “Request received” does not prove submission validation, storage, or processing. If callers need a unique receipt or processing status, let the application provide it.
 
 > **Visitor message:** Request received
 
-In the load balancer's `routes` list, `direct_response_route` matches the path and `route_direct_response` defines the status and body. See [response-body encoding](../configuration-reference/#response-body-encoding) to create your own message.
-
-This message confirms only that the route responded. It does not validate a submission, save data, or prove backend processing. If callers need a unique receipt or processing status, let the application provide it.
+In the load balancer's `routes` list, `direct_response_route` matches the path and `route_direct_response` defines the status and body.
 
 [Acknowledgement route source](https://github.com/f5-sales-demo/custom-responses/blob/main/terraform/scenarios.tf.json)
 
@@ -29,3 +29,5 @@ This message confirms only that the route responded. It does not validate a subm
 **Expected result:** `/acknowledgement` returns `200` and “Request received”; `/` returns the normal application response. Compare the bodies because both paths can return `200`.
 
 **Verified live example:** [View the acknowledgement](https://custom-responses.f5-sales-demo.com/acknowledgement).
+
+See [Maintenance](../maintenance/) and [Missing and retired resources](../missing-resources/) for direct replies that preserve an error status.
